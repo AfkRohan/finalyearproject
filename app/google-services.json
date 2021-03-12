@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "859052192849",
+    "firebase_url": "https://chatapplication-b2a9f-default-rtdb.firebaseio.com",
     "project_id": "chatapplication-b2a9f",
     "storage_bucket": "chatapplication-b2a9f.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "859052192849-rth0urver4evicijjll0tp85krehorqu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chatapplication",
+            "certificate_hash": "e1b21cf4c7f9e5e0e064bbc969a390dd43b40ffc"
+          }
+        },
         {
           "client_id": "859052192849-sk95ormmeo8hnfsv3qp26lq6jd91hcdp.apps.googleusercontent.com",
           "client_type": 3
