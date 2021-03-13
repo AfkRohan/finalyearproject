@@ -29,13 +29,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("message");
-        myRef.setValue("Hello, World!");
-
+        //myRef.setValue("Hello, World!");
         auth = FirebaseAuth.getInstance();
+
+        binding.viewPager.setAdapter(new FragmentsAdapter(getSupportFragmentManager()));
+        binding.tabLayout.setupWithViewPager(binding.viewPager);
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
