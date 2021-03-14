@@ -15,6 +15,14 @@ public class Users {
 
     public Users(){}
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     // SignUp Constructor
     public Users(String userName, String mail, String password) {
         this.userName = userName;
@@ -56,13 +64,15 @@ public class Users {
         this.password = password;
     }
 
-    public String getUserId(String key) {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+//    public String getUserId(String key) {
+//
+//        return userId;
+//    }
+//
+//    public void setUserId(String userId) {
+//
+//        this.userId = userId;
+//    }
 
     public String getLastMessage() {
         return lastMessage;
