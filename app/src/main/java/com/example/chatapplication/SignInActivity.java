@@ -58,22 +58,33 @@ public class SignInActivity extends AppCompatActivity {
         binding.btnSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressDialog.show();
-                auth.signInWithEmailAndPassword(binding.etemail.getText().toString(), binding.etPassword.getText().toString())
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressDialog.dismiss();
-                                if(task.isSuccessful()){
-                                    Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-                                    startActivity(intent);
+                String email = binding.etemail.getText().toString();
+                String password = binding.etPassword.getText().toString();
+                if(email.length() == 0){
+                    binding.etemail.requestFocus();
+                    binding.etemail.setError("Email Address can not be empty");
+                }else if(!email.matches("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")){
+                    binding.etemail.requestFocus();
+                    binding.etemail.setError("Enter valid email");
+                } else if(password.length() < 8){
+                    binding.etPassword.requestFocus();
+                    binding.etPassword.setError("Password can not be less than 8");
+                }else {
+                    progressDialog.show();
+                    auth.signInWithEmailAndPassword(binding.etemail.getText().toString(), binding.etPassword.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    progressDialog.dismiss();
+                                    if (task.isSuccessful()) {
+                                        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(SignInActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                                else{
-                                    Toast.makeText(SignInActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-
+                            });
+                }
             }
         });
         binding.tvcreatnewaccount.setOnClickListener(new View.OnClickListener() {

@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,7 +26,6 @@ public class SignUpActivity extends AppCompatActivity {
     FirebaseDatabase database;
     ProgressDialog progressDialog;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,32 +43,48 @@ public class SignUpActivity extends AppCompatActivity {
         binding.btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressDialog.show();
-                auth.createUserWithEmailAndPassword
-                        (binding.etemail.getText().toString() , binding.etPassword.getText().toString()).
-                        addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressDialog.dismiss();
-                        if(task.isSuccessful()){
+                String userName = binding.etuserName.getText().toString();
+                String email = binding.etemail.getText().toString();
+                String password = binding.etPassword.getText().toString();
+                if( userName.length() == 0 ){
+                    binding.etuserName.requestFocus();
+                    binding.etuserName.setError("Username can not be empty");
+                }else if(!userName.matches("[a-zA-Z]+")){
+                    binding.etuserName.requestFocus();
+                    binding.etuserName.setError("Enter only alphabetical character.");
+                }else if(email.length() == 0){
+                    binding.etemail.requestFocus();
+                    binding.etemail.setError("Email Address can not be empty");
+                }else if(!email.matches("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")){
+                    binding.etemail.requestFocus();
+                    binding.etemail.setError("Enter valid email");
+                } else if(password.length() < 8){
+                    binding.etPassword.requestFocus();
+                    binding.etPassword.setError("Password can not be less than 8");
+                }else {
+                    progressDialog.show();
+                    auth.createUserWithEmailAndPassword
+                            (binding.etemail.getText().toString(), binding.etPassword.getText().toString()).
+                            addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    progressDialog.dismiss();
+                                    if (task.isSuccessful()) {
+                                        Users user = new Users(binding.etuserName.getText().toString(), binding.etemail.getText().toString(),
+                                                binding.etPassword.getText().toString());
 
-                            Users user = new Users(binding.etuserName.getText().toString(), binding.etemail.getText().toString(),
-                                    binding.etPassword.getText().toString());
+                                        String id = task.getResult().getUser().getUid();
+                                        database.getReference().child("Users").child(id).setValue(user);
 
-                            String id = task.getResult().getUser().getUid();
-                            database.getReference().child("Users").child(id).setValue(user);
+                                        Toast.makeText(SignUpActivity.this, "User Created Successfully", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
 
-                            Toast.makeText(SignUpActivity.this, "User Created Successfully", Toast.LENGTH_SHORT).show();
-                        }
-                        else{
-                            Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                                }
+                            });
 
-                    }
-                });
-
-
-
+                }
             }
         });
         binding.tvalreadyhaveaccount.setOnClickListener(new View.OnClickListener() {
