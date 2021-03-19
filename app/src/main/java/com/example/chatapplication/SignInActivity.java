@@ -32,7 +32,7 @@ public class SignInActivity extends AppCompatActivity {
     ActivitySignInBinding binding;
     ProgressDialog progressDialog;
     FirebaseAuth auth;
-    GoogleSignInClient mGoogleSignInClient;
+    static GoogleSignInClient mGoogleSignInClient;
     FirebaseDatabase database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +112,17 @@ public class SignInActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    public static void signOut(MainActivity mainActivity) throws NullPointerException{
+
+        if(mGoogleSignInClient != null) {
+            mGoogleSignInClient.signOut().addOnCompleteListener(mainActivity, new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+
+                }
+            });
+        }
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -149,7 +160,7 @@ public class SignInActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                             startActivity(intent);
-                            Toast.makeText(SignInActivity.this, "Sign in with Google", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this, "Welcome " + users.getUserName() + ", You have sign in using Google", Toast.LENGTH_SHORT).show();
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.

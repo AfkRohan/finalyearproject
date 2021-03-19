@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.chatapplication.SignInActivity;
 import com.example.chatapplication.Adapters.FragmentsAdapter;
 import com.example.chatapplication.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("message");
-        //myRef.setValue("Hello, World!");
+        myRef.setValue("");
         auth = FirebaseAuth.getInstance();
 
         binding.viewPager.setAdapter(new FragmentsAdapter(getSupportFragmentManager()));
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Settings Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.logout:
+                SignInActivity.signOut(this);
                 auth.signOut();
                 Intent intent = new Intent(MainActivity.this, SignInActivity.class);
                 startActivity(intent);
