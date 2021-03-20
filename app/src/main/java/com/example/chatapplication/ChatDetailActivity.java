@@ -66,6 +66,24 @@ public class ChatDetailActivity extends AppCompatActivity {
 
         final String senderRoom = senderId + recievedId;
         final  String receiverRoom = recievedId + senderId;
+
+        database.getReference().child("chats").child(senderRoom).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                messagesModels.clear();
+                for(DataSnapshot snapshot1 : snapshot.getChildren()){
+                    MessagesModel model = snapshot1.getValue(MessagesModel.class);
+                    messagesModels.add(model);
+                }
+                chatAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         binding.send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,10 +91,10 @@ public class ChatDetailActivity extends AppCompatActivity {
                 final MessagesModel model = new MessagesModel(senderId,message);
                 model.setTimestamp(new Date().getTime());
                 binding.etmessage.setText("");
-                database.getReference().child("chats").child("senderRoom").push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        database.getReference().child("chats").child("receiverRoom").push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        database.getReference().child("chats").child(receiverRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
 

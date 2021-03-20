@@ -12,14 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatapplication.Models.MessagesModel;
 import com.example.chatapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class ChatAdapter extends  RecyclerView.Adapter {
 
     ArrayList <MessagesModel> messagesModels;
-    android.content.Context context;
+    Context context;
 
     int SENDER_VIEW_TYPE = 1;
     int RECEIVER_VIEW_TYPE = 2;
