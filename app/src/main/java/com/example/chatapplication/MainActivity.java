@@ -78,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
                 break;
+            case R.id.group:
+                Intent intent1 = new Intent(MainActivity.this, GroupChatActivity.class);
+                startActivity(intent1);
+                break;
         }
         return true;
     }
