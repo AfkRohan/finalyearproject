@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import com.example.chatapplication.SignInActivity;
 import com.example.chatapplication.Adapters.FragmentsAdapter;
 import com.example.chatapplication.databinding.ActivityMainBinding;
+import com.google.android.gms.common.internal.Objects;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -71,9 +73,30 @@ public class MainActivity extends AppCompatActivity {
                 SignInActivity.signOut(this);
                 auth.signOut();
                 Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
                 break;
         }
         return true;
+    }
+
+    private boolean exit = false;
+    @Override
+    public void onBackPressed() {
+        if(exit){
+            super.onBackPressed();
+            finish();
+        }else{
+            Toast.makeText(this,"Press back again to exit",Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            },3000);
+        }
     }
 }

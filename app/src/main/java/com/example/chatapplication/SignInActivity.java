@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -101,7 +102,12 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
         if(auth.getCurrentUser()!= null){
-            Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+            //Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+            //startActivity(intent);
+            Intent intent = new Intent(SignInActivity.this,MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
         }
 
@@ -173,5 +179,23 @@ public class SignInActivity extends AppCompatActivity {
                         // ...
                     }
                 });
+    }
+
+    private boolean exit = false;
+    @Override
+    public void onBackPressed() {
+        if (exit) {
+            super.onBackPressed();
+            finish();
+        } else {
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            }, 3000);
+        }
     }
 }
