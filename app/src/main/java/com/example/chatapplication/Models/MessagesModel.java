@@ -1,7 +1,7 @@
 package com.example.chatapplication.Models;
 
 public class MessagesModel {
-    String Id,message;
+    String Id, message, messageId;
     Long timestamp;
 
     public MessagesModel(String id, String message, Long timestamp) {
@@ -16,6 +16,14 @@ public class MessagesModel {
     }
 
     public MessagesModel(){
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     public String getId() {

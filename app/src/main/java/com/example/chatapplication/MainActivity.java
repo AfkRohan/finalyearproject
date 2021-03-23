@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String value = dataSnapshot.getValue(String.class);
-                Toast.makeText(MainActivity.this, "" + value, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Home Page" + value, Toast.LENGTH_SHORT).show();
             }
 
             @Override

@@ -2,15 +2,16 @@ package com.example.chatapplication.Models;
 
 public class Users {
 
-    String profilepic , userName , mail, password, userId, lastMessage;
+    String profilepic , userName , mail, password, userId, lastMessage, status;
 
-    public Users(String profilepic, String userName, String mail, String password, String userId, String lastMessage) {
+    public Users(String profilepic, String userName, String mail, String password, String userId, String lastMessage, String status) {
         this.profilepic = profilepic;
         this.userName = userName;
         this.mail = mail;
         this.password = password;
         this.userId = userId;
         this.lastMessage = lastMessage;
+        this.status = status;
     }
 
     public Users(){}
@@ -30,7 +31,13 @@ public class Users {
         this.password = password;
     }
 
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getProfilepic() {
         return profilepic;

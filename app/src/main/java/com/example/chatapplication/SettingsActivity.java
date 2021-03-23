@@ -23,6 +23,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+
 public class SettingsActivity extends AppCompatActivity {
 
     ActivitySettingsBinding binding;
@@ -52,12 +54,31 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        binding.saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String status = binding.etStatus.getText().toString();
+                String username = binding.etUserName.getText().toString();
+
+                HashMap<String , Object> obj = new HashMap<>();
+                obj.put("userName" , username);
+                obj.put("status" , status);
+
+                database.getReference().child("Users").child(FirebaseAuth.getInstance().getUid()).updateChildren(obj);
+                Toast.makeText(SettingsActivity.this, "Profile Updated", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         database.getReference().child("Users").child(FirebaseAuth.getInstance().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         Users users = snapshot.getValue(Users.class);
                         Picasso.get().load(users.getProfilepic()).placeholder(R.drawable.ic_user).into(binding.profileImage);
+
+                        binding.etStatus.setText(users.getStatus());
+                        binding.etUserName.setText(users.getUserName());
+
                     }
 
                     @Override
@@ -94,6 +115,7 @@ public class SettingsActivity extends AppCompatActivity {
                         public void onSuccess(Uri uri) {
                             database.getReference().child("Users").child(FirebaseAuth.getInstance().getUid())
                                     .child("profilepic").setValue(uri.toString());
+                            Toast.makeText(SettingsActivity.this, "Profile Pic Updated", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

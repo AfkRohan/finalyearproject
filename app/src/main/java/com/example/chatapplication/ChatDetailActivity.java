@@ -41,7 +41,7 @@ public class ChatDetailActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         final  String senderId = auth.getUid();
-        String recievedId = getIntent().getStringExtra("userId");
+        String receivedId = getIntent().getStringExtra("userId");
         String userName = getIntent().getStringExtra("userName");
         String profilePic = getIntent().getStringExtra("profilePic");
 
@@ -51,6 +51,7 @@ public class ChatDetailActivity extends AppCompatActivity {
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(ChatDetailActivity.this,MainActivity.class);
                 startActivity(intent);
             }
@@ -58,14 +59,14 @@ public class ChatDetailActivity extends AppCompatActivity {
 
         final ArrayList <MessagesModel> messagesModels = new ArrayList<>();
 
-        final ChatAdapter chatAdapter = new ChatAdapter(messagesModels, this );
+        final ChatAdapter chatAdapter = new ChatAdapter(messagesModels, this , receivedId);
 
         binding.chatRecyclerView.setAdapter(chatAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         binding.chatRecyclerView.setLayoutManager(layoutManager);
 
-        final String senderRoom = senderId + recievedId;
-        final  String receiverRoom = recievedId + senderId;
+        final String senderRoom = senderId + receivedId;
+        final  String receiverRoom = receivedId + senderId;
 
         database.getReference().child("chats").child(senderRoom).addValueEventListener(new ValueEventListener() {
             @Override
@@ -73,6 +74,8 @@ public class ChatDetailActivity extends AppCompatActivity {
                 messagesModels.clear();
                 for(DataSnapshot snapshot1 : snapshot.getChildren()){
                     MessagesModel model = snapshot1.getValue(MessagesModel.class);
+                    model.setMessageId(snapshot1.getKey());
+
                     messagesModels.add(model);
                 }
                 chatAdapter.notifyDataSetChanged();

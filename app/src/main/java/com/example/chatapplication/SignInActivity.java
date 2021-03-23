@@ -59,6 +59,16 @@ public class SignInActivity extends AppCompatActivity {
         binding.btnSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (binding.etemail.getText().toString().isEmpty()){
+                    binding.etemail.setError("Enter Your Email");
+                    return;
+                }
+                if (binding.etPassword.getText().toString().isEmpty()){
+                    binding.etPassword.setError("Enter Your Password");
+                    return;
+                }
+
+
                 String email = binding.etemail.getText().toString();
                 String password = binding.etPassword.getText().toString();
                 if(email.length() == 0){
