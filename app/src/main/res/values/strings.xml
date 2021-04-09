@@ -2,4 +2,7 @@
     <string name="app_name">ChatApplication</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="STDBY_SUFFIX">-stdby</string>
+    <string name="USER_NAME">user_name</string>
+    <string name="JSON_CALL_USER">call_user</string>
 </resources>
