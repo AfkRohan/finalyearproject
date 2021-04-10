@@ -57,6 +57,17 @@ public class ChatDetailActivity extends AppCompatActivity {
             }
         });
 
+        // Video Call
+
+        binding.videoCallIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ChatDetailActivity.this,VideocallActivity.class);
+                Bundle extras= new Bundle();
+                startActivity(intent);
+            }
+        });
+
         final ArrayList <MessagesModel> messagesModels = new ArrayList<>();
 
         final ChatAdapter chatAdapter = new ChatAdapter(messagesModels, this , receivedId);
