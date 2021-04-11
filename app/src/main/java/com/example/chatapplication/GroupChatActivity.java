@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.example.chatapplication.Adapters.ChatAdapter;
 import com.example.chatapplication.Models.MessagesModel;
@@ -25,6 +26,7 @@ import java.util.Date;
 public class GroupChatActivity extends AppCompatActivity {
 
     ActivityGroupChatBinding binding;
+    ImageView imgView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,15 @@ public class GroupChatActivity extends AppCompatActivity {
 
             }
         });
+        imgView = findViewById(R.id.attachments);
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attachments atch = new attachments();
+                atch.show(getSupportFragmentManager(),atch.getTag());
 
+            }
+        });
         binding.send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
