@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="-10dp"
                 android:padding="10dp"
-                android:text="Incoming Call" />
+                android:text="Incoming Video Call" />
         </LinearLayout>
 
 
@@ -41,7 +41,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="12dp"
             android:layout_marginRight="10dp"
-            android:src="@drawable/ic_baseline_call_24" />
+            android:src="@drawable/ic_baseline_videocam_24" />
 
     </LinearLayout>
 
