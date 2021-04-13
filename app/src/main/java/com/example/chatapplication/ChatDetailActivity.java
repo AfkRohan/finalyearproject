@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.chatapplication.Adapters.ChatAdapter;
 import com.example.chatapplication.Models.MessagesModel;
@@ -24,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ChatDetailActivity extends AppCompatActivity {
@@ -113,21 +115,26 @@ public class ChatDetailActivity extends AppCompatActivity {
         binding.send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String message =  binding.etmessage.getText().toString();
-                final MessagesModel model = new MessagesModel(senderId,message);
-                model.setTimestamp(new Date().getTime());
-                binding.etmessage.setText("");
-                database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        database.getReference().child("chats").child(receiverRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
+                if (binding.etmessage.getText().toString().isEmpty()) {
+                    Toast.makeText(ChatDetailActivity.this, "Enter Message", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    String message = binding.etmessage.getText().toString();
+                    final MessagesModel model = new MessagesModel(senderId, message);
+                    model.setTimestamp(new Date().getTime());
+                    binding.etmessage.setText("");
+                    database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            database.getReference().child("chats").child(receiverRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
 
-                            }
-                        });
-                    }
-                });
+                                }
+                            });
+                        }
+                    });
+                }
             }
         });
     }

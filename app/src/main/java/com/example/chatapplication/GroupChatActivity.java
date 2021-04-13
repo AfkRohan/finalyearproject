@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.chatapplication.Adapters.ChatAdapter;
 import com.example.chatapplication.Models.MessagesModel;
@@ -81,8 +82,12 @@ public class GroupChatActivity extends AppCompatActivity {
         binding.send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final  String message = binding.etmessage.getText().toString();
-                final MessagesModel model = new MessagesModel(senderId,message);
+                if (binding.etmessage.getText().toString().isEmpty()) {
+                    Toast.makeText(GroupChatActivity.this, "Enter Message", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                final String message = binding.etmessage.getText().toString();
+                final MessagesModel model = new MessagesModel(senderId, message);
                 model.setTimestamp(new Date().getTime());
                 binding.etmessage.setText("");
 
@@ -92,6 +97,7 @@ public class GroupChatActivity extends AppCompatActivity {
 
                     }
                 });
+            }
             }
         });
     }
