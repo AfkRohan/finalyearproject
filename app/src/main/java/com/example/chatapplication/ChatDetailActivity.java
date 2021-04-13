@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.view.View;
 import android.widget.Adapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.chatapplication.Adapters.ChatAdapter;
@@ -30,6 +31,7 @@ public class ChatDetailActivity extends AppCompatActivity {
     ActivityChatDetailBinding binding;
     FirebaseDatabase database;
     FirebaseAuth auth;
+    ImageView imgView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,17 @@ public class ChatDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(ChatDetailActivity.this,MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Video Call
+
+        binding.videoCallIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ChatDetailActivity.this,VideocallActivity.class);
+                Bundle extras= new Bundle();
                 startActivity(intent);
             }
         });
@@ -83,6 +96,16 @@ public class ChatDetailActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        imgView = findViewById(R.id.attachments4);
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attachments atch = new attachments();
+                atch.show(getSupportFragmentManager(),atch.getTag());
 
             }
         });
