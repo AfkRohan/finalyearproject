@@ -94,6 +94,7 @@ public class ChatDetailActivity extends AppCompatActivity {
                     messagesModels.add(model);
                 }
                 chatAdapter.notifyDataSetChanged();
+                binding.chatRecyclerView.smoothScrollToPosition(binding.chatRecyclerView.getAdapter().getItemCount());
             }
 
             @Override
@@ -123,6 +124,7 @@ public class ChatDetailActivity extends AppCompatActivity {
                     final MessagesModel model = new MessagesModel(senderId, message);
                     model.setTimestamp(new Date().getTime());
                     binding.etmessage.setText("");
+                    binding.chatRecyclerView.smoothScrollToPosition(binding.chatRecyclerView.getAdapter().getItemCount());
                     database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {

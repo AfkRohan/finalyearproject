@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.chatapplication.SignInActivity;
 import com.example.chatapplication.Adapters.FragmentsAdapter;
+import com.example.chatapplication.AddFriendActivity;
 import com.example.chatapplication.databinding.ActivityMainBinding;
 import com.google.android.gms.common.internal.Objects;
 import com.google.firebase.auth.FirebaseAuth;
@@ -70,6 +71,18 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent2 = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent2);
                 break;
+            case R.id.addfriend:
+                Intent intent4 = new Intent(MainActivity.this, AddFriendActivity.class);
+                startActivity(intent4);
+                break;
+            case R.id.creategroup:
+                Intent intent3 = new Intent(MainActivity.this, CreateGroupActivity.class);
+                startActivity(intent3);
+                break;
+            case R.id.group:
+                Intent intent1 = new Intent(MainActivity.this, GroupChatActivity.class);
+                startActivity(intent1);
+                break;
             case R.id.logout:
                 SignInActivity.signOut(this);
                 auth.signOut();
@@ -78,10 +91,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
-                break;
-            case R.id.group:
-                Intent intent1 = new Intent(MainActivity.this, GroupChatActivity.class);
-                startActivity(intent1);
                 break;
         }
         return true;
