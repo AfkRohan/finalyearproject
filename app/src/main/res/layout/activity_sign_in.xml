@@ -73,11 +73,34 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="100dp"
+                android:layout_height="3dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="#505050" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="OR" />
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="100dp"
+                android:layout_height="3dp"
+                android:layout_weight="1"
+                android:background="#505050" />
 
             <Button
                 android:id="@+id/btngGoogleSignin"
-                android:layout_width="wrap_content"
+                android:layout_width="125dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
@@ -88,18 +111,6 @@
                 android:text="Google"
                 android:textColor="#070707" />
 
-            <Button
-                android:id="@+id/btn_fb_signin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:backgroundTint="#3B5998"
-                android:drawableLeft="@drawable/ic_facebook"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:text="Facebook"
-                android:textColor="#F2FAF8" />
         </LinearLayout>
 
         <TextView

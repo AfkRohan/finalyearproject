@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatapplication.ChatDetailActivity;
+import com.example.chatapplication.GroupChatActivity;
 import com.example.chatapplication.Models.Users;
 import com.example.chatapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,13 +25,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder>{
+public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder>{
 
 
     ArrayList<Users> list;
     Context context;
 
-    public UsersAdapter(ArrayList<Users> list, Context context){
+    public GroupsAdapter(ArrayList<Users> list, Context context){
         this.list = list;
         this.context = context;
     }
@@ -49,8 +50,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder>{
 
         Users users = list.get(position);
 
-        Picasso.get().load(users.getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
-        holder.userName.setText(users.getUserName());
+        //Picasso.get().load(users.getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
+        holder.groupName.setText(users.getUserName());
 
         FirebaseDatabase.getInstance().getReference().child("chats").child(FirebaseAuth.getInstance().getUid()+users.getUserId()).orderByChild("timestamp")
                 .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -62,15 +63,17 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder>{
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ChatDetailActivity.class);
+                Intent intent = new Intent(context, GroupChatActivity.class);
                 intent.putExtra("userId",users.getUserId());
                 intent.putExtra("profilePic",users.getProfilepic());
                 intent.putExtra("userName",users.getUserName());
@@ -88,12 +91,12 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder>{
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         ImageView image;
-        TextView userName, lastMessage;
+        TextView groupName, lastMessage;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             image = itemView.findViewById(R.id.profile_image);
-            userName = itemView.findViewById(R.id.userNameList);
+            groupName = itemView.findViewById(R.id.userNameList);
             lastMessage = itemView.findViewById(R.id.lastMessage);
 
         }

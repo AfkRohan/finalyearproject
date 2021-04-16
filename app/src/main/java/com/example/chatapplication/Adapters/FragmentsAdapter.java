@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.chatapplication.Fragments.CallsFragment;
 import com.example.chatapplication.Fragments.ChatsFragment;
+import com.example.chatapplication.Fragments.GroupFragment;
 import com.example.chatapplication.Fragments.StatusFragment;
 
 public class FragmentsAdapter extends FragmentPagerAdapter {
@@ -20,7 +21,7 @@ public class FragmentsAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch(position) {
             case 0: return new ChatsFragment();
-            case 1: return new StatusFragment();
+            case 1: return new GroupFragment();
             case 2: return new CallsFragment();
             default: return new ChatsFragment();
         }
@@ -38,7 +39,7 @@ public class FragmentsAdapter extends FragmentPagerAdapter {
             title ="CHATS";
         }
         if (position == 1) {
-            title ="STATUS";
+            title ="GROUPS";
         }
         if (position == 2) {
             title ="CALLS";

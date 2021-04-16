@@ -1,9 +1,11 @@
 package com.example.chatapplication.Models;
 
+import java.util.ArrayList;
+
 public class Users {
 
     String profilepic , userName , mail, password, userId, lastMessage, status;
-
+    ArrayList<String> groupsIds;
     public Users(String profilepic, String userName, String mail, String password, String userId, String lastMessage, String status) {
         this.profilepic = profilepic;
         this.userName = userName;
@@ -30,6 +32,12 @@ public class Users {
         this.mail = mail;
         this.password = password;
     }
+
+    public ArrayList<String> getGroups() {
+        return groupsIds;
+    }
+
+    public void setGroups(ArrayList<String> groups) { this.groupsIds = groupsIds; }
 
     public String getStatus() {
         return status;

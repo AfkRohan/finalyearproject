@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/settings"
-        android:title="Settings"
+        android:id="@+id/addfriend"
+        android:title="Add Friend"
         />
+
+
     <item
-        android:id="@+id/logout"
-        android:title="Logout"
+        android:id="@+id/creategroup"
+        android:title="Create Group"
         />
     <item
         android:id="@+id/group"
         android:title="Groups"
+        />
+    <item
+        android:id="@+id/settings"
+        android:title="Profile"
+        />
+    <item
+        android:id="@+id/logout"
+        android:title="Logout"
         />
 </menu>

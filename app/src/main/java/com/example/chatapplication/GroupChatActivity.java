@@ -7,19 +7,25 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.chatapplication.Adapters.ChatAdapter;
+import com.example.chatapplication.Adapters.GroupChatAdapter;
 import com.example.chatapplication.Models.MessagesModel;
+import com.example.chatapplication.Models.Users;
 import com.example.chatapplication.databinding.ActivityGroupChatBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,7 +40,7 @@ public class GroupChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityGroupChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-         getSupportActionBar().hide();
+        getSupportActionBar().hide();
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,9 +52,23 @@ public class GroupChatActivity extends AppCompatActivity {
         final ArrayList<MessagesModel> messagesModels = new ArrayList<>();
 
         final String senderId = FirebaseAuth.getInstance().getUid();
+        final String[] senderName = new String[1];
+        final Users[] user = {null};
+        database.getReference().child("Users").child(FirebaseAuth.getInstance().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        user[0] = snapshot.getValue(Users.class);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
         binding.userName.setText("Friends Group");
 
-        final ChatAdapter adapter = new ChatAdapter(messagesModels,this);
+        final GroupChatAdapter adapter = new GroupChatAdapter(messagesModels,this);
         binding.chatRecyclerView.setAdapter(adapter);
 
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
@@ -63,6 +83,7 @@ public class GroupChatActivity extends AppCompatActivity {
                    messagesModels.add(model);
                 }
                 adapter.notifyDataSetChanged();
+                binding.chatRecyclerView.smoothScrollToPosition(binding.chatRecyclerView.getAdapter().getItemCount());
             }
 
             @Override
@@ -87,10 +108,10 @@ public class GroupChatActivity extends AppCompatActivity {
                 }
                 else {
                 final String message = binding.etmessage.getText().toString();
-                final MessagesModel model = new MessagesModel(senderId, message);
+                final MessagesModel model = new MessagesModel(senderId, user[0].getUserName(), message);
                 model.setTimestamp(new Date().getTime());
                 binding.etmessage.setText("");
-
+                binding.chatRecyclerView.smoothScrollToPosition(binding.chatRecyclerView.getAdapter().getItemCount());
                 database.getReference().child("GroupChats").push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

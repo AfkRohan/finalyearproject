@@ -1,7 +1,7 @@
 package com.example.chatapplication.Models;
 
 public class MessagesModel {
-    String Id, message, messageId;
+    String Id, userName, message, messageId;
     Long timestamp;
 
     public MessagesModel(String id, String message, Long timestamp) {
@@ -10,6 +10,11 @@ public class MessagesModel {
         this.timestamp = timestamp;
     }
 
+    public MessagesModel(String id, String userName, String message) {
+        Id = id;
+        this.userName = userName;
+        this.message = message;
+    }
     public MessagesModel(String id, String message) {
         Id = id;
         this.message = message;
@@ -33,6 +38,10 @@ public class MessagesModel {
     public void setId(String id) {
         Id = id;
     }
+
+    public String getUserName() { return userName; }
+
+    public void setUserName(String userName) { this.userName = userName; }
 
     public String getMessage() {
         return message;
