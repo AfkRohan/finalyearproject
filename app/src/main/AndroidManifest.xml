@@ -28,7 +28,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".VideocallActivity"></activity>
+        <activity android:name=".VideoCallActivity"></activity>
         <activity android:name=".SettingsActivity" />
         <activity android:name=".GroupChatActivity" />
         <activity android:name=".ChatDetailActivity" />

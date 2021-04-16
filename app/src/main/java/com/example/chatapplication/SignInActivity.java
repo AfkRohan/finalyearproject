@@ -77,7 +77,7 @@ public class SignInActivity extends AppCompatActivity {
                 }else if(!email.matches("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")){
                     binding.etemail.requestFocus();
                     binding.etemail.setError("Enter valid email");
-                } else if(password.length() < 8){
+                } else if(password.length() < 6){
                     binding.etPassword.requestFocus();
                     binding.etPassword.setError("Password can not be less than 8");
                 }else {

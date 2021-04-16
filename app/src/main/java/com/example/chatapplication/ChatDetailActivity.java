@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.example.chatapplication.Adapters.ChatAdapter;
 import com.example.chatapplication.Models.MessagesModel;
@@ -25,7 +24,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ChatDetailActivity extends AppCompatActivity {
@@ -62,13 +60,38 @@ public class ChatDetailActivity extends AppCompatActivity {
         });
 
         // Video Call
+        final String senderRoom = senderId + receivedId;
+        final  String receiverRoom = receivedId + senderId;
 
         binding.videoCallIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ChatDetailActivity.this,VideocallActivity.class);
-                Bundle extras= new Bundle();
-                startActivity(intent);
+                String video_call = senderRoom;
+                final MessagesModel messagesModel = new MessagesModel(senderId,video_call);
+                messagesModel.setTimestamp(new Date().getTime());
+                database.getReference().child("video_call")
+                        .child(senderRoom)
+                        .push()
+                        .setValue(messagesModel)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        database.getReference().child("video_call")
+                                .child(receiverRoom)
+                                .push()
+                                .setValue(messagesModel)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+
+                            }
+                        });
+                    }
+                });
+                Intent video_intent = new Intent(ChatDetailActivity.this,VideoCallActivity.class);
+                video_intent.putExtra("userId",senderRoom);
+                video_intent.putExtra("receiverId",receiverRoom);
+                startActivity(video_intent);
             }
         });
 
@@ -80,8 +103,7 @@ public class ChatDetailActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         binding.chatRecyclerView.setLayoutManager(layoutManager);
 
-        final String senderRoom = senderId + receivedId;
-        final  String receiverRoom = receivedId + senderId;
+
 
         database.getReference().child("chats").child(senderRoom).addValueEventListener(new ValueEventListener() {
             @Override
@@ -115,26 +137,21 @@ public class ChatDetailActivity extends AppCompatActivity {
         binding.send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (binding.etmessage.getText().toString().isEmpty()) {
-                    Toast.makeText(ChatDetailActivity.this, "Enter Message", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    String message = binding.etmessage.getText().toString();
-                    final MessagesModel model = new MessagesModel(senderId, message);
-                    model.setTimestamp(new Date().getTime());
-                    binding.etmessage.setText("");
-                    database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            database.getReference().child("chats").child(receiverRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
+                String message =  binding.etmessage.getText().toString();
+                final MessagesModel model = new MessagesModel(senderId,message);
+                model.setTimestamp(new Date().getTime());
+                binding.etmessage.setText("");
+                database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        database.getReference().child("chats").child(receiverRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
 
-                                }
-                            });
-                        }
-                    });
-                }
+                            }
+                        });
+                    }
+                });
             }
         });
     }
