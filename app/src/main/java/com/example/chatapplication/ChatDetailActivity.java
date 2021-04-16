@@ -44,32 +44,29 @@ public class ChatDetailActivity extends AppCompatActivity {
     ImageView imgView;
     private static String inputFormat = "HH:mm";
     SimpleDateFormat inputParser = new SimpleDateFormat(inputFormat, Locale.getDefault());
+    Calendar calendar = Calendar.getInstance();
 
-    private void compareDates(){
-//
-//        Date date;
-//        Date dateCompareOne;
-//        Date dateCompareTwo;
-//
-//        String h = String.valueOf(Calendar.getInstance().get(Calendar.HOUR));
-//        String minute_current = String.valueOf(Calendar.getInstance().get(Calendar.MINUTE) + 5);
-//        String minute_plus_five = String.valueOf(Calendar.getInstance().get(Calendar.MINUTE) + 5);
-//
-//        String compareStringOne= h + ":" + minute_current ;
-//        String compareStringTwo= h + ":" + minute_plus_five;
-//
-//        Calendar now = Calendar.getInstance();
-//
-//        int hour = now.get(Calendar.HOUR);
-//        int minute = now.get(Calendar.MINUTE);
-//
-//        date = parseDate(hour + ":" + minute);
-//        dateCompareOne = parseDate(compareStringOne);
-//        dateCompareTwo = parseDate(compareStringTwo);
-//
-//        if ( dateCompareOne.before( date ) && dateCompareTwo.after(date)) {
-//
-//        }
+    private boolean compareDates(String sDate){
+
+        Date date;
+        Date dateCompareOne;
+        Date dateCompareTwo;
+
+        String h = String.valueOf(calendar.get(Calendar.HOUR));
+        String minute_current = String.valueOf(calendar.get(Calendar.MINUTE));
+        String minute_plus_five = String.valueOf(calendar.get(Calendar.MINUTE) + 5);
+
+        String compareStringOne= h + ":" + minute_current ;
+        String compareStringTwo= h + ":" + minute_plus_five;
+
+        date = parseDate(sDate);
+        dateCompareOne = parseDate(compareStringOne);
+        dateCompareTwo = parseDate(compareStringTwo);
+
+        if ( dateCompareOne.after( date ) && dateCompareTwo.before(date)) {
+            return true;
+        }
+        return false;
     }
 
     private Date parseDate(String date) {
@@ -115,9 +112,8 @@ public class ChatDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String sRoom = senderRoom;
                 String rRoom = receiverRoom;
-                String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Calendar.getInstance().getTime());
+                String currentTime = String.valueOf(Calendar.getInstance().get(Calendar.HOUR))+":"+String.valueOf(Calendar.getInstance().get(Calendar.MINUTE));
                 final Video_Call video_call= new Video_Call(sRoom,rRoom,currentTime);
-
                 database.getReference()
                         .child("video_call")
                         .child(senderRoom)
@@ -146,6 +142,33 @@ public class ChatDetailActivity extends AppCompatActivity {
                 startActivity(video_intent);
             }
         });
+
+
+        //Incoming Video Call
+        database.getReference()
+                .child("video_call")
+                .child(senderRoom)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        // get time from database and compare with range of time
+                        for(DataSnapshot snapshot1 : snapshot.getChildren()){
+                            Video_Call video_call = snapshot1.getValue(Video_Call.class);
+                            String time_of_call = video_call.getCurrentTime();
+                            if ( compareDates(time_of_call) ) {
+                                //Start Intent
+                            }else{
+                                // Do nec
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
 
         final ArrayList <MessagesModel> messagesModels = new ArrayList<>();
 
