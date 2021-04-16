@@ -1,12 +1,18 @@
 package com.example.chatapplication;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
+import android.provider.MediaStore;
+import android.text.Html;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.ImageView;
@@ -102,7 +108,7 @@ public class ChatDetailActivity extends AppCompatActivity {
 
             }
         });
-
+     // attachments
         imgView = findViewById(R.id.attachments4);
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +118,58 @@ public class ChatDetailActivity extends AppCompatActivity {
 
             }
         });
+       /*
+        //Gallery Icon
+        imgView = findViewById(R.id.gallery);
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent,1);
+            }
+        });
 
+        //Map Icon
+        imgView = findViewById(R.id.location);
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                if(intent.resolveActivity(getPackageManager())!=null){
+                    startActivityForResult(intent,2);
+                }
+            }
+        });
+
+        //Camera
+         imgView = findViewById(R.id.camera);
+         imgView.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                     String targetFilename = "/root";
+                     Uri locationForPhotos = null;
+                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                     intent.putExtra(MediaStore.EXTRA_OUTPUT,
+                             Uri.withAppendedPath(locationForPhotos, targetFilename));
+                     if (intent.resolveActivity(getPackageManager()) != null) {
+                         startActivityForResult(intent, 3);
+                     }
+             }
+         });
+
+         //documents
+         imgView = findViewById(R.id.documents);
+         imgView.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                 sharingIntent.setType("text/html");
+                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml("<p>This is the text shared.</p>"));
+                 startActivityForResult(sharingIntent,4);
+             }
+         });
+          */
         binding.send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

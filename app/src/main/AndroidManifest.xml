@@ -14,7 +14,8 @@
         <activity android:name=".VideocallActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".GroupChatActivity" />
-        <activity android:name=".ChatDetailActivity" />
+        <activity android:name=".ChatDetailActivity">
+        </activity>
         <activity android:name=".SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
