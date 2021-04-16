@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.example.chatapplication.Adapters.ChatAdapter;
 import com.example.chatapplication.Models.MessagesModel;
+import com.example.chatapplication.Models.Video_Call;
 import com.example.chatapplication.databinding.ActivityChatDetailBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,8 +24,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class ChatDetailActivity extends AppCompatActivity {
 
@@ -32,6 +36,44 @@ public class ChatDetailActivity extends AppCompatActivity {
     FirebaseDatabase database;
     FirebaseAuth auth;
     ImageView imgView;
+    private static String inputFormat = "HH:mm";
+    SimpleDateFormat inputParser = new SimpleDateFormat(inputFormat, Locale.getDefault());
+
+    private void compareDates(){
+//
+//        Date date;
+//        Date dateCompareOne;
+//        Date dateCompareTwo;
+//
+//        String h = String.valueOf(Calendar.getInstance().get(Calendar.HOUR));
+//        String minute_current = String.valueOf(Calendar.getInstance().get(Calendar.MINUTE) + 5);
+//        String minute_plus_five = String.valueOf(Calendar.getInstance().get(Calendar.MINUTE) + 5);
+//
+//        String compareStringOne= h + ":" + minute_current ;
+//        String compareStringTwo= h + ":" + minute_plus_five;
+//
+//        Calendar now = Calendar.getInstance();
+//
+//        int hour = now.get(Calendar.HOUR);
+//        int minute = now.get(Calendar.MINUTE);
+//
+//        date = parseDate(hour + ":" + minute);
+//        dateCompareOne = parseDate(compareStringOne);
+//        dateCompareTwo = parseDate(compareStringTwo);
+//
+//        if ( dateCompareOne.before( date ) && dateCompareTwo.after(date)) {
+//
+//        }
+    }
+
+    private Date parseDate(String date) {
+
+        try {
+            return inputParser.parse(date);
+        } catch (java.text.ParseException e) {
+            return new Date(0);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,35 +104,39 @@ public class ChatDetailActivity extends AppCompatActivity {
         // Video Call
         final String senderRoom = senderId + receivedId;
         final  String receiverRoom = receivedId + senderId;
-
         binding.videoCallIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String video_call = senderRoom;
-                final MessagesModel messagesModel = new MessagesModel(senderId,video_call);
-                messagesModel.setTimestamp(new Date().getTime());
-                database.getReference().child("video_call")
+                String sRoom = senderRoom;
+                String rRoom = receiverRoom;
+                String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Calendar.getInstance().getTime());
+                final Video_Call video_call= new Video_Call(sRoom,rRoom,currentTime);
+
+                database.getReference()
+                        .child("video_call")
                         .child(senderRoom)
                         .push()
-                        .setValue(messagesModel)
+                        .setValue(video_call)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        database.getReference().child("video_call")
-                                .child(receiverRoom)
-                                .push()
-                                .setValue(messagesModel)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
+                                database.getReference()
+                                        .child("video_call")
+                                        .child(receiverRoom)
+                                        .push()
+                                        .setValue(video_call)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
 
+                                            }
+                                        });
                             }
                         });
-                    }
-                });
+
                 Intent video_intent = new Intent(ChatDetailActivity.this,VideoCallActivity.class);
-                video_intent.putExtra("userId",senderRoom);
-                video_intent.putExtra("receiverId",receiverRoom);
+                video_intent.putExtra("sRoom",sRoom);
+                video_intent.putExtra("rRoom",rRoom);
                 startActivity(video_intent);
             }
         });
@@ -123,6 +169,25 @@ public class ChatDetailActivity extends AppCompatActivity {
 
             }
         });
+
+        // Video call incoming
+        database.getReference().child("video_call")
+                .child(senderRoom)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Video_Call video_call = snapshot.getValue(Video_Call.class);
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+        // Video call incoming over
 
         imgView = findViewById(R.id.attachments4);
         imgView.setOnClickListener(new View.OnClickListener() {

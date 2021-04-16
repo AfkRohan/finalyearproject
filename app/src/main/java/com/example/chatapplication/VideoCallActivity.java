@@ -14,8 +14,8 @@ import java.net.URL;
 public class VideoCallActivity extends AppCompatActivity {
 
     Intent intent = getIntent();
-    String senderRoom = intent.getStringExtra("userId");
-    String receiverRoom = intent.getStringExtra("receiverId");
+    String senderRoom = intent.getStringExtra("sRoom");
+    String receiverRoom = intent.getStringExtra("rRoom");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
