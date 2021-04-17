@@ -157,8 +157,12 @@ public class ChatDetailActivity extends AppCompatActivity {
                             String time_of_call = video_call.getCurrentTime();
                             if ( compareDates(time_of_call) ) {
                                 //Start Intent
+                                Intent incoming_call = new Intent(ChatDetailActivity.this,IncomingCall.class);
+                                incoming_call.putExtra("sRoom",video_call.getsRoom());
+                                incoming_call.putExtra("rRoom",video_call.getrRoom());
+                                startActivity(incoming_call);
                             }else{
-                                // Do nec
+                                // It was miss call.
                             }
                         }
                     }
