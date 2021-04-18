@@ -91,12 +91,20 @@ public class Video_Call {
         Date dateCompareOne;
         Date dateCompareTwo;
 
-        String h = String.valueOf(calendar.get(Calendar.HOUR));
-        String minute_current = String.valueOf(calendar.get(Calendar.MINUTE));
-        String minute_plus_five = String.valueOf(calendar.get(Calendar.MINUTE) + 5);
+        String hmin = String.valueOf( calendar.get(Calendar.HOUR) );
+        String mmin = String.valueOf( calendar.get(Calendar.MINUTE) );
 
-        String compareStringOne= h + ":" + minute_current ;
-        String compareStringTwo= h + ":" + minute_plus_five;
+        int hmax = calendar.get(Calendar.HOUR);
+        int mmax = calendar.get(Calendar.MINUTE) + 5;
+
+        if( mmax >= 60 ) {
+            mmax = mmax - 60;
+            hmax = hmax + 1;
+        }
+
+
+        String compareStringOne= hmin + ":" + mmin ;
+        String compareStringTwo= String.valueOf(hmax) + ":" + String.valueOf(mmax);
 
         date = parseDate(sDate);
         dateCompareOne = parseDate(compareStringOne);

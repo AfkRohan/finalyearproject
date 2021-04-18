@@ -171,6 +171,8 @@ public class ChatDetailActivity extends AppCompatActivity {
                                 String call_time = video_call.getCall_time();
                                 if ( video_call.compareDates(call_time) ){
                                     Intent incoming = new Intent(ChatDetailActivity.this,IncomingCall.class);
+                                    incoming.putExtra("sRoom",video_call.getsRoom());
+                                    incoming.putExtra("rRoom",video_call.getrRoom());
                                     incoming.putExtra("caller",video_call.getUserName());
                                     startActivity(incoming);
                                 }
