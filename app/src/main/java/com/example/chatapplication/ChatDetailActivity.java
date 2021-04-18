@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.ImageView;
@@ -65,6 +66,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
     Calendar calendar = Calendar.getInstance();
     public Uri datafile;
     private String imageUrl;
+    private String receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +99,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
 
         final  String senderId = auth.getUid();
         String receivedId = getIntent().getStringExtra("userId");
+        receiver=receivedId;
         String userName = getIntent().getStringExtra("userName");
         String profilePic = getIntent().getStringExtra("profilePic");
 
@@ -206,8 +209,6 @@ public class  ChatDetailActivity extends AppCompatActivity {
                 messagesModels.clear();
                 for(DataSnapshot snapshot1 : snapshot.getChildren()){
                     MessagesModel model = snapshot1.getValue(MessagesModel.class);
-                    model.setMessageId(snapshot1.getKey());
-
                     messagesModels.add(model);
                 }
                 chatAdapter.notifyDataSetChanged();
@@ -344,9 +345,25 @@ public class  ChatDetailActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Uri> task) {
                                 if (task.isSuccessful()) {
+                                    final  String senderId = auth.getUid();
+                                    final String senderRoom = senderId + receiver;
+                                    final String receiverRoom = receiver + senderId;
                                     Uri downloadUri = task.getResult();
                                     imageUrl = downloadUri.toString();
+                                    final MessagesModel model = new MessagesModel(senderId,imageUrl);
+                                    model.setTimestamp(new Date().getTime());
+                                    model.setType("image");
+                                    database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            database.getReference().child("chats").child(receiverRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
 
+                                                }
+                                            });
+                                        }
+                                    });
                                 }
                                 else {
                                     Toast.makeText(getApplicationContext(),"Couldn't load Image ",Toast.LENGTH_SHORT).show();
