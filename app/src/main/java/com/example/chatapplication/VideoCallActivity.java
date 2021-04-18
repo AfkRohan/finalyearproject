@@ -13,14 +13,15 @@ import java.net.URL;
 
 public class VideoCallActivity extends AppCompatActivity {
 
-    Intent intent = getIntent();
-    String senderRoom = intent.getStringExtra("sRoom");
-    String receiverRoom = intent.getStringExtra("rRoom");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_videocall);
+
+        Intent intent = getIntent();
+        String senderRoom = intent.getStringExtra("sRoom");
+        String receiverRoom = intent.getStringExtra("rRoom");
 
         try {
             JitsiMeetConferenceOptions options = new JitsiMeetConferenceOptions.Builder()
@@ -30,10 +31,10 @@ public class VideoCallActivity extends AppCompatActivity {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        setup_video_call();
+        setup_video_call(senderRoom);
     }
 
-    public void setup_video_call(){
+    public void setup_video_call(String senderRoom){
 
         if( senderRoom.length() > 0 ) {
             JitsiMeetConferenceOptions options =
