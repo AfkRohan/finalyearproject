@@ -28,13 +28,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".IncomingCall"></activity>
+        <activity android:name=".ForgetPasswordActivity"></activity>
+        <activity android:name=".IncomingCall" />
         <activity android:name=".VideoCallActivity" />
         <activity android:name=".AddFriendActivity" />
         <activity android:name=".CreateGroupActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".GroupChatActivity" />
-        <activity android:name=".ChatDetailActivity"></activity>
+        <activity android:name=".ChatDetailActivity" />
         <activity android:name=".SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
