@@ -1,6 +1,7 @@
 package com.example.chatapplication.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chatapplication.ChatDetailActivity;
 import com.example.chatapplication.Models.Users;
 import com.example.chatapplication.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -35,6 +42,43 @@ public class AddFriendAdapter extends RecyclerView.Adapter<AddFriendAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Users users = list.get(position);
+        Picasso.get().load(users.getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
+        holder.userName.setText(users.getUserName());
+        holder.status.setText(users.getStatus());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseDatabase.getInstance().getReference().child("UsersFriend")
+                        .child(FirebaseAuth.getInstance().getUid()).child(users.getUserId())
+                        .child("isFriend").setValue("Yes")
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()) {
+                                    FirebaseDatabase.getInstance().getReference().child("UsersFriend")
+                                            .child(users.getUserId()).child(FirebaseAuth.getInstance().getUid())
+                                            .child("isFriend").setValue("Yes")
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful()) {
+                                                        Intent intent = new Intent(context, ChatDetailActivity.class);
+                                                        intent.putExtra("userId",users.getUserId());
+                                                        intent.putExtra("profilePic",users.getProfilepic());
+                                                        intent.putExtra("userName",users.getUserName());
+                                                        context.startActivity(intent);
+                                                    }
+                                                }
+                                            });
+                                }
+                            }
+                        });
+
+
+            }
+        });
 
     }
 

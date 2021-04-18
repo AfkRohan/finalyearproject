@@ -50,7 +50,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
-public class ChatDetailActivity extends AppCompatActivity {
+public class  ChatDetailActivity extends AppCompatActivity {
 
     private FirebaseStorage storage;
     private StorageReference storageReference;

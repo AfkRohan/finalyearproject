@@ -17,15 +17,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chatapplication.Adapters.AddFriendAdapter;
+import com.example.chatapplication.Adapters.UsersAdapter;
 import com.example.chatapplication.Models.MessagesModel;
 import com.example.chatapplication.Models.Users;
 
 import com.bumptech.glide.Glide;
+import com.example.chatapplication.databinding.ActivityAddFriendBinding;
+import com.example.chatapplication.databinding.ActivityChatDetailBinding;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -33,29 +40,58 @@ public class AddFriendActivity extends AppCompatActivity {
 
     private EditText mSearchField;
     private ImageButton mSearchBtn;
+    RecyclerView mResultList;
 
-    private RecyclerView mResultList;
-
-    private DatabaseReference mUserDatabase;
+    ActivityAddFriendBinding binding;
+    ArrayList<Users> list = new ArrayList<>();
+    FirebaseDatabase database;
+    DatabaseReference mUserDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_friend);
+        binding = ActivityAddFriendBinding.inflate(getLayoutInflater());
+        //setContentView(R.layout.activity_add_friend);
+        setContentView(binding.getRoot());
+        database = FirebaseDatabase.getInstance();
         mUserDatabase = FirebaseDatabase.getInstance().getReference("Users");
 
 
-        final ArrayList<Users> users = new ArrayList<>();
-        final AddFriendAdapter adapter = new AddFriendAdapter(users,this);
-        //mResultList.setAdapter(adapter);
+        final AddFriendAdapter adapter = new AddFriendAdapter(list,this);
 
         mSearchField = (EditText) findViewById(R.id.search_field);
         mSearchBtn = (ImageButton) findViewById(R.id.search_btn);
-
-        mResultList = (RecyclerView) findViewById(R.id.result_list);
+        mResultList = (RecyclerView) findViewById(R.id.resultList);
         mResultList.setHasFixedSize(true);
         mResultList.setLayoutManager(new LinearLayoutManager(this));
-        mSearchBtn.setOnClickListener(new View.OnClickListener() {
+        mResultList.setAdapter(adapter);
+
+        /*binding.resultList.setAdapter(adapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        binding.resultList.setLayoutManager(layoutManager);
+        */
+
+        //database.getReference().orderByChild("userName").startAt("Shah").endAt("Shah" + "\uf8ff")child("Users").
+        database.getReference().child("Users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    Users users = dataSnapshot.getValue(Users.class);
+                    users.setUserId(dataSnapshot.getKey());
+                    if (!users.getUserId().equals(FirebaseAuth.getInstance().getUid())){
+                        list.add(users);}
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+       mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -68,7 +104,7 @@ public class AddFriendActivity extends AppCompatActivity {
 
     }
 
-    /*private void firebaseUserSearch(String searchText) {
+   /* private void firebaseUserSearch(String searchText) {
 
         Query firebaseSearchQuery = mUserDatabase.orderByChild("userName").startAt(searchText).endAt(searchText + "\uf8ff");
 
@@ -127,7 +163,7 @@ public class AddFriendActivity extends AppCompatActivity {
     }*/
     // View Holder Class
 
-    /*public static class UsersViewHolder extends RecyclerView.ViewHolder {
+   /* public static class UsersViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
 
@@ -150,7 +186,7 @@ public class AddFriendActivity extends AppCompatActivity {
 
             Glide.with(ctx).load(userImage).into(user_image);
         }
-    }
-    */
+    }*/
+
 
 }
