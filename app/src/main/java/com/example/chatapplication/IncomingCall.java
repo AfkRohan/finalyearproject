@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import org.jitsi.meet.sdk.JitsiMeetActivity;
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
@@ -16,16 +17,21 @@ import java.net.URL;
 public class IncomingCall extends AppCompatActivity {
 
     Button accept,decline;
+    TextView caller_name;
 
-    Intent intent = getIntent();
-    String senderRoom = intent.getStringExtra("sRoom");
-    String receiverRoom = intent.getStringExtra("rRoom");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incoming_call);
 
+        Intent intent = getIntent();
+        String senderRoom = intent.getStringExtra("sRoom");
+        String receiverRoom = intent.getStringExtra("rRoom");
+        String caller = intent.getStringExtra("caller");
+
+
+        caller_name = (TextView) findViewById(R.id.callerName);
         accept = (Button) findViewById(R.id.btnAnswer);
         decline = (Button) findViewById(R.id.btnDecline);
 
@@ -40,7 +46,7 @@ public class IncomingCall extends AppCompatActivity {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
-                setup_video_call();
+                setup_video_call(senderRoom);
             }
         });
 
@@ -51,7 +57,7 @@ public class IncomingCall extends AppCompatActivity {
             }
         });
     }
-    public void setup_video_call(){
+    public void setup_video_call(String senderRoom){
 
         if( senderRoom.length() > 0 ) {
             JitsiMeetConferenceOptions options =
