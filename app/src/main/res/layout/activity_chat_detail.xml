@@ -114,13 +114,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/etmessage"
-            android:layout_width="271dp"
+            android:layout_width="275dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="2dp"
             android:layout_weight="1"
             android:background="@drawable/bg_et_message"
             android:ems="10"
@@ -130,25 +136,27 @@
 
         <ImageView
             android:id="@+id/attachments4"
-            android:layout_width="30dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="3dp"
             android:layout_marginRight="4dp"
+            android:layout_marginBottom="2dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_paper_clip"
-            />
+            android:background="@color/white"
+            android:src="@drawable/ic_gallery" />
 
         <ImageView
             android:id="@+id/send"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="3dp"
             android:layout_marginRight="4dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/round_shape"
+            android:paddingLeft="5dp"
             android:paddingTop="10dp"
             android:paddingRight="10dp"
-            android:paddingLeft="5dp"
             android:paddingBottom="5dp"
-            android:background="@drawable/round_shape"
             android:src="@drawable/ic_sends"
             app:tint="#4B64ED" />
 

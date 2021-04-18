@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import com.example.chatapplication.Models.MessagesModel;
 import com.example.chatapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,6 +31,8 @@ public class ChatAdapter extends  RecyclerView.Adapter {
 
     int SENDER_VIEW_TYPE = 1;
     int RECEIVER_VIEW_TYPE = 2;
+    int SENDER_VIEW_TYPE_IMAGE=3;
+    int RECEIVER_VIEW_TYPE_IMAGE=4;
 
     public ChatAdapter(ArrayList<MessagesModel> messagesModels, Context context) {
         this.messagesModels = messagesModels;
@@ -47,6 +51,14 @@ public class ChatAdapter extends  RecyclerView.Adapter {
         if (viewType==SENDER_VIEW_TYPE ){
            View  view = LayoutInflater.from( context ).inflate(R.layout.sample_sender ,parent ,false);
            return new SenderViewHolder(view);
+        }
+        else if(viewType==SENDER_VIEW_TYPE_IMAGE){
+            View  view = LayoutInflater.from( context ).inflate(R.layout.sample_sender_image ,parent ,false);
+            return new SenderViewHolderImage(view);
+        }
+        else if(viewType==RECEIVER_VIEW_TYPE_IMAGE){
+            View  view = LayoutInflater.from( context ).inflate(R.layout.sample_receiver_image ,parent ,false);
+            return new ReceiverViewHolderImage(view);
         }
         else {
             View  view;
@@ -88,6 +100,20 @@ public class ChatAdapter extends  RecyclerView.Adapter {
            String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
            ((SenderViewHolder) holder).senderTime.setText(timeString);
        }
+       else if(holder.getClass()==SenderViewHolderImage.class){
+           String url = messagesModel.getMessage();
+           Picasso.get().load(url).into(((SenderViewHolderImage)holder).senderMsg);
+           SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
+           String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
+           ((SenderViewHolder) holder).senderTime.setText(timeString);
+       }
+       else if(holder.getClass()==ReceiverViewHolderImage.class){
+           String url = messagesModel.getMessage();
+           Picasso.get().load(url).into(((ReceiverViewHolderImage)holder).receiverMsg);
+           SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
+           String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
+           ((ReceiverViewHolder) holder).receiverTime.setText(timeString);
+       }
        else {
            ((ReceiverViewHolder)holder).receiverMsg.setText(messagesModel.getMessage());
            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
@@ -98,10 +124,18 @@ public class ChatAdapter extends  RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        if(messagesModels.get(position).getId().equals(FirebaseAuth.getInstance().getUid()))
+        if(messagesModels.get(position).getId().equals(FirebaseAuth.getInstance().getUid())){
+              if(messagesModels.get(position).getType().equals("image"))
+                  return SENDER_VIEW_TYPE_IMAGE;
+              else
             return   SENDER_VIEW_TYPE;
-        else
+        }
+        else{
+            if (messagesModels.get(position).getType().equals("image"))
+                return RECEIVER_VIEW_TYPE_IMAGE;
+            else
             return RECEIVER_VIEW_TYPE;
+        }
     }
 
     @Override
@@ -120,6 +154,18 @@ public class ChatAdapter extends  RecyclerView.Adapter {
         }
     }
 
+    public class ReceiverViewHolderImage extends RecyclerView.ViewHolder {
+
+        ImageView receiverMsg;
+        TextView receiverTime;
+
+        public ReceiverViewHolderImage(@NonNull View itemView) {
+            super(itemView);
+            receiverMsg = itemView.findViewById(R.id.receivedImage);
+            receiverTime = itemView.findViewById(R.id.receiverImageTime);
+        }
+    }
+
     public  class  SenderViewHolder extends  RecyclerView.ViewHolder{
         TextView senderMsg,senderTime;
 
@@ -127,6 +173,18 @@ public class ChatAdapter extends  RecyclerView.Adapter {
             super(itemView);
             senderMsg = itemView.findViewById(R.id.senderText);
             senderTime = itemView.findViewById(R.id.sendetTime);
+        }
+    }
+
+    public  class  SenderViewHolderImage extends  RecyclerView.ViewHolder{
+
+        ImageView senderMsg;
+        TextView senderTime;
+
+        public SenderViewHolderImage(@NonNull View itemView) {
+            super(itemView);
+            senderMsg = itemView.findViewById(R.id.SenderImage);
+            senderTime = itemView.findViewById(R.id.sender_Image_Time);
         }
     }
 }

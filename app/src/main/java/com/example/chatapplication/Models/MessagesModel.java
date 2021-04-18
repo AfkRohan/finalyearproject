@@ -1,23 +1,33 @@
 package com.example.chatapplication.Models;
 
 public class MessagesModel {
-    String Id, userName, message, messageId;
+    String Id, userName, message, messageId,type;
     Long timestamp;
 
     public MessagesModel(String id, String message, Long timestamp) {
         Id = id;
         this.message = message;
         this.timestamp = timestamp;
+        this.type = "text";
     }
 
     public MessagesModel(String id, String userName, String message) {
         Id = id;
         this.userName = userName;
         this.message = message;
+        this.type = "text";
     }
     public MessagesModel(String id, String message) {
         Id = id;
         this.message = message;
+        this.type="text";
+    }
+
+    public MessagesModel(String id,String message,String type,Long timestamp){
+        Id = id;
+        this.message=message;
+        this.type=type;
+        this.timestamp=timestamp;
     }
 
     public MessagesModel(){
@@ -59,5 +69,8 @@ public class MessagesModel {
         this.timestamp = timestamp;
     }
 
+    public  String getType(){return type;}
+
+    public void setType(String type){this.type=type;}
 
 }

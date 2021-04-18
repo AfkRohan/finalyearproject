@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.pdf.PdfDocument;
@@ -17,22 +18,28 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.chatapplication.Adapters.ChatAdapter;
 import com.example.chatapplication.Models.MessagesModel;
 import com.example.chatapplication.Models.Video_Call;
 import com.example.chatapplication.databinding.ActivityChatDetailBinding;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
-import org.jitsi.meet.sdk.JitsiMeetActivity;
-import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,9 +48,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.UUID;
 
 public class ChatDetailActivity extends AppCompatActivity {
 
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
+    private static final int REQUEST_IMAGE_GET = 5;
     ActivityChatDetailBinding binding;
     FirebaseUser user;
     FirebaseDatabase database;
@@ -52,21 +63,14 @@ public class ChatDetailActivity extends AppCompatActivity {
     private static String inputFormat = "HH:mm";
     SimpleDateFormat inputParser = new SimpleDateFormat(inputFormat, Locale.getDefault());
     Calendar calendar = Calendar.getInstance();
-
-    public void setup_video_call(String senderRoom){
-
-        if( senderRoom.length() > 0 ) {
-            JitsiMeetConferenceOptions options =
-                    new JitsiMeetConferenceOptions.Builder()
-                            .setRoom(senderRoom)
-                            .build();
-            JitsiMeetActivity.launch(this, options);
-        }
-    }
+    public Uri datafile;
+    private String imageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
         binding = ActivityChatDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getSupportActionBar().hide();
@@ -214,15 +218,19 @@ public class ChatDetailActivity extends AppCompatActivity {
             }
         });
      // attachments
-        imgView = findViewById(R.id.attachments4);
+        imgView = (ImageView)findViewById(R.id.attachments4);
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attachments atch = new attachments();
-                atch.show(getSupportFragmentManager(),atch.getTag());
-
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(intent, REQUEST_IMAGE_GET);
+                }
             }
         });
+
+
        /*
         //Gallery Icon
         imgView = findViewById(R.id.gallery);
@@ -275,7 +283,8 @@ public class ChatDetailActivity extends AppCompatActivity {
              }
          });
           */
-        binding.send.setOnClickListener(new View.OnClickListener() {
+
+       binding.send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String message =  binding.etmessage.getText().toString();
@@ -296,4 +305,68 @@ public class ChatDetailActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQUEST_IMAGE_GET && resultCode==RESULT_OK && data!=null){
+            datafile = data.getData();
+            uploadImage();
+        }
+    }
+
+    private void uploadImage() {
+        final ProgressDialog pd = new ProgressDialog(this);
+        pd.setTitle("Uploading Image...");
+        pd.show();
+        final String randomKey = UUID.randomUUID().toString();
+        StorageReference riversRef = storageReference.child("images/rivers.jpg");
+        UploadTask uploadTask;
+        uploadTask = riversRef.putFile(datafile);
+
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                      pd.dismiss();
+                        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()) {
+                                    throw task.getException();
+                                }
+
+                                // Continue with the task to get the download URL
+                                return riversRef.getDownloadUrl();
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    Uri downloadUri = task.getResult();
+                                    imageUrl = downloadUri.toString();
+
+                                }
+                                else {
+                                    Toast.makeText(getApplicationContext(),"Couldn't load Image ",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        pd.dismiss();
+                        Toast.makeText(getApplicationContext(),"Sorry Message was not sent successfully",Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                double progressPercentage = (100* snapshot.getBytesTransferred()/ snapshot.getTotalByteCount());
+                int percent = (int)progressPercentage;
+                pd.setMessage("Sending: " + percent + "%");
+            }
+        });
+    }
+
 }
