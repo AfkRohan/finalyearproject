@@ -10,7 +10,7 @@ public class Video_Call {
     private String userName;
     private String sRoom;
     private String rRoom;
-    private String currentTime;
+    private String call_time;
     private static String inputFormat = "HH:mm";
     private int day,month,year;
     SimpleDateFormat inputParser = new SimpleDateFormat(inputFormat, Locale.getDefault());
@@ -32,12 +32,12 @@ public class Video_Call {
         this.rRoom = rRoom;
     }
 
-    public String getCurrentTime() {
-        return currentTime;
+    public String getCall_time() {
+        return call_time;
     }
 
-    public void setCurrentTime(String currentTime) {
-        this.currentTime = currentTime;
+    public void setCall_time(String currentTime) {
+        this.call_time = currentTime;
     }
 
     public int getDay() {
@@ -76,7 +76,7 @@ public class Video_Call {
         this.userName = userName;
         this.sRoom = sRoom;
         this.rRoom = rRoom;
-        this.currentTime = currentTime;
+        this.call_time = currentTime;
         this.day = day;
         this.month = month;
         this.year = year;

@@ -118,11 +118,11 @@ public class ChatDetailActivity extends AppCompatActivity {
         binding.videoCallIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String currentTime = String.valueOf(Calendar.getInstance().get(Calendar.HOUR))+":"+String.valueOf(Calendar.getInstance().get(Calendar.MINUTE));
+                String call_time = String.valueOf(Calendar.getInstance().get(Calendar.HOUR))+":"+String.valueOf(Calendar.getInstance().get(Calendar.MINUTE));
                 int year = Calendar.getInstance().get(Calendar.YEAR);
                 int month = Calendar.getInstance().get(Calendar.MONTH);
                 int day = Calendar.getInstance().get(Calendar.DATE);
-                final Video_Call video_call= new Video_Call(currentUsername[0],senderRoom,receiverRoom,currentTime,day,month,year);
+                final Video_Call video_call= new Video_Call(currentUsername[0],senderRoom,receiverRoom,call_time,day,month,year);
                 database.getReference()
                         .child("video_call")
                         .child(senderRoom)
@@ -163,20 +163,20 @@ public class ChatDetailActivity extends AppCompatActivity {
                         // get time from database and compare with range of time
                         for(DataSnapshot snapshot1 : snapshot.getChildren()){
                             Video_Call video_call = snapshot1.getValue(Video_Call.class);
-                            String time_of_call = null;
-                            if (video_call != null) {
-                                time_of_call = video_call.getCurrentTime();
-                            }
-                            if (video_call != null) {
-                                if ( video_call.compareDates(time_of_call) ) {
-                                    //Start Intent
-                                    Intent incoming_call = new Intent(ChatDetailActivity.this,IncomingCall.class);
-                                    incoming_call.putExtra("sRoom",video_call.getsRoom());
-                                    incoming_call.putExtra("rRoom",video_call.getrRoom());
-                                    startActivity(incoming_call);
-                                }else{
-                                    // It was miss call.
+                            int year = Calendar.getInstance().get(Calendar.YEAR);
+                            int month = Calendar.getInstance().get(Calendar.MONTH);
+                            int day = Calendar.getInstance().get(Calendar.DATE);
+                            if ( video_call.getYear() == year && video_call.getMonth() == month && video_call.getDay() == day ) {
+                                // Today's Call
+                                String call_time = video_call.getCall_time();
+                                if ( video_call.compareDates(call_time) ){
+                                    Intent incoming = new Intent(ChatDetailActivity.this,IncomingCall.class);
+                                    incoming.putExtra("caller",video_call.getUserName());
+                                    startActivity(incoming);
                                 }
+                            } else {
+                                // earlier calls
+                                //Add to miss call list.
                             }
                         }
                     }
