@@ -24,12 +24,18 @@ import com.example.chatapplication.Models.Video_Call;
 import com.example.chatapplication.databinding.ActivityChatDetailBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.jitsi.meet.sdk.JitsiMeetActivity;
+import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,6 +45,7 @@ import java.util.Locale;
 public class ChatDetailActivity extends AppCompatActivity {
 
     ActivityChatDetailBinding binding;
+    FirebaseUser user;
     FirebaseDatabase database;
     FirebaseAuth auth;
     ImageView imgView;
@@ -46,35 +53,14 @@ public class ChatDetailActivity extends AppCompatActivity {
     SimpleDateFormat inputParser = new SimpleDateFormat(inputFormat, Locale.getDefault());
     Calendar calendar = Calendar.getInstance();
 
-    private boolean compareDates(String sDate){
+    public void setup_video_call(String senderRoom){
 
-        Date date;
-        Date dateCompareOne;
-        Date dateCompareTwo;
-
-        String h = String.valueOf(calendar.get(Calendar.HOUR));
-        String minute_current = String.valueOf(calendar.get(Calendar.MINUTE));
-        String minute_plus_five = String.valueOf(calendar.get(Calendar.MINUTE) + 5);
-
-        String compareStringOne= h + ":" + minute_current ;
-        String compareStringTwo= h + ":" + minute_plus_five;
-
-        date = parseDate(sDate);
-        dateCompareOne = parseDate(compareStringOne);
-        dateCompareTwo = parseDate(compareStringTwo);
-
-        if ( dateCompareOne.after( date ) && dateCompareTwo.before(date)) {
-            return true;
-        }
-        return false;
-    }
-
-    private Date parseDate(String date) {
-
-        try {
-            return inputParser.parse(date);
-        } catch (java.text.ParseException e) {
-            return new Date(0);
+        if( senderRoom.length() > 0 ) {
+            JitsiMeetConferenceOptions options =
+                    new JitsiMeetConferenceOptions.Builder()
+                            .setRoom(senderRoom)
+                            .build();
+            JitsiMeetActivity.launch(this, options);
         }
     }
 
@@ -86,6 +72,24 @@ public class ChatDetailActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        String currentUser = user.getUid();
+        final String[] currentUsername = new String[1];
+        // Get User name of currently logged in user.
+        database.getReference("Users")
+                .child(currentUser)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        currentUsername[0] = snapshot.child("userName").getValue().toString();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
 
         final  String senderId = auth.getUid();
         String receivedId = getIntent().getStringExtra("userId");
@@ -110,10 +114,11 @@ public class ChatDetailActivity extends AppCompatActivity {
         binding.videoCallIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String sRoom = senderRoom;
-                String rRoom = receiverRoom;
                 String currentTime = String.valueOf(Calendar.getInstance().get(Calendar.HOUR))+":"+String.valueOf(Calendar.getInstance().get(Calendar.MINUTE));
-                final Video_Call video_call= new Video_Call(sRoom,rRoom,currentTime);
+                int year = Calendar.getInstance().get(Calendar.YEAR);
+                int month = Calendar.getInstance().get(Calendar.MONTH);
+                int day = Calendar.getInstance().get(Calendar.DATE);
+                final Video_Call video_call= new Video_Call(currentUsername[0],senderRoom,receiverRoom,currentTime,day,month,year);
                 database.getReference()
                         .child("video_call")
                         .child(senderRoom)
@@ -136,10 +141,10 @@ public class ChatDetailActivity extends AppCompatActivity {
                             }
                         });
 
-                Intent video_intent = new Intent(ChatDetailActivity.this,VideoCallActivity.class);
-                video_intent.putExtra("sRoom",sRoom);
-                video_intent.putExtra("rRoom",rRoom);
-                startActivity(video_intent);
+                Intent calling = new Intent(ChatDetailActivity.this,VideoCallActivity.class);
+                calling.putExtra("sRoom",senderRoom);
+                calling.putExtra("rRoom",receiverRoom);
+                startActivity(calling);
             }
         });
 
@@ -154,15 +159,20 @@ public class ChatDetailActivity extends AppCompatActivity {
                         // get time from database and compare with range of time
                         for(DataSnapshot snapshot1 : snapshot.getChildren()){
                             Video_Call video_call = snapshot1.getValue(Video_Call.class);
-                            String time_of_call = video_call.getCurrentTime();
-                            if ( compareDates(time_of_call) ) {
-                                //Start Intent
-                                Intent incoming_call = new Intent(ChatDetailActivity.this,IncomingCall.class);
-                                incoming_call.putExtra("sRoom",video_call.getsRoom());
-                                incoming_call.putExtra("rRoom",video_call.getrRoom());
-                                startActivity(incoming_call);
-                            }else{
-                                // It was miss call.
+                            String time_of_call = null;
+                            if (video_call != null) {
+                                time_of_call = video_call.getCurrentTime();
+                            }
+                            if (video_call != null) {
+                                if ( video_call.compareDates(time_of_call) ) {
+                                    //Start Intent
+                                    Intent incoming_call = new Intent(ChatDetailActivity.this,IncomingCall.class);
+                                    incoming_call.putExtra("sRoom",video_call.getsRoom());
+                                    incoming_call.putExtra("rRoom",video_call.getrRoom());
+                                    startActivity(incoming_call);
+                                }else{
+                                    // It was miss call.
+                                }
                             }
                         }
                     }
