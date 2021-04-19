@@ -1,0 +1,555 @@
+Index: app/src/main/java/com/example/chatapplication/AddFriendActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.chatapplication;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport android.content.Context;\r\nimport android.os.Bundle;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.EditText;\r\nimport android.widget.ImageButton;\r\nimport android.widget.ImageView;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport com.example.chatapplication.Adapters.AddFriendAdapter;\r\nimport com.example.chatapplication.Models.MessagesModel;\r\nimport com.example.chatapplication.Models.Users;\r\n\r\nimport com.bumptech.glide.Glide;\r\nimport com.firebase.ui.database.FirebaseRecyclerAdapter;\r\nimport com.firebase.ui.database.FirebaseRecyclerOptions;\r\nimport com.google.firebase.database.DatabaseReference;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.Query;\r\n\r\nimport java.util.ArrayList;\r\n\r\npublic class AddFriendActivity extends AppCompatActivity {\r\n\r\n    private EditText mSearchField;\r\n    private ImageButton mSearchBtn;\r\n\r\n    private RecyclerView mResultList;\r\n\r\n    private DatabaseReference mUserDatabase;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_add_friend);\r\n        mUserDatabase = FirebaseDatabase.getInstance().getReference(\"Users\");\r\n\r\n\r\n        final ArrayList<Users> users = new ArrayList<>();\r\n        final AddFriendAdapter adapter = new AddFriendAdapter(users,this);\r\n        //mResultList.setAdapter(adapter);\r\n\r\n        mSearchField = (EditText) findViewById(R.id.search_field);\r\n        mSearchBtn = (ImageButton) findViewById(R.id.search_btn);\r\n\r\n        mResultList = (RecyclerView) findViewById(R.id.result_list);\r\n        mResultList.setHasFixedSize(true);\r\n        mResultList.setLayoutManager(new LinearLayoutManager(this));\r\n        mSearchBtn.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n\r\n                String searchText = mSearchField.getText().toString();\r\n\r\n                //firebaseUserSearch(searchText);\r\n\r\n            }\r\n        });\r\n\r\n    }\r\n\r\n    /*private void firebaseUserSearch(String searchText) {\r\n\r\n        Query firebaseSearchQuery = mUserDatabase.orderByChild(\"userName\").startAt(searchText).endAt(searchText + \"\\uf8ff\");\r\n\r\n        FirebaseRecyclerOptions<Users> options=\r\n                new FirebaseRecyclerOptions.Builder<Users>()\r\n                        .setQuery(firebaseSearchQuery, Users.class)\r\n                        .setLifecycleOwner(this)\r\n                        .build();\r\n\r\n        FirebaseRecyclerAdapter firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Users, UsersViewHolder>(options) {\r\n\r\n            @NonNull\r\n            @Override\r\n            public UsersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\r\n                return new UsersViewHolder(LayoutInflater.from(parent.getContext())\r\n                        .inflate(R.layout.list_layout, parent, false));\r\n\r\n            }\r\n\r\n\r\n            @Override\r\n            protected void onBindViewHolder(@NonNull final UsersViewHolder usersViewHolder, int position, @NonNull Users model) {\r\n\r\n                usersViewHolder.setDetails(getApplicationContext(), model.getUserName(), model.getStatus(), model.getProfilepic());\r\n\r\n                //usersViewHolder.setName(model.getUserName());\r\n                //usersViewHolder.setImage(model.getProfilepic(),getApplicationContext());\r\n\r\n\r\n            }\r\n        };\r\n        mResultList.setAdapter(firebaseRecyclerAdapter);\r\n\r\n    }\r\n    /*private void firebaseUserSearch(String searchText) {\r\n\r\n        Toast.makeText(AddFriendActivity.this, \"Started Search\", Toast.LENGTH_LONG).show();\r\n\r\n        Query firebaseSearchQuery = mUserDatabase.orderByChild(\"userName\").startAt(searchText).endAt(searchText + \"\\uf8ff\");\r\n\r\n        FirebaseRecyclerAdapter<Users, UsersViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Users, UsersViewHolder>(\r\n                Users.class,\r\n                R.layout.list_layout,\r\n                UsersViewHolder.class,\r\n                firebaseSearchQuery\r\n        ) {\r\n            @Override\r\n            protected void populateViewHolder(UsersViewHolder viewHolder, Users model, int position) {\r\n\r\n\r\n                viewHolder.setDetails(getApplicationContext(), model.getUserName(), model.getStatus(), model.getProfilepic());\r\n\r\n            }\r\n        };\r\n        mResultList.setAdapter(firebaseRecyclerAdapter);\r\n    }*/\r\n    // View Holder Class\r\n\r\n    /*public static class UsersViewHolder extends RecyclerView.ViewHolder {\r\n\r\n        View mView;\r\n\r\n        public UsersViewHolder(View itemView) {\r\n            super(itemView);\r\n\r\n            mView = itemView;\r\n\r\n        }\r\n\r\n        public void setDetails(Context ctx, String userName, String userStatus, String userImage){\r\n\r\n            TextView user_name = (TextView) mView.findViewById(R.id.name_text);\r\n            TextView user_status = (TextView) mView.findViewById(R.id.status_text);\r\n            ImageView user_image = (ImageView) mView.findViewById(R.id.profile_image);\r\n\r\n\r\n            user_name.setText(userName);\r\n            user_status.setText(userStatus);\r\n\r\n            Glide.with(ctx).load(userImage).into(user_image);\r\n        }\r\n    }\r\n    */\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/chatapplication/AddFriendActivity.java	(revision ced1c045b4f78e08cfaffeb71ece84a01f3ff10e)
++++ app/src/main/java/com/example/chatapplication/AddFriendActivity.java	(date 1618732229023)
+@@ -17,15 +17,22 @@
+ import android.widget.Toast;
+ 
+ import com.example.chatapplication.Adapters.AddFriendAdapter;
++import com.example.chatapplication.Adapters.UsersAdapter;
+ import com.example.chatapplication.Models.MessagesModel;
+ import com.example.chatapplication.Models.Users;
+ 
+ import com.bumptech.glide.Glide;
++import com.example.chatapplication.databinding.ActivityAddFriendBinding;
++import com.example.chatapplication.databinding.ActivityChatDetailBinding;
+ import com.firebase.ui.database.FirebaseRecyclerAdapter;
+ import com.firebase.ui.database.FirebaseRecyclerOptions;
++import com.google.firebase.auth.FirebaseAuth;
++import com.google.firebase.database.DataSnapshot;
++import com.google.firebase.database.DatabaseError;
+ import com.google.firebase.database.DatabaseReference;
+ import com.google.firebase.database.FirebaseDatabase;
+ import com.google.firebase.database.Query;
++import com.google.firebase.database.ValueEventListener;
+ 
+ import java.util.ArrayList;
+ 
+@@ -33,29 +40,58 @@
+ 
+     private EditText mSearchField;
+     private ImageButton mSearchBtn;
++    RecyclerView mResultList;
+ 
+-    private RecyclerView mResultList;
+-
+-    private DatabaseReference mUserDatabase;
++    ActivityAddFriendBinding binding;
++    ArrayList<Users> list = new ArrayList<>();
++    FirebaseDatabase database;
++    DatabaseReference mUserDatabase;
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+-        setContentView(R.layout.activity_add_friend);
++        binding = ActivityAddFriendBinding.inflate(getLayoutInflater());
++        //setContentView(R.layout.activity_add_friend);
++        setContentView(binding.getRoot());
++        database = FirebaseDatabase.getInstance();
+         mUserDatabase = FirebaseDatabase.getInstance().getReference("Users");
+ 
+ 
+-        final ArrayList<Users> users = new ArrayList<>();
+-        final AddFriendAdapter adapter = new AddFriendAdapter(users,this);
+-        //mResultList.setAdapter(adapter);
++        final AddFriendAdapter adapter = new AddFriendAdapter(list,this);
+ 
+         mSearchField = (EditText) findViewById(R.id.search_field);
+         mSearchBtn = (ImageButton) findViewById(R.id.search_btn);
+-
+-        mResultList = (RecyclerView) findViewById(R.id.result_list);
++        mResultList = (RecyclerView) findViewById(R.id.resultList);
+         mResultList.setHasFixedSize(true);
+         mResultList.setLayoutManager(new LinearLayoutManager(this));
+-        mSearchBtn.setOnClickListener(new View.OnClickListener() {
++        mResultList.setAdapter(adapter);
++
++        /*binding.resultList.setAdapter(adapter);
++        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
++        binding.resultList.setLayoutManager(layoutManager);
++        */
++
++        //database.getReference().orderByChild("userName").startAt("Shah").endAt("Shah" + "\uf8ff")child("Users").
++        database.getReference().child("Users").addValueEventListener(new ValueEventListener() {
++            @Override
++            public void onDataChange(@NonNull DataSnapshot snapshot) {
++                list.clear();
++                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
++                    Users users = dataSnapshot.getValue(Users.class);
++                    users.setUserId(dataSnapshot.getKey());
++                    if (!users.getUserId().equals(FirebaseAuth.getInstance().getUid())){
++                        list.add(users);}
++                }
++                adapter.notifyDataSetChanged();
++            }
++
++            @Override
++            public void onCancelled(@NonNull DatabaseError error) {
++
++            }
++        });
++
++       mSearchBtn.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+ 
+@@ -68,7 +104,7 @@
+ 
+     }
+ 
+-    /*private void firebaseUserSearch(String searchText) {
++   /* private void firebaseUserSearch(String searchText) {
+ 
+         Query firebaseSearchQuery = mUserDatabase.orderByChild("userName").startAt(searchText).endAt(searchText + "\uf8ff");
+ 
+@@ -127,7 +163,7 @@
+     }*/
+     // View Holder Class
+ 
+-    /*public static class UsersViewHolder extends RecyclerView.ViewHolder {
++   /* public static class UsersViewHolder extends RecyclerView.ViewHolder {
+ 
+         View mView;
+ 
+@@ -150,7 +186,7 @@
+ 
+             Glide.with(ctx).load(userImage).into(user_image);
+         }
+-    }
+-    */
++    }*/
++
+ 
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/example/chatapplication/Fragments/ChatsFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.chatapplication.Fragments;\r\n\r\nimport android.os.Bundle;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.fragment.app.Fragment;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\n\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\n\r\nimport com.example.chatapplication.Adapters.UsersAdapter;\r\nimport com.example.chatapplication.Models.Users;\r\nimport com.example.chatapplication.R;\r\nimport com.example.chatapplication.databinding.FragmentChatsBinding;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\n\r\nimport java.util.ArrayList;\r\n\r\npublic class ChatsFragment extends Fragment {\r\n\r\n    public ChatsFragment(){\r\n\r\n    }\r\n\r\n    FragmentChatsBinding binding;\r\n    ArrayList<Users> list = new ArrayList<>();\r\n    FirebaseDatabase database;\r\n\r\n    @Override\r\n    public View onCreateView(LayoutInflater inflater, ViewGroup container,\r\n                             Bundle savedInstanceState) {\r\n        // Inflate the layout for this fragment\r\n        binding = FragmentChatsBinding.inflate(inflater,container,false);\r\n\r\n        database = FirebaseDatabase.getInstance();\r\n        UsersAdapter adapter = new UsersAdapter(list,getContext());\r\n        binding.chatRecyclerView.setAdapter(adapter);\r\n\r\n        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());\r\n        binding.chatRecyclerView.setLayoutManager(layoutManager);\r\n\r\n        database.getReference().child(\"Users\").addValueEventListener(new ValueEventListener() {\r\n            @Override\r\n            public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                list.clear();\r\n                for(DataSnapshot dataSnapshot : snapshot.getChildren()){\r\n                    Users users = dataSnapshot.getValue(Users.class);\r\n                    users.setUserId(dataSnapshot.getKey());\r\n                    if (!users.getUserId().equals(FirebaseAuth.getInstance().getUid())){\r\n                    list.add(users);}\r\n                }\r\n                adapter.notifyDataSetChanged();\r\n            }\r\n\r\n            @Override\r\n            public void onCancelled(@NonNull DatabaseError error) {\r\n\r\n            }\r\n        });\r\n\r\n        return binding.getRoot();\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/chatapplication/Fragments/ChatsFragment.java	(revision ced1c045b4f78e08cfaffeb71ece84a01f3ff10e)
++++ app/src/main/java/com/example/chatapplication/Fragments/ChatsFragment.java	(date 1618754086609)
+@@ -1,50 +1,217 @@
+ package com.example.chatapplication.Fragments;
+ 
++import android.content.Intent;
+ import android.os.Bundle;
+ 
+ import androidx.annotation.NonNull;
+ import androidx.fragment.app.Fragment;
+ import androidx.recyclerview.widget.LinearLayoutManager;
++import androidx.recyclerview.widget.RecyclerView;
+ 
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
++import android.widget.ImageView;
++import android.widget.TextView;
+ 
++import com.example.chatapplication.Adapters.FriendAdapter;
+ import com.example.chatapplication.Adapters.UsersAdapter;
++import com.example.chatapplication.ChatDetailActivity;
++import com.example.chatapplication.Models.Friend;
+ import com.example.chatapplication.Models.Users;
+ import com.example.chatapplication.R;
+ import com.example.chatapplication.databinding.FragmentChatsBinding;
++import com.firebase.ui.database.FirebaseRecyclerAdapter;
++import com.firebase.ui.database.FirebaseRecyclerOptions;
++import com.google.android.gms.tasks.OnCompleteListener;
++import com.google.android.gms.tasks.Task;
+ import com.google.firebase.auth.FirebaseAuth;
+ import com.google.firebase.database.DataSnapshot;
+ import com.google.firebase.database.DatabaseError;
++import com.google.firebase.database.DatabaseReference;
+ import com.google.firebase.database.FirebaseDatabase;
+ import com.google.firebase.database.ValueEventListener;
++import com.squareup.picasso.Picasso;
+ 
+ import java.util.ArrayList;
+ 
+ public class ChatsFragment extends Fragment {
+ 
+-    public ChatsFragment(){
+-
+-    }
++    View FriendView;
++    RecyclerView friendList;
+ 
+     FragmentChatsBinding binding;
++    //ArrayList<String> list = new ArrayList<>();
+     ArrayList<Users> list = new ArrayList<>();
+     FirebaseDatabase database;
++    DatabaseReference frdRef, usersRef;
++    FirebaseAuth auth;
++    String currentUserId;
++    public ChatsFragment(){
++
++    }
+ 
+     @Override
+     public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                              Bundle savedInstanceState) {
+-        // Inflate the layout for this fragment
+-        binding = FragmentChatsBinding.inflate(inflater,container,false);
++        FriendView = inflater.inflate(R.layout.fragment_chats, container, false);
++        friendList = (RecyclerView) FriendView.findViewById(R.id.chatRecyclerView);
++        friendList.setLayoutManager(new LinearLayoutManager(getContext()));
++
++        auth = FirebaseAuth.getInstance();
++        currentUserId = auth.getCurrentUser().getUid();
++        frdRef = FirebaseDatabase.getInstance().getReference().child("UsersFriend").child(currentUserId);
++        usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
++        return FriendView;
++    }
++    @Override
++    public void onStart() {
++        super.onStart();
++        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Friend>()
++                .setQuery(frdRef, Friend.class).build();
++
++        FirebaseRecyclerAdapter<Friend, FriendViewHolder> adapter = new FirebaseRecyclerAdapter<Friend, FriendViewHolder>(options) {
++            @Override
++            protected void onBindViewHolder(@NonNull FriendViewHolder holder, int position, @NonNull Friend model) {
++                String usersIds = getRef(position).getKey();
++                final Users[] users = {new Users()};
++                usersRef.child(usersIds).addValueEventListener(new ValueEventListener() {
++                    @Override
++                    public void onDataChange(@NonNull DataSnapshot snapshot) {
++                        users[0] = snapshot.getValue(Users.class);
++                        /*String profilePic = snapshot.child("profilepic").getValue().toString();
++                        String username = snapshot.child("userName").getValue().toString();
++*/
++                        holder.userName.setText(users[0].getUserName());
++                        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
++                        FirebaseDatabase.getInstance().getReference().child("chats").child(currentUserId+users[0].getUserId()).orderByChild("timestamp")
++                                .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
++                            @Override
++                            public void onDataChange(@NonNull DataSnapshot snapshot) {
++                                if(snapshot.hasChildren()){
++                                    for (DataSnapshot snapshot1: snapshot.getChildren()){
++                                        holder.lastMessage.setText(snapshot1.child("message").getValue(String.class));
++                                    }
++                                }
++                            }
++                            @Override
++                            public void onCancelled(@NonNull DatabaseError error) {
++                            }
++                        });
++                    }
++
++                    @Override
++                    public void onCancelled(@NonNull DatabaseError error) {
++
++                    }
++                });
++                holder.itemView.setOnClickListener(new View.OnClickListener() {
++                    @Override
++                    public void onClick(View v) {
++                        Intent intent = new Intent(getContext(), ChatDetailActivity.class);
++                        intent.putExtra("userId", users[0].getUserId());
++                        intent.putExtra("profilePic", users[0].getProfilepic());
++                        intent.putExtra("userName", users[0].getUserName());
++                        getContext().startActivity(intent);
++                    }
++                });
++            }
++
++            @NonNull
++            @Override
++            public FriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
++                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sample_show_user,parent,false);
++                FriendViewHolder viewHolder = new FriendViewHolder(view);
++                return viewHolder;
++            }
++        };
++        friendList.setAdapter(adapter);
++        adapter.startListening();
++    }
++
++    public static class FriendViewHolder extends RecyclerView.ViewHolder {
++        ImageView image;
++        TextView userName, lastMessage;
++        public FriendViewHolder(@NonNull View itemView) {
++            super(itemView);
++            image = itemView.findViewById(R.id.profile_image);
++            userName = itemView.findViewById(R.id.userNameList);
++            lastMessage = itemView.findViewById(R.id.lastMessage);
++        }
++    }
++}
++
++
++
++
++
++
++
++
++
++// Inflate the layout for this fragment
++        /*binding = FragmentChatsBinding.inflate(inflater,container,false);
+ 
+         database = FirebaseDatabase.getInstance();
+         UsersAdapter adapter = new UsersAdapter(list,getContext());
++        //FriendAdapter adapter = new FriendAdapter(list,getContext());
++
+         binding.chatRecyclerView.setAdapter(adapter);
+ 
+         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+         binding.chatRecyclerView.setLayoutManager(layoutManager);
++        final Users[] user = new Users[1];
++        database.getReference().child("UsersFriend").child(FirebaseAuth.getInstance().getUid())
++                .addValueEventListener(new ValueEventListener() {
++            @Override
++            public void onDataChange(@NonNull DataSnapshot snapshot) {
++                if(snapshot.exists()){
++                    list.clear();
++                    for(DataSnapshot frddataSnapshot : snapshot.getChildren()) {
++                        System.out.println(frddataSnapshot.getKey());
++                        database.getReference().child("Users").child(frddataSnapshot.getKey())
++                                .addValueEventListener(new ValueEventListener() {
++                                    @Override
++                                    public void onDataChange(@NonNull DataSnapshot infosnapshot) {
++                                        Users users = infosnapshot.getValue(Users.class);
++                                        users.setUserId(infosnapshot.getKey());
++                                        list.add(users);
++                                    }
++
++                                    @Override
++                                    public void onCancelled(@NonNull DatabaseError error) {
+ 
++                                    }
++                                });
++                        //list.add(user[0]);
++                    }
++                }
++                adapter.notifyDataSetChanged();
++            }
++
++            @Override
++            public void onCancelled(@NonNull DatabaseError error) {
++
++            }
++        });
++        /*database.getReference().child("UsersFriend").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
++            @Override
++            public void onDataChange(@NonNull DataSnapshot snapshot) {
++                list.clear();
++                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
++                    String frdId = dataSnapshot.getKey();
++                    System.out.println(frdId);
++                    list.add(frdId);
++                }
++                adapter.notifyDataSetChanged();
++            }
++
++            @Override
++            public void onCancelled(@NonNull DatabaseError error) {
++
++            }
++        });*/
++/*
+         database.getReference().child("Users").addValueEventListener(new ValueEventListener() {
+             @Override
+             public void onDataChange(@NonNull DataSnapshot snapshot) {
+@@ -63,7 +230,4 @@
+ 
+             }
+         });
+-
+-        return binding.getRoot();
+-    }
+-}
+\ No newline at end of file
++        return binding.getRoot();*/
+\ No newline at end of file
+Index: app/src/main/java/com/example/chatapplication/Adapters/AddFriendAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.chatapplication.Adapters;\r\n\r\nimport android.content.Context;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.ImageView;\r\nimport android.widget.TextView;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport com.example.chatapplication.Models.Users;\r\nimport com.example.chatapplication.R;\r\n\r\nimport java.util.ArrayList;\r\n\r\npublic class AddFriendAdapter extends RecyclerView.Adapter<AddFriendAdapter.ViewHolder> {\r\n    ArrayList<Users> list;\r\n    Context context;\r\n\r\n\r\n    public AddFriendAdapter(ArrayList<Users> list, Context context) {\r\n        this.list = list;\r\n        this.context = context;\r\n    }\r\n\r\n    @NonNull\r\n    @Override\r\n    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\r\n        View view = LayoutInflater.from(context).inflate(R.layout.list_layout,parent,false);\r\n\r\n        return new ViewHolder(view);\r\n    }\r\n\r\n    @Override\r\n    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {\r\n\r\n    }\r\n\r\n    @Override\r\n    public int getItemCount() { return list.size(); }\r\n\r\n    public class ViewHolder extends RecyclerView.ViewHolder{\r\n\r\n        ImageView image;\r\n        TextView userName, status;\r\n        public ViewHolder(@NonNull View itemView) {\r\n            super(itemView);\r\n\r\n            image = itemView.findViewById(R.id.profile_image);\r\n            userName = itemView.findViewById(R.id.name_text);\r\n            status = itemView.findViewById(R.id.status_text);\r\n\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/chatapplication/Adapters/AddFriendAdapter.java	(revision ced1c045b4f78e08cfaffeb71ece84a01f3ff10e)
++++ app/src/main/java/com/example/chatapplication/Adapters/AddFriendAdapter.java	(date 1618743701329)
+@@ -1,6 +1,7 @@
+ package com.example.chatapplication.Adapters;
+ 
+ import android.content.Context;
++import android.content.Intent;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+@@ -10,8 +11,14 @@
+ import androidx.annotation.NonNull;
+ import androidx.recyclerview.widget.RecyclerView;
+ 
++import com.example.chatapplication.ChatDetailActivity;
+ import com.example.chatapplication.Models.Users;
+ import com.example.chatapplication.R;
++import com.google.android.gms.tasks.OnCompleteListener;
++import com.google.android.gms.tasks.Task;
++import com.google.firebase.auth.FirebaseAuth;
++import com.google.firebase.database.FirebaseDatabase;
++import com.squareup.picasso.Picasso;
+ 
+ import java.util.ArrayList;
+ 
+@@ -35,6 +42,43 @@
+ 
+     @Override
+     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
++        Users users = list.get(position);
++        Picasso.get().load(users.getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
++        holder.userName.setText(users.getUserName());
++        holder.status.setText(users.getStatus());
++
++        holder.itemView.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                FirebaseDatabase.getInstance().getReference().child("UsersFriend")
++                        .child(FirebaseAuth.getInstance().getUid()).child(users.getUserId())
++                        .child("isFriend").setValue("Yes")
++                        .addOnCompleteListener(new OnCompleteListener<Void>() {
++                            @Override
++                            public void onComplete(@NonNull Task<Void> task) {
++                                if(task.isSuccessful()) {
++                                    FirebaseDatabase.getInstance().getReference().child("UsersFriend")
++                                            .child(users.getUserId()).child(FirebaseAuth.getInstance().getUid())
++                                            .child("isFriend").setValue("Yes")
++                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
++                                                @Override
++                                                public void onComplete(@NonNull Task<Void> task) {
++                                                    if(task.isSuccessful()) {
++                                                        Intent intent = new Intent(context, ChatDetailActivity.class);
++                                                        intent.putExtra("userId",users.getUserId());
++                                                        intent.putExtra("profilePic",users.getProfilepic());
++                                                        intent.putExtra("userName",users.getUserName());
++                                                        context.startActivity(intent);
++                                                    }
++                                                }
++                                            });
++                                }
++                            }
++                        });
++
++
++            }
++        });
+ 
+     }
+ 
+Index: app/src/main/res/layout/activity_add_friend.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"#ffffff\"\r\n    tools:context=\".AddFriendActivity\">\r\n\r\n    <TextView\r\n        android:id=\"@+id/heading_label\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_alignParentStart=\"true\"\r\n        android:layout_alignParentTop=\"true\"\r\n        android:layout_marginLeft=\"30dp\"\r\n        android:layout_marginTop=\"30dp\"\r\n        android:fontFamily=\"@font/nunito_bold\"\r\n        android:text=\"Add Friend\"\r\n        android:textColor=\"#555555\"\r\n        android:textSize=\"24sp\" />\r\n\r\n\r\n    <EditText\r\n        android:id=\"@+id/search_field\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_alignStart=\"@+id/heading_label\"\r\n        android:layout_below=\"@+id/heading_label\"\r\n        android:layout_marginRight=\"20dp\"\r\n        android:layout_marginTop=\"20dp\"\r\n        android:layout_toStartOf=\"@+id/search_btn\"\r\n        android:background=\"@drawable/search_layout\"\r\n        android:ems=\"10\"\r\n        android:fontFamily=\"@font/nunito_semibold\"\r\n        android:hint=\"Search here\"\r\n        android:inputType=\"textPersonName\"\r\n        android:paddingBottom=\"10dp\"\r\n        android:paddingLeft=\"20dp\"\r\n        android:paddingRight=\"20dp\"\r\n        android:paddingTop=\"10dp\"\r\n        android:textColor=\"#999999\"\r\n        android:textSize=\"16sp\" />\r\n\r\n    <ImageButton\r\n        android:id=\"@+id/search_btn\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_alignBottom=\"@+id/search_field\"\r\n        android:layout_alignParentEnd=\"true\"\r\n        android:layout_alignTop=\"@+id/search_field\"\r\n        android:layout_marginRight=\"30dp\"\r\n        android:background=\"@android:color/background_light\"\r\n        app:srcCompat=\"@mipmap/search_button\" />\r\n\r\n\r\n    <androidx.recyclerview.widget.RecyclerView\r\n        android:id=\"@+id/result_list\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"match_parent\"\r\n        android:layout_below=\"@+id/search_field\"\r\n        android:layout_marginTop=\"50dp\"/>\r\n\r\n\r\n</RelativeLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_add_friend.xml	(revision ced1c045b4f78e08cfaffeb71ece84a01f3ff10e)
++++ app/src/main/res/layout/activity_add_friend.xml	(date 1618730748172)
+@@ -55,11 +55,12 @@
+ 
+ 
+     <androidx.recyclerview.widget.RecyclerView
+-        android:id="@+id/result_list"
++        android:id="@+id/resultList"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_below="@+id/search_field"
+-        android:layout_marginTop="50dp"/>
++        android:layout_marginTop="50dp">
++    </androidx.recyclerview.widget.RecyclerView>
+ 
+ 
+ </RelativeLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/list_layout.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"wrap_content\">\r\n\r\n    <ImageView\r\n        android:id=\"@+id/profile_image\"\r\n        android:layout_width=\"80dp\"\r\n        android:layout_height=\"80dp\"\r\n        android:layout_alignParentStart=\"true\"\r\n        android:layout_alignParentTop=\"true\"\r\n        android:layout_marginLeft=\"30dp\"\r\n        android:layout_marginTop=\"20dp\"\r\n        app:srcCompat=\"@mipmap/person_four\" />\r\n\r\n    <TextView\r\n        android:id=\"@+id/name_text\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_alignParentTop=\"true\"\r\n        android:layout_marginLeft=\"20dp\"\r\n        android:layout_marginRight=\"20dp\"\r\n        android:layout_marginTop=\"20dp\"\r\n        android:layout_toEndOf=\"@+id/profile_image\"\r\n        android:fontFamily=\"@font/nunito_semibold\"\r\n        android:text=\"Username\"\r\n        android:textColor=\"#555555\"\r\n        android:textSize=\"16sp\" />\r\n\r\n    <TextView\r\n        android:id=\"@+id/status_text\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_below=\"@+id/name_text\"\r\n        android:layout_marginLeft=\"20dp\"\r\n        android:layout_marginRight=\"30dp\"\r\n        android:layout_marginTop=\"5dp\"\r\n        android:layout_toEndOf=\"@+id/profile_image\"\r\n        android:fontFamily=\"@font/nunito_semibold\"\r\n        android:text=\"Lorem ipsum dolor sit amet, consectetur adipiscing elit\"\r\n        android:textColor=\"#999999\"\r\n        android:textSize=\"14sp\" />\r\n</RelativeLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/list_layout.xml	(revision ced1c045b4f78e08cfaffeb71ece84a01f3ff10e)
++++ app/src/main/res/layout/list_layout.xml	(date 1618731685544)
+@@ -4,15 +4,16 @@
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content">
+ 
+-    <ImageView
++    <de.hdodenhof.circleimageview.CircleImageView
+         android:id="@+id/profile_image"
+-        android:layout_width="80dp"
+-        android:layout_height="80dp"
++        android:layout_width="70dp"
++        android:layout_height="70dp"
+         android:layout_alignParentStart="true"
+         android:layout_alignParentTop="true"
+-        android:layout_marginLeft="30dp"
+-        android:layout_marginTop="20dp"
+-        app:srcCompat="@mipmap/person_four" />
++        android:layout_marginLeft="20dp"
++        android:layout_marginTop="10dp"
++        android:src="@drawable/ic_user" />
++
+ 
+     <TextView
+         android:id="@+id/name_text"
+@@ -20,8 +21,8 @@
+         android:layout_height="wrap_content"
+         android:layout_alignParentTop="true"
+         android:layout_marginLeft="20dp"
++        android:layout_marginTop="10dp"
+         android:layout_marginRight="20dp"
+-        android:layout_marginTop="20dp"
+         android:layout_toEndOf="@+id/profile_image"
+         android:fontFamily="@font/nunito_semibold"
+         android:text="Username"
+@@ -38,7 +39,17 @@
+         android:layout_marginTop="5dp"
+         android:layout_toEndOf="@+id/profile_image"
+         android:fontFamily="@font/nunito_semibold"
+-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
++        android:text="Status"
+         android:textColor="#999999"
+         android:textSize="14sp" />
++
++    <View
++        android:id="@+id/view"
++        android:layout_width="match_parent"
++        android:layout_below="@+id/profile_image"
++        android:layout_height="1dp"
++        android:layout_marginLeft="20dp"
++        android:layout_marginRight="20dp"
++        android:layout_marginTop="10dp"
++        android:background="#505050" />
+ </RelativeLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/chatapplication/ChatDetailActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.chatapplication;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\n\r\nimport android.content.Intent;\r\nimport android.graphics.Bitmap;\r\nimport android.graphics.pdf.PdfDocument;\r\nimport android.net.Uri;\r\nimport android.os.Bundle;\r\nimport android.os.Message;\r\nimport android.provider.MediaStore;\r\nimport android.text.Html;\r\nimport android.view.View;\r\nimport android.widget.Adapter;\r\nimport android.widget.ImageView;\r\nimport android.widget.LinearLayout;\r\n\r\nimport com.example.chatapplication.Adapters.ChatAdapter;\r\nimport com.example.chatapplication.Models.MessagesModel;\r\nimport com.example.chatapplication.Models.Video_Call;\r\nimport com.example.chatapplication.databinding.ActivityChatDetailBinding;\r\nimport com.google.android.gms.tasks.OnSuccessListener;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\nimport com.squareup.picasso.Picasso;\r\n\r\nimport java.text.SimpleDateFormat;\r\nimport java.util.ArrayList;\r\nimport java.util.Calendar;\r\nimport java.util.Date;\r\nimport java.util.Locale;\r\n\r\npublic class ChatDetailActivity extends AppCompatActivity {\r\n\r\n    ActivityChatDetailBinding binding;\r\n    FirebaseDatabase database;\r\n    FirebaseAuth auth;\r\n    ImageView imgView;\r\n    private static String inputFormat = \"HH:mm\";\r\n    SimpleDateFormat inputParser = new SimpleDateFormat(inputFormat, Locale.getDefault());\r\n    Calendar calendar = Calendar.getInstance();\r\n\r\n    private boolean compareDates(String sDate){\r\n\r\n        Date date;\r\n        Date dateCompareOne;\r\n        Date dateCompareTwo;\r\n\r\n        String h = String.valueOf(calendar.get(Calendar.HOUR));\r\n        String minute_current = String.valueOf(calendar.get(Calendar.MINUTE));\r\n        String minute_plus_five = String.valueOf(calendar.get(Calendar.MINUTE) + 5);\r\n\r\n        String compareStringOne= h + \":\" + minute_current ;\r\n        String compareStringTwo= h + \":\" + minute_plus_five;\r\n\r\n        date = parseDate(sDate);\r\n        dateCompareOne = parseDate(compareStringOne);\r\n        dateCompareTwo = parseDate(compareStringTwo);\r\n\r\n        if ( dateCompareOne.after( date ) && dateCompareTwo.before(date)) {\r\n            return true;\r\n        }\r\n        return false;\r\n    }\r\n\r\n    private Date parseDate(String date) {\r\n\r\n        try {\r\n            return inputParser.parse(date);\r\n        } catch (java.text.ParseException e) {\r\n            return new Date(0);\r\n        }\r\n    }\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        binding = ActivityChatDetailBinding.inflate(getLayoutInflater());\r\n        setContentView(binding.getRoot());\r\n        getSupportActionBar().hide();\r\n        database = FirebaseDatabase.getInstance();\r\n        auth = FirebaseAuth.getInstance();\r\n\r\n        final  String senderId = auth.getUid();\r\n        String receivedId = getIntent().getStringExtra(\"userId\");\r\n        String userName = getIntent().getStringExtra(\"userName\");\r\n        String profilePic = getIntent().getStringExtra(\"profilePic\");\r\n\r\n        binding.userName.setText(userName);\r\n        Picasso.get().load(profilePic).placeholder(R.drawable.avatar).into(binding.profilePic);\r\n\r\n        binding.backArrow.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n\r\n                Intent intent = new Intent(ChatDetailActivity.this,MainActivity.class);\r\n                startActivity(intent);\r\n            }\r\n        });\r\n\r\n        // Video Call\r\n        final String senderRoom = senderId + receivedId;\r\n        final  String receiverRoom = receivedId + senderId;\r\n        binding.videoCallIcon.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                String sRoom = senderRoom;\r\n                String rRoom = receiverRoom;\r\n                String currentTime = String.valueOf(Calendar.getInstance().get(Calendar.HOUR))+\":\"+String.valueOf(Calendar.getInstance().get(Calendar.MINUTE));\r\n                final Video_Call video_call= new Video_Call(sRoom,rRoom,currentTime);\r\n                database.getReference()\r\n                        .child(\"video_call\")\r\n                        .child(senderRoom)\r\n                        .push()\r\n                        .setValue(video_call)\r\n                        .addOnSuccessListener(new OnSuccessListener<Void>() {\r\n                            @Override\r\n                            public void onSuccess(Void aVoid) {\r\n                                database.getReference()\r\n                                        .child(\"video_call\")\r\n                                        .child(receiverRoom)\r\n                                        .push()\r\n                                        .setValue(video_call)\r\n                                        .addOnSuccessListener(new OnSuccessListener<Void>() {\r\n                                            @Override\r\n                                            public void onSuccess(Void aVoid) {\r\n\r\n                                            }\r\n                                        });\r\n                            }\r\n                        });\r\n\r\n                Intent video_intent = new Intent(ChatDetailActivity.this,VideoCallActivity.class);\r\n                video_intent.putExtra(\"sRoom\",sRoom);\r\n                video_intent.putExtra(\"rRoom\",rRoom);\r\n                startActivity(video_intent);\r\n            }\r\n        });\r\n\r\n\r\n        //Incoming Video Call\r\n        database.getReference()\r\n                .child(\"video_call\")\r\n                .child(senderRoom)\r\n                .addValueEventListener(new ValueEventListener() {\r\n                    @Override\r\n                    public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                        // get time from database and compare with range of time\r\n                        for(DataSnapshot snapshot1 : snapshot.getChildren()){\r\n                            Video_Call video_call = snapshot1.getValue(Video_Call.class);\r\n                            String time_of_call = video_call.getCurrentTime();\r\n                            if ( compareDates(time_of_call) ) {\r\n                                //Start Intent\r\n                                Intent incoming_call = new Intent(ChatDetailActivity.this,IncomingCall.class);\r\n                                incoming_call.putExtra(\"sRoom\",video_call.getsRoom());\r\n                                incoming_call.putExtra(\"rRoom\",video_call.getrRoom());\r\n                                startActivity(incoming_call);\r\n                            }else{\r\n                                // It was miss call.\r\n                            }\r\n                        }\r\n                    }\r\n\r\n                    @Override\r\n                    public void onCancelled(@NonNull DatabaseError error) {\r\n\r\n                    }\r\n                });\r\n\r\n\r\n        final ArrayList <MessagesModel> messagesModels = new ArrayList<>();\r\n\r\n        final ChatAdapter chatAdapter = new ChatAdapter(messagesModels, this , receivedId);\r\n\r\n        binding.chatRecyclerView.setAdapter(chatAdapter);\r\n        LinearLayoutManager layoutManager = new LinearLayoutManager(this);\r\n        binding.chatRecyclerView.setLayoutManager(layoutManager);\r\n\r\n\r\n\r\n        database.getReference().child(\"chats\").child(senderRoom).addValueEventListener(new ValueEventListener() {\r\n            @Override\r\n            public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                messagesModels.clear();\r\n                for(DataSnapshot snapshot1 : snapshot.getChildren()){\r\n                    MessagesModel model = snapshot1.getValue(MessagesModel.class);\r\n                    model.setMessageId(snapshot1.getKey());\r\n\r\n                    messagesModels.add(model);\r\n                }\r\n                chatAdapter.notifyDataSetChanged();\r\n                binding.chatRecyclerView.smoothScrollToPosition(binding.chatRecyclerView.getAdapter().getItemCount());\r\n            }\r\n\r\n            @Override\r\n            public void onCancelled(@NonNull DatabaseError error) {\r\n\r\n            }\r\n        });\r\n     // attachments\r\n        imgView = findViewById(R.id.attachments4);\r\n        imgView.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                attachments atch = new attachments();\r\n                atch.show(getSupportFragmentManager(),atch.getTag());\r\n\r\n            }\r\n        });\r\n       /*\r\n        //Gallery Icon\r\n        imgView = findViewById(R.id.gallery);\r\n        imgView.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);\r\n                intent.setType(\"image/*\");\r\n                startActivityForResult(intent,1);\r\n            }\r\n        });\r\n\r\n        //Map Icon\r\n        imgView = findViewById(R.id.location);\r\n        imgView.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent intent = new Intent(Intent.ACTION_VIEW);\r\n                if(intent.resolveActivity(getPackageManager())!=null){\r\n                    startActivityForResult(intent,2);\r\n                }\r\n            }\r\n        });\r\n\r\n        //Camera\r\n         imgView = findViewById(R.id.camera);\r\n         imgView.setOnClickListener(new View.OnClickListener() {\r\n             @Override\r\n             public void onClick(View v) {\r\n                     String targetFilename = \"/root\";\r\n                     Uri locationForPhotos = null;\r\n                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);\r\n                     intent.putExtra(MediaStore.EXTRA_OUTPUT,\r\n                             Uri.withAppendedPath(locationForPhotos, targetFilename));\r\n                     if (intent.resolveActivity(getPackageManager()) != null) {\r\n                         startActivityForResult(intent, 3);\r\n                     }\r\n             }\r\n         });\r\n\r\n         //documents\r\n         imgView = findViewById(R.id.documents);\r\n         imgView.setOnClickListener(new View.OnClickListener() {\r\n             @Override\r\n             public void onClick(View v) {\r\n                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);\r\n                 sharingIntent.setType(\"text/html\");\r\n                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml(\"<p>This is the text shared.</p>\"));\r\n                 startActivityForResult(sharingIntent,4);\r\n             }\r\n         });\r\n          */\r\n        binding.send.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                String message =  binding.etmessage.getText().toString();\r\n                final MessagesModel model = new MessagesModel(senderId,message);\r\n                model.setTimestamp(new Date().getTime());\r\n                binding.etmessage.setText(\"\");\r\n                database.getReference().child(\"chats\").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {\r\n                    @Override\r\n                    public void onSuccess(Void aVoid) {\r\n                        database.getReference().child(\"chats\").child(receiverRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {\r\n                            @Override\r\n                            public void onSuccess(Void aVoid) {\r\n\r\n                            }\r\n                        });\r\n                    }\r\n                });\r\n            }\r\n        });\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/chatapplication/ChatDetailActivity.java	(revision ced1c045b4f78e08cfaffeb71ece84a01f3ff10e)
++++ app/src/main/java/com/example/chatapplication/ChatDetailActivity.java	(date 1618727811071)
+@@ -36,7 +36,7 @@
+ import java.util.Date;
+ import java.util.Locale;
+ 
+-public class ChatDetailActivity extends AppCompatActivity {
++public class  ChatDetailActivity extends AppCompatActivity {
+ 
+     ActivityChatDetailBinding binding;
+     FirebaseDatabase database;
+diff --git .idea/shelf/Uncommitted_changes_before_Update_at_16-Apr-21_09_44__Default_Changelist_.xml .idea/shelf/Uncommitted_changes_before_Update_at_16-Apr-21_09_44__Default_Changelist_.xml
