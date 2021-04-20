@@ -2,8 +2,12 @@ package com.example.chatapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -28,12 +32,19 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     FirebaseAuth auth;
 
+    String []PERMISSIONS = {Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO};
+    int PERMISSION_ALL = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         //setContentView(R.layout.activity_main);
+
+        if (!hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("message");
@@ -112,5 +123,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             },3000);
         }
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

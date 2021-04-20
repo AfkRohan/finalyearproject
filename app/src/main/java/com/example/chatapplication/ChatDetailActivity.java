@@ -149,6 +149,8 @@ public class  ChatDetailActivity extends AppCompatActivity {
                         });
 
                 Intent calling = new Intent(ChatDetailActivity.this,VideoCallActivity.class);
+                calling.putExtra("userName", currentUsername[0]);
+                calling.putExtra("friend", userName);
                 calling.putExtra("sRoom",senderRoom);
                 calling.putExtra("rRoom",receiverRoom);
                 startActivity(calling);
