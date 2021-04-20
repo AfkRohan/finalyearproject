@@ -157,40 +157,40 @@ public class  ChatDetailActivity extends AppCompatActivity {
 
 
         //Incoming Video Call
-        database.getReference()
-                .child("video_call")
-                .child(senderRoom)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        // get time from database and compare with range of time
-                        for(DataSnapshot snapshot1 : snapshot.getChildren()){
-                            Video_Call video_call = snapshot1.getValue(Video_Call.class);
-                            int year = Calendar.getInstance().get(Calendar.YEAR);
-                            int month = Calendar.getInstance().get(Calendar.MONTH);
-                            int day = Calendar.getInstance().get(Calendar.DATE);
-                            if ( video_call.getYear() == year && video_call.getMonth() == month && video_call.getDay() == day ) {
-                                // Today's Call
-                                String call_time = video_call.getCall_time();
-                                if ( video_call.compareDates(call_time) ){
-                                    Intent incoming = new Intent(ChatDetailActivity.this,IncomingCall.class);
-                                    incoming.putExtra("sRoom",video_call.getsRoom());
-                                    incoming.putExtra("rRoom",video_call.getrRoom());
-                                    incoming.putExtra("caller",video_call.getUserName());
-                                    startActivity(incoming);
-                                }
-                            } else {
-                                // earlier calls
-                                //Add to miss call list.
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+//        database.getReference()
+//                .child("video_call")
+//                .child(senderRoom)
+//                .addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        // get time from database and compare with range of time
+//                        for(DataSnapshot snapshot1 : snapshot.getChildren()){
+//                            Video_Call video_call = snapshot1.getValue(Video_Call.class);
+//                            int year = Calendar.getInstance().get(Calendar.YEAR);
+//                            int month = Calendar.getInstance().get(Calendar.MONTH);
+//                            int day = Calendar.getInstance().get(Calendar.DATE);
+//                            if ( video_call.getYear() == year && video_call.getMonth() == month && video_call.getDay() == day ) {
+//                                // Today's Call
+//                                String call_time = video_call.getCall_time();
+//                                if ( video_call.compareDates(call_time) ){
+//                                    Intent incoming = new Intent(ChatDetailActivity.this,IncomingCall.class);
+//                                    incoming.putExtra("sRoom",video_call.getsRoom());
+//                                    incoming.putExtra("rRoom",video_call.getrRoom());
+//                                    incoming.putExtra("caller",video_call.getUserName());
+//                                    startActivity(incoming);
+//                                }
+//                            } else {
+//                                // earlier calls
+//                                //Add to miss call list.
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                    }
+//                });
 
 
         final ArrayList <MessagesModel> messagesModels = new ArrayList<>();

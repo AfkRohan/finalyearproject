@@ -29,7 +29,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ForgetPasswordActivity"></activity>
-        <activity android:name=".IncomingCall" />
         <activity android:name=".VideoCallActivity" />
         <activity android:name=".AddFriendActivity" />
         <activity android:name=".CreateGroupActivity" />
