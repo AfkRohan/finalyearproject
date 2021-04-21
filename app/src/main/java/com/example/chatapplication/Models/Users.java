@@ -16,6 +16,13 @@ public class Users {
         this.status = status;
     }
 
+    // SignUp Constructor
+    public Users(String userName, String mail, String password) {
+        this.userName = userName;
+        this.mail = mail;
+        this.password = password;
+    }
+
     public Users(){}
 
     public String getUserId() {
@@ -24,13 +31,6 @@ public class Users {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    // SignUp Constructor
-    public Users(String userName, String mail, String password) {
-        this.userName = userName;
-        this.mail = mail;
-        this.password = password;
     }
 
     public ArrayList<String> getGroups() {

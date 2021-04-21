@@ -72,22 +72,26 @@ public class SignUpActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         Users user = new Users(binding.etuserName.getText().toString(), binding.etemail.getText().toString(),
                                                 binding.etPassword.getText().toString());
-
                                         String id = task.getResult().getUser().getUid();
                                         database.getReference().child("Users").child(id).setValue(user);
 
-                                        Toast.makeText(SignUpActivity.this, "User Created Successfully", Toast.LENGTH_SHORT).show();
+                                       Toast.makeText(SignUpActivity.this, "User Created Successfully", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(SignUpActivity.this,MainActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                        startActivity(intent);
                                     } else {
                                         Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                     }
 
                                 }
                             });
-                    Intent intent = new Intent(SignUpActivity.this,MainActivity.class);
+                 /*   Intent intent = new Intent(SignUpActivity.this,MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
+                    startActivity(intent); */
                 }
             }
         });

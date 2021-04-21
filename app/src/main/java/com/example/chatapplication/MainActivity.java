@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     FirebaseAuth auth;
 
-    String []PERMISSIONS = {Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO};
+    String []PERMISSIONS = {Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE};
     int PERMISSION_ALL = 1;
 
     @Override

@@ -51,6 +51,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+import static java.lang.String.*;
+
 public class  ChatDetailActivity extends AppCompatActivity {
 
     private FirebaseStorage storage;
@@ -66,7 +68,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
     Calendar calendar = Calendar.getInstance();
     public Uri datafile;
     private String imageUrl;
-    private String receiver;
+    private String  receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +123,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
         binding.videoCallIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String call_time = String.valueOf(Calendar.getInstance().get(Calendar.HOUR))+":"+String.valueOf(Calendar.getInstance().get(Calendar.MINUTE));
+                String call_time = valueOf(Calendar.getInstance().get(Calendar.HOUR))+":"+ valueOf(Calendar.getInstance().get(Calendar.MINUTE));
                 int year = Calendar.getInstance().get(Calendar.YEAR);
                 int month = Calendar.getInstance().get(Calendar.MONTH);
                 int day = Calendar.getInstance().get(Calendar.DATE);
@@ -202,8 +204,6 @@ public class  ChatDetailActivity extends AppCompatActivity {
         binding.chatRecyclerView.setAdapter(chatAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         binding.chatRecyclerView.setLayoutManager(layoutManager);
-
-
 
         database.getReference().child("chats").child(senderRoom).addValueEventListener(new ValueEventListener() {
             @Override
@@ -325,7 +325,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
         pd.setTitle("Uploading Image...");
         pd.show();
         final String randomKey = UUID.randomUUID().toString();
-        StorageReference riversRef = storageReference.child("images/rivers.jpg");
+        StorageReference riversRef = storageReference.child("images/" + randomKey);
         UploadTask uploadTask;
         uploadTask = riversRef.putFile(datafile);
 
@@ -348,8 +348,8 @@ public class  ChatDetailActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Uri> task) {
                                 if (task.isSuccessful()) {
                                     final  String senderId = auth.getUid();
-                                    final String senderRoom = senderId + receiver;
-                                    final String receiverRoom = receiver + senderId;
+                                    final String senderRoom = format("%s%s", senderId, receiver);
+                                    final String receiverRoom = format("%s%s", receiver, senderId);
                                     Uri downloadUri = task.getResult();
                                     imageUrl = downloadUri.toString();
                                     final MessagesModel model = new MessagesModel(senderId,imageUrl);

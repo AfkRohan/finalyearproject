@@ -1,8 +1,17 @@
 package com.example.chatapplication.Adapters;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,21 +19,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chatapplication.ChatDetailActivity;
 import com.example.chatapplication.Models.MessagesModel;
 import com.example.chatapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
+
+import static androidx.core.app.ActivityCompat.requestPermissions;
+import static androidx.core.content.ContextCompat.checkSelfPermission;
+import static org.webrtc.ContextUtils.getApplicationContext;
 
 public class ChatAdapter extends  RecyclerView.Adapter {
 
+    private static final int PERMISSION_STORAGE_CODE = 1000;
     ArrayList <MessagesModel> messagesModels;
     Context context;
     String recId;
@@ -95,7 +117,7 @@ public class ChatAdapter extends  RecyclerView.Adapter {
          }
      });
 
-       if(holder.getClass() == SenderViewHolder.class){
+       if (holder.getClass() == SenderViewHolder.class){
            ((SenderViewHolder) holder).senderMsg.setText(messagesModel.getMessage());
            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
            String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
@@ -109,13 +131,29 @@ public class ChatAdapter extends  RecyclerView.Adapter {
            String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
            ((SenderViewHolderImage) holder).senderTime.setText(timeString);
        }
+
        else if(holder.getClass()==ReceiverViewHolderImage.class){
+           //Retrieving Url
            String url = messagesModel.getMessage().toString();
+           /* if(Build.VERSION.SDK_INT>Build.VERSION_CODES.M) {
+               if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE== PackageManager.PERMISSION_DENIED)){
+                   String []permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                   requestPermissions(permissions,PERMISSION_STORAGE_CODE);
+               }
+               else {
+                   downloadFile(url);
+               }
+           }
+           else{
+               downloadFile(url);
+           }*/
+           downloadFile(url);
            Picasso.get().load(url).into(((ReceiverViewHolderImage)holder).receiverImg);
            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
            String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
            ((ReceiverViewHolderImage) holder).receiverTime.setText(timeString);
        }
+
        else {
            ((ReceiverViewHolder)holder).receiverMsg.setText(messagesModel.getMessage());
            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
@@ -130,13 +168,15 @@ public class ChatAdapter extends  RecyclerView.Adapter {
 
             if(messagesModels.get(position).getType().equals("image"))
                   return SENDER_VIEW_TYPE_IMAGE;
-            return   SENDER_VIEW_TYPE;
+            else
+                  return   SENDER_VIEW_TYPE;
         }
         else{
 
             if (messagesModels.get(position).getType().equals("image"))
                 return RECEIVER_VIEW_TYPE_IMAGE;
-            return RECEIVER_VIEW_TYPE;
+            else
+                return RECEIVER_VIEW_TYPE;
         }
     }
 
@@ -192,5 +232,23 @@ public class ChatAdapter extends  RecyclerView.Adapter {
         }
     }
 
+    public void downloadFile(String url){
+        String filename;
+        Uri uri = Uri.parse(url);
+        filename = uri.getLastPathSegment();
+        DownloadManager downloadManager = (DownloadManager)context.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI |
+                DownloadManager.Request.NETWORK_MOBILE);
+        // set title and description
+        request.setTitle("Data Download");
+        request.setDescription("Android Data download using DownloadManager.");
+        request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        //set the local destination for download file to a path within the application's external files directory
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,filename);
+        request.setMimeType("image/*");
+        downloadManager.enqueue(request);
+    }
 
 }

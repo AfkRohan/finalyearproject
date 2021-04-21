@@ -52,13 +52,15 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder>{
         Picasso.get().load(users.getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
         holder.userName.setText(users.getUserName());
 
+
+        /*
         FirebaseDatabase.getInstance().getReference().child("chats").child(FirebaseAuth.getInstance().getUid()+users.getUserId()).orderByChild("timestamp")
                 .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.hasChildren()){
                     for (DataSnapshot snapshot1: snapshot.getChildren()){
-                        holder.lastMessage.setText(snapshot1.child("message").getValue(String.class));
+                        holder.lastMessage.setText(snapshot1.child("message").getValue().toString());
                     }
                 }
             }
@@ -66,6 +68,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder>{
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+         */
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
