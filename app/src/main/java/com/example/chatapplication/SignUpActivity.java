@@ -73,6 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
                                         Users user = new Users(binding.etuserName.getText().toString(), binding.etemail.getText().toString(),
                                                 binding.etPassword.getText().toString());
                                         String id = task.getResult().getUser().getUid();
+                                        user.setUserId(id) ;
                                         database.getReference().child("Users").child(id).setValue(user);
 
                                        Toast.makeText(SignUpActivity.this, "User Created Successfully", Toast.LENGTH_SHORT).show();
