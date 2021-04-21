@@ -5,15 +5,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
+import org.webrtc.EglBase;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
+import static org.webrtc.ContextUtils.getApplicationContext;
 
-    private Context mContext;
+public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPreExecute() {
@@ -41,6 +43,7 @@ public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
     protected void onPostExecute(Bitmap result) {
 
         if (result != null) {
+            Context mContext = getApplicationContext();
             File dir = new File(mContext.getFilesDir(), "MyImages");
             if(!dir.exists()){
                 dir.mkdir();
