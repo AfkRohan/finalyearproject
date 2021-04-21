@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
@@ -20,9 +21,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.loader.content.AsyncTaskLoader;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatapplication.ChatDetailActivity;
+import com.example.chatapplication.DownloadImage;
 import com.example.chatapplication.Models.MessagesModel;
 import com.example.chatapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -233,22 +236,9 @@ public class ChatAdapter extends  RecyclerView.Adapter {
     }
 
     public void downloadFile(String url){
-        String filename;
-        Uri uri = Uri.parse(url);
-        filename = uri.getLastPathSegment();
-        DownloadManager downloadManager = (DownloadManager)context.getSystemService(Context.DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI |
-                DownloadManager.Request.NETWORK_MOBILE);
-        // set title and description
-        request.setTitle("Data Download");
-        request.setDescription("Android Data download using DownloadManager.");
-        request.allowScanningByMediaScanner();
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        //set the local destination for download file to a path within the application's external files directory
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,filename);
-        request.setMimeType("image/*");
-        downloadManager.enqueue(request);
+         String []Url = new String[]{url};
+         DownloadImage newDownload = new DownloadImage();
+         newDownload.execute(Url);
     }
 
 }
