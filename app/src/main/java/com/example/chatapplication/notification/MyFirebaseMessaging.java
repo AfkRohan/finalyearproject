@@ -7,9 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.example.chatapplication.MainActivity;
@@ -29,8 +31,38 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         if(firebaseUser != null && sented.equals(firebaseUser.getUid()))
         {
-            senNoification(remoteMessage);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                sendOreoNotification(remoteMessage);
+            else
+                senNoification(remoteMessage);
         }
+    }
+
+    private void sendOreoNotification(RemoteMessage remoteMessage)
+    {
+        String user = remoteMessage.getData().get("user");
+        String icon = remoteMessage.getData().get("icon");
+        String title = remoteMessage.getData().get("title");
+        String body = remoteMessage.getData().get("body");
+
+        RemoteMessage.Notification notification = remoteMessage.getNotification();
+        int j = Integer.parseInt(user.replaceAll("[\\D]", ""));
+        Intent intent = new Intent(this, MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("uerid",user);
+        intent.putExtras(bundle);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,j,intent,PendingIntent.FLAG_ONE_SHOT);
+        Uri defaultSound =RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        OreoNotfication oreoNotfication = new OreoNotfication(this);
+       Notification.Builder builder = oreoNotfication.getOreoNotification( title,body,pendingIntent,defaultSound,icon);
+
+        int i = 0;
+        if(j>0){
+            i=j;
+        }
+        oreoNotfication.getManager().notify(i,builder.build());
     }
 
     private void senNoification(RemoteMessage remoteMessage) {
