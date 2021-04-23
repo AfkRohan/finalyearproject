@@ -1,17 +1,23 @@
 package com.example.chatapplication.Adapters;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +44,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,10 +53,52 @@ import java.util.UUID;
 import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static org.webrtc.ContextUtils.getApplicationContext;
+/*
+ class SaveImageHelper implements Target{
+
+     private WeakReference<ContentResolver> contentResolverWeakReference;
+     private String name;
+     private String desc;
+
+     public SaveImageHelper( ContentResolver contentResolverWeakReference,String name,String desc) {
+         this.contentResolverWeakReference = new WeakReference<ContentResolver>(contentResolverWeakReference);
+         this.name = name;
+         this.desc = desc;
+     }
+
+     @Override
+     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+         ContentResolver r = contentResolverWeakReference.get();
+         //if(r!=null)
+         String bit = "nullBitmap";
+         if(bitmap==null)
+             System.out.println(bit);
+
+         MediaStore.Images.Media.insertImage(r,bitmap,name,desc);
+
+         //Open gallery after download
+        /* Intent i = new Intent();
+         i.setAction(Intent.ACTION_GET_CONTENT);
+         i.setType("image/*");
+         context.startActivities(Intent.createChooser(i,"select picture"));
+         }*/
+
+     /*
+     @Override
+     public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+     }
+
+     @Override
+     public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+     }
+ }
+ */
 
 public class ChatAdapter extends  RecyclerView.Adapter {
 
-    private static final int PERMISSION_STORAGE_CODE = 1000;
+    //private static final int PERMISSION_STORAGE_CODE = 1000;
     ArrayList <MessagesModel> messagesModels;
     Context context;
     String recId;
@@ -138,19 +187,7 @@ public class ChatAdapter extends  RecyclerView.Adapter {
        else if(holder.getClass()==ReceiverViewHolderImage.class){
            //Retrieving Url
            String url = messagesModel.getMessage().toString();
-           /* if(Build.VERSION.SDK_INT>Build.VERSION_CODES.M) {
-               if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE== PackageManager.PERMISSION_DENIED)){
-                   String []permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                   requestPermissions(permissions,PERMISSION_STORAGE_CODE);
-               }
-               else {
-                   downloadFile(url);
-               }
-           }
-           else{
-               downloadFile(url);
-           }*/
-           downloadFile(url);
+          // downloadFile(url,context);
            Picasso.get().load(url).into(((ReceiverViewHolderImage)holder).receiverImg);
            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
            String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
@@ -235,10 +272,15 @@ public class ChatAdapter extends  RecyclerView.Adapter {
         }
     }
 
-    public void downloadFile(String url){
-         String []Url = new String[]{url};
-         DownloadImage newDownload = new DownloadImage();
-         newDownload.execute(Url);
-    }
+
+    /*
+    public void downloadFile(String url,Context ctx){
+           String filename = UUID.randomUUID().toString() + "jpg";
+           Picasso.get()
+                   .load(url)
+                   .into(new SaveImageHelper(ctx.getApplicationContext().getContentResolver(),filename,"image downloaded"));
+
+         }
+         */
 
 }

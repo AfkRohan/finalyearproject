@@ -53,8 +53,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder>{
         holder.userName.setText(users.getUserName());
 
 
-        /*
-        FirebaseDatabase.getInstance().getReference().child("chats").child(FirebaseAuth.getInstance().getUid()+users.getUserId()).orderByChild("timestamp")
+
+        /*  FirebaseDatabase.getInstance().getReference().child("chats").child(FirebaseAuth.getInstance().getUid()+users.getUserId()).orderByChild("timestamp")
                 .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -67,8 +67,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder>{
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
-        });
-         */
+        }); */
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

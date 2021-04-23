@@ -21,6 +21,7 @@ import com.example.chatapplication.Models.Friend;
 import com.example.chatapplication.Models.Users;
 import com.example.chatapplication.R;
 import com.example.chatapplication.databinding.FragmentChatsBinding;
+import com.example.chatapplication.notification.Token;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,6 +32,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ public class ChatsFragment extends Fragment {
     DatabaseReference frdRef, usersRef;
     FirebaseAuth auth;
     String currentUserId;
+
     public ChatsFragment(){
 
     }
@@ -62,8 +65,19 @@ public class ChatsFragment extends Fragment {
         currentUserId = auth.getCurrentUser().getUid();
         frdRef = FirebaseDatabase.getInstance().getReference().child("UsersFriend").child(currentUserId);
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
         return FriendView;
     }
+
+    private void updateToken(String token){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token1 = new Token(token);
+        reference.child(currentUserId).setValue(token1);
+
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -90,7 +104,10 @@ public class ChatsFragment extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if(snapshot.hasChildren()){
                                     for (DataSnapshot snapshot1: snapshot.getChildren()){
-                                        holder.lastMessage.setText(snapshot1.child("message").getValue(String.class));
+                                        if(snapshot1.child("type").getValue().toString()=="text")
+                                            holder.lastMessage.setText(snapshot1.child("message").getValue(String.class));
+                                        else
+                                            holder.lastMessage.setText("image");
                                     }
                                 }
                             }

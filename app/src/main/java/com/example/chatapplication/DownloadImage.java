@@ -17,6 +17,11 @@ import static org.webrtc.ContextUtils.getApplicationContext;
 
 public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
 
+    private Context mContext;
+
+    public  DownloadImage(Context context){
+        mContext=context;
+    }
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -43,7 +48,6 @@ public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
     protected void onPostExecute(Bitmap result) {
 
         if (result != null) {
-            Context mContext = getApplicationContext();
             File dir = new File(mContext.getFilesDir(), "MyImages");
             if(!dir.exists()){
                 dir.mkdir();
@@ -53,14 +57,13 @@ public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
             try {
                 destination.createNewFile();
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                result.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                result.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                 byte[] bitmapdata = bos.toByteArray();
 
                 FileOutputStream fos = new FileOutputStream(destination);
                 fos.write(bitmapdata);
                 fos.flush();
                 fos.close();
-                File selectedFile = destination;
             } catch (IOException e) {
                 e.printStackTrace();
             }

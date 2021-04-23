@@ -72,6 +72,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.hasChildren()){
                     for (DataSnapshot snapshot1: snapshot.getChildren()){
+                        if(snapshot1.child("type").getValue().toString()=="text")
                         holder.lastMessage.setText(snapshot1.child("message").getValue(String.class));
                     }
                 }
