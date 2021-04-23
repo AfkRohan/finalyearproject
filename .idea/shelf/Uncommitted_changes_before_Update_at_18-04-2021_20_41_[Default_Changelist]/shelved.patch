@@ -1,0 +1,412 @@
+Index: app/src/main/java/com/example/chatapplication/Adapters/ChatAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.chatapplication.Adapters;\r\n\r\nimport android.app.AlertDialog;\r\nimport android.content.Context;\r\nimport android.content.DialogInterface;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.ImageView;\r\nimport android.widget.TextView;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport com.example.chatapplication.Models.MessagesModel;\r\nimport com.example.chatapplication.R;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.squareup.picasso.Picasso;\r\n\r\nimport java.text.SimpleDateFormat;\r\nimport java.util.ArrayList;\r\nimport java.util.Date;\r\nimport java.util.Objects;\r\n\r\npublic class ChatAdapter extends  RecyclerView.Adapter {\r\n\r\n    ArrayList <MessagesModel> messagesModels;\r\n    Context context;\r\n    String recId;\r\n\r\n    int SENDER_VIEW_TYPE = 1;\r\n    int RECEIVER_VIEW_TYPE = 2;\r\n    int SENDER_VIEW_TYPE_IMAGE=3;\r\n    int RECEIVER_VIEW_TYPE_IMAGE=4;\r\n\r\n    public ChatAdapter(ArrayList<MessagesModel> messagesModels, Context context) {\r\n        this.messagesModels = messagesModels;\r\n        this.context = context;\r\n    }\r\n\r\n    public ChatAdapter(ArrayList<MessagesModel> messagesModels, Context context, String recId) {\r\n        this.messagesModels = messagesModels;\r\n        this.context = context;\r\n        this.recId = recId;\r\n    }\r\n\r\n    @NonNull\r\n    @Override\r\n    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\r\n        if (viewType==SENDER_VIEW_TYPE ){\r\n           View  view = LayoutInflater.from( context ).inflate(R.layout.sample_sender ,parent ,false);\r\n           return new SenderViewHolder(view);\r\n        }\r\n        else if(viewType==SENDER_VIEW_TYPE_IMAGE){\r\n            View  view = LayoutInflater.from( context ).inflate(R.layout.sample_sender_image ,parent ,false);\r\n            return new SenderViewHolderImage(view);\r\n        }\r\n        else if(viewType==RECEIVER_VIEW_TYPE_IMAGE){\r\n            View  view = LayoutInflater.from( context ).inflate(R.layout.sample_receiver_image ,parent ,false);\r\n            return new ReceiverViewHolderImage(view);\r\n        }\r\n        else {\r\n            View  view;\r\n            view = LayoutInflater.from( context ).inflate(R.layout.sample_receiver ,parent ,false);\r\n            return new ReceiverViewHolder(view);\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {\r\n     MessagesModel messagesModel = messagesModels.get(position);\r\n\r\n     holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {\r\n         @Override\r\n         public boolean onLongClick(View v) {\r\n             new AlertDialog.Builder(context).setTitle(\"Delete\").setMessage(\"Are you sure you want to delete this message\")\r\n                     .setPositiveButton(\"YES\", new DialogInterface.OnClickListener() {\r\n                         @Override\r\n                         public void onClick(DialogInterface dialog, int which) {\r\n                             FirebaseDatabase database = FirebaseDatabase.getInstance();\r\n                             String senderRoom = FirebaseAuth.getInstance().getUid() + recId;\r\n                             database.getReference().child(\"chats\").child(senderRoom)\r\n                                     .child(messagesModel.getMessageId()).setValue(null);\r\n                         }\r\n                     }).setNegativeButton(\"NO\", new DialogInterface.OnClickListener() {\r\n                 @Override\r\n                 public void onClick(DialogInterface dialog, int which) {\r\n                     dialog.dismiss();;\r\n                 }\r\n             }).show();\r\n\r\n             return false;\r\n         }\r\n     });\r\n\r\n       if(holder.getClass() == SenderViewHolder.class){\r\n           ((SenderViewHolder) holder).senderMsg.setText(messagesModel.getMessage());\r\n           SimpleDateFormat formatter = new SimpleDateFormat(\"h:mm a\");\r\n           String timeString = formatter.format(new Date(messagesModel.getTimestamp()));\r\n           ((SenderViewHolder) holder).senderTime.setText(timeString);\r\n       }\r\n       else if(holder.getClass()==SenderViewHolderImage.class){\r\n           String url = messagesModel.getMessage();\r\n           Picasso.get().load(url).into(((SenderViewHolderImage)holder).senderMsg);\r\n           SimpleDateFormat formatter = new SimpleDateFormat(\"h:mm a\");\r\n           String timeString = formatter.format(new Date(messagesModel.getTimestamp()));\r\n           ((SenderViewHolder) holder).senderTime.setText(timeString);\r\n       }\r\n       else if(holder.getClass()==ReceiverViewHolderImage.class){\r\n           String url = messagesModel.getMessage();\r\n           Picasso.get().load(url).into(((ReceiverViewHolderImage)holder).receiverMsg);\r\n           SimpleDateFormat formatter = new SimpleDateFormat(\"h:mm a\");\r\n           String timeString = formatter.format(new Date(messagesModel.getTimestamp()));\r\n           ((ReceiverViewHolder) holder).receiverTime.setText(timeString);\r\n       }\r\n       else {\r\n           ((ReceiverViewHolder)holder).receiverMsg.setText(messagesModel.getMessage());\r\n           SimpleDateFormat formatter = new SimpleDateFormat(\"h:mm a\");\r\n           String timeString = formatter.format(new Date(messagesModel.getTimestamp()));\r\n           ((ReceiverViewHolder) holder).receiverTime.setText(timeString);\r\n       }\r\n    }\r\n\r\n    @Override\r\n    public int getItemViewType(int position) {\r\n        if(messagesModels.get(position).getId().equals(FirebaseAuth.getInstance().getUid())){\r\n              if(messagesModels.get(position).getType().equals(\"image\"))\r\n                  return SENDER_VIEW_TYPE_IMAGE;\r\n              else\r\n            return   SENDER_VIEW_TYPE;\r\n        }\r\n        else{\r\n            if (messagesModels.get(position).getType().equals(\"image\"))\r\n                return RECEIVER_VIEW_TYPE_IMAGE;\r\n            else\r\n            return RECEIVER_VIEW_TYPE;\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public int getItemCount() {\r\n        return messagesModels.size();\r\n    }\r\n\r\n    public class ReceiverViewHolder extends RecyclerView.ViewHolder {\r\n\r\n        TextView receiverMsg,receiverTime;\r\n\r\n        public ReceiverViewHolder(@NonNull View itemView) {\r\n            super(itemView);\r\n            receiverMsg = itemView.findViewById(R.id.receiverText);\r\n            receiverTime = itemView.findViewById(R.id.receiverTime);\r\n        }\r\n    }\r\n\r\n    public class ReceiverViewHolderImage extends RecyclerView.ViewHolder {\r\n\r\n        ImageView receiverMsg;\r\n        TextView receiverTime;\r\n\r\n        public ReceiverViewHolderImage(@NonNull View itemView) {\r\n            super(itemView);\r\n            receiverMsg = itemView.findViewById(R.id.receivedImage);\r\n            receiverTime = itemView.findViewById(R.id.receiverImageTime);\r\n        }\r\n    }\r\n\r\n    public  class  SenderViewHolder extends  RecyclerView.ViewHolder{\r\n        TextView senderMsg,senderTime;\r\n\r\n        public SenderViewHolder(@NonNull View itemView) {\r\n            super(itemView);\r\n            senderMsg = itemView.findViewById(R.id.senderText);\r\n            senderTime = itemView.findViewById(R.id.sendetTime);\r\n        }\r\n    }\r\n\r\n    public  class  SenderViewHolderImage extends  RecyclerView.ViewHolder{\r\n\r\n        ImageView senderMsg;\r\n        TextView senderTime;\r\n\r\n        public SenderViewHolderImage(@NonNull View itemView) {\r\n            super(itemView);\r\n            senderMsg = itemView.findViewById(R.id.SenderImage);\r\n            senderTime = itemView.findViewById(R.id.sender_Image_Time);\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/chatapplication/Adapters/ChatAdapter.java	(revision 0fca7433549f4889005bc177c2a67f60c3e425ee)
++++ app/src/main/java/com/example/chatapplication/Adapters/ChatAdapter.java	(date 1618756179772)
+@@ -17,11 +17,11 @@
+ import com.google.firebase.auth.FirebaseAuth;
+ import com.google.firebase.database.FirebaseDatabase;
+ import com.squareup.picasso.Picasso;
++import com.squareup.picasso.Target;
+ 
+ import java.text.SimpleDateFormat;
+ import java.util.ArrayList;
+ import java.util.Date;
+-import java.util.Objects;
+ 
+ public class ChatAdapter extends  RecyclerView.Adapter {
+ 
+@@ -48,18 +48,19 @@
+     @NonNull
+     @Override
+     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-        if (viewType==SENDER_VIEW_TYPE ){
++        if (viewType==SENDER_VIEW_TYPE) {
+            View  view = LayoutInflater.from( context ).inflate(R.layout.sample_sender ,parent ,false);
+            return new SenderViewHolder(view);
+-        }
+-        else if(viewType==SENDER_VIEW_TYPE_IMAGE){
++        }/*
++        else if(viewType==SENDER_VIEW_TYPE_IMAGE)
++        {
+             View  view = LayoutInflater.from( context ).inflate(R.layout.sample_sender_image ,parent ,false);
+             return new SenderViewHolderImage(view);
+         }
+         else if(viewType==RECEIVER_VIEW_TYPE_IMAGE){
+             View  view = LayoutInflater.from( context ).inflate(R.layout.sample_receiver_image ,parent ,false);
+             return new ReceiverViewHolderImage(view);
+-        }
++        }*/
+         else {
+             View  view;
+             view = LayoutInflater.from( context ).inflate(R.layout.sample_receiver ,parent ,false);
+@@ -100,20 +101,21 @@
+            String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
+            ((SenderViewHolder) holder).senderTime.setText(timeString);
+        }
++       /*
+        else if(holder.getClass()==SenderViewHolderImage.class){
+-           String url = messagesModel.getMessage();
+-           Picasso.get().load(url).into(((SenderViewHolderImage)holder).senderMsg);
++           String url = messagesModel.getMessage().toString();
++           Picasso.get().load(url).into((Target) ((SenderViewHolderImage)holder).senderImg);
+            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
+            String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
+-           ((SenderViewHolder) holder).senderTime.setText(timeString);
++           ((SenderViewHolderImage) holder).senderTime.setText(timeString);
+        }
+        else if(holder.getClass()==ReceiverViewHolderImage.class){
+-           String url = messagesModel.getMessage();
+-           Picasso.get().load(url).into(((ReceiverViewHolderImage)holder).receiverMsg);
++           String url = messagesModel.getMessage().toString();
++           Picasso.get().load(url).into((Target) ((ReceiverViewHolderImage)holder).receiverImg);
+            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
+            String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
+-           ((ReceiverViewHolder) holder).receiverTime.setText(timeString);
+-       }
++           ((ReceiverViewHolderImage) holder).receiverTime.setText(timeString);
++       }   */
+        else {
+            ((ReceiverViewHolder)holder).receiverMsg.setText(messagesModel.getMessage());
+            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
+@@ -125,15 +127,17 @@
+     @Override
+     public int getItemViewType(int position) {
+         if(messagesModels.get(position).getId().equals(FirebaseAuth.getInstance().getUid())){
+-              if(messagesModels.get(position).getType().equals("image"))
++            /*
++            if(messagesModels.get(position).getType().equals("image"))
+                   return SENDER_VIEW_TYPE_IMAGE;
+-              else
++              else  */
+             return   SENDER_VIEW_TYPE;
+         }
+         else{
++            /*
+             if (messagesModels.get(position).getType().equals("image"))
+                 return RECEIVER_VIEW_TYPE_IMAGE;
+-            else
++            else  */
+             return RECEIVER_VIEW_TYPE;
+         }
+     }
+@@ -154,18 +158,19 @@
+         }
+     }
+ 
++    /*
+     public class ReceiverViewHolderImage extends RecyclerView.ViewHolder {
+ 
+-        ImageView receiverMsg;
++        ImageView receiverImg;
+         TextView receiverTime;
+ 
+         public ReceiverViewHolderImage(@NonNull View itemView) {
+             super(itemView);
+-            receiverMsg = itemView.findViewById(R.id.receivedImage);
++            receiverImg = itemView.findViewById(R.id.receiverImageView);
+             receiverTime = itemView.findViewById(R.id.receiverImageTime);
+         }
+     }
+-
++  */
+     public  class  SenderViewHolder extends  RecyclerView.ViewHolder{
+         TextView senderMsg,senderTime;
+ 
+@@ -176,15 +181,18 @@
+         }
+     }
+ 
+-    public  class  SenderViewHolderImage extends  RecyclerView.ViewHolder{
++    /*
++    public class SenderViewHolderImage extends RecyclerView.ViewHolder {
+ 
+-        ImageView senderMsg;
++        ImageView senderImg;
+         TextView senderTime;
+ 
+         public SenderViewHolderImage(@NonNull View itemView) {
+             super(itemView);
+-            senderMsg = itemView.findViewById(R.id.SenderImage);
+-            senderTime = itemView.findViewById(R.id.sender_Image_Time);
++            senderImg = itemView.findViewById(R.id.senderImageView);
++            senderTime = itemView.findViewById(R.id.senderImageTime);
+         }
+     }
++   */
++
+ }
+Index: app/src/main/java/com/example/chatapplication/ChatDetailActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.chatapplication;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\n\r\nimport android.app.ProgressDialog;\r\nimport android.content.Intent;\r\nimport android.graphics.Bitmap;\r\nimport android.graphics.pdf.PdfDocument;\r\nimport android.net.Uri;\r\nimport android.os.Bundle;\r\nimport android.os.Message;\r\nimport android.provider.MediaStore;\r\nimport android.text.Html;\r\nimport android.view.View;\r\nimport android.widget.Adapter;\r\nimport android.widget.ImageView;\r\nimport android.widget.LinearLayout;\r\nimport android.widget.Toast;\r\n\r\nimport com.example.chatapplication.Adapters.ChatAdapter;\r\nimport com.example.chatapplication.Models.MessagesModel;\r\nimport com.example.chatapplication.Models.Video_Call;\r\nimport com.example.chatapplication.databinding.ActivityChatDetailBinding;\r\nimport com.google.android.gms.tasks.Continuation;\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.OnFailureListener;\r\nimport com.google.android.gms.tasks.OnSuccessListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.auth.FirebaseUser;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\nimport com.google.firebase.storage.FirebaseStorage;\r\nimport com.google.firebase.storage.OnProgressListener;\r\nimport com.google.firebase.storage.StorageReference;\r\nimport com.google.firebase.storage.UploadTask;\r\nimport com.squareup.picasso.Picasso;\r\n\r\nimport java.net.MalformedURLException;\r\nimport java.net.URL;\r\nimport java.text.SimpleDateFormat;\r\nimport java.util.ArrayList;\r\nimport java.util.Calendar;\r\nimport java.util.Date;\r\nimport java.util.Locale;\r\nimport java.util.UUID;\r\n\r\npublic class ChatDetailActivity extends AppCompatActivity {\r\n\r\n    private FirebaseStorage storage;\r\n    private StorageReference storageReference;\r\n    private static final int REQUEST_IMAGE_GET = 5;\r\n    ActivityChatDetailBinding binding;\r\n    FirebaseUser user;\r\n    FirebaseDatabase database;\r\n    FirebaseAuth auth;\r\n    ImageView imgView;\r\n    private static String inputFormat = \"HH:mm\";\r\n    SimpleDateFormat inputParser = new SimpleDateFormat(inputFormat, Locale.getDefault());\r\n    Calendar calendar = Calendar.getInstance();\r\n    public Uri datafile;\r\n    private String imageUrl;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        storage = FirebaseStorage.getInstance();\r\n        storageReference = storage.getReference();\r\n        binding = ActivityChatDetailBinding.inflate(getLayoutInflater());\r\n        setContentView(binding.getRoot());\r\n        getSupportActionBar().hide();\r\n        database = FirebaseDatabase.getInstance();\r\n        auth = FirebaseAuth.getInstance();\r\n        user = FirebaseAuth.getInstance().getCurrentUser();\r\n        String currentUser = user.getUid();\r\n        final String[] currentUsername = new String[1];\r\n        // Get User name of currently logged in user.\r\n        database.getReference(\"Users\")\r\n                .child(currentUser)\r\n                .addListenerForSingleValueEvent(new ValueEventListener() {\r\n                    @Override\r\n                    public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                        currentUsername[0] = snapshot.child(\"userName\").getValue().toString();\r\n                    }\r\n\r\n                    @Override\r\n                    public void onCancelled(@NonNull DatabaseError error) {\r\n\r\n                    }\r\n                });\r\n\r\n\r\n        final  String senderId = auth.getUid();\r\n        String receivedId = getIntent().getStringExtra(\"userId\");\r\n        String userName = getIntent().getStringExtra(\"userName\");\r\n        String profilePic = getIntent().getStringExtra(\"profilePic\");\r\n\r\n        binding.userName.setText(userName);\r\n        Picasso.get().load(profilePic).placeholder(R.drawable.avatar).into(binding.profilePic);\r\n\r\n        binding.backArrow.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n\r\n                Intent intent = new Intent(ChatDetailActivity.this,MainActivity.class);\r\n                startActivity(intent);\r\n            }\r\n        });\r\n\r\n        // Video Call\r\n        final String senderRoom = senderId + receivedId;\r\n        final  String receiverRoom = receivedId + senderId;\r\n        binding.videoCallIcon.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                String call_time = String.valueOf(Calendar.getInstance().get(Calendar.HOUR))+\":\"+String.valueOf(Calendar.getInstance().get(Calendar.MINUTE));\r\n                int year = Calendar.getInstance().get(Calendar.YEAR);\r\n                int month = Calendar.getInstance().get(Calendar.MONTH);\r\n                int day = Calendar.getInstance().get(Calendar.DATE);\r\n                final Video_Call video_call= new Video_Call(currentUsername[0],senderRoom,receiverRoom,call_time,day,month,year);\r\n                database.getReference()\r\n                        .child(\"video_call\")\r\n                        .child(senderRoom)\r\n                        .push()\r\n                        .setValue(video_call)\r\n                        .addOnSuccessListener(new OnSuccessListener<Void>() {\r\n                            @Override\r\n                            public void onSuccess(Void aVoid) {\r\n                                database.getReference()\r\n                                        .child(\"video_call\")\r\n                                        .child(receiverRoom)\r\n                                        .push()\r\n                                        .setValue(video_call)\r\n                                        .addOnSuccessListener(new OnSuccessListener<Void>() {\r\n                                            @Override\r\n                                            public void onSuccess(Void aVoid) {\r\n\r\n                                            }\r\n                                        });\r\n                            }\r\n                        });\r\n\r\n                Intent calling = new Intent(ChatDetailActivity.this,VideoCallActivity.class);\r\n                calling.putExtra(\"sRoom\",senderRoom);\r\n                calling.putExtra(\"rRoom\",receiverRoom);\r\n                startActivity(calling);\r\n            }\r\n        });\r\n\r\n\r\n        //Incoming Video Call\r\n        database.getReference()\r\n                .child(\"video_call\")\r\n                .child(senderRoom)\r\n                .addValueEventListener(new ValueEventListener() {\r\n                    @Override\r\n                    public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                        // get time from database and compare with range of time\r\n                        for(DataSnapshot snapshot1 : snapshot.getChildren()){\r\n                            Video_Call video_call = snapshot1.getValue(Video_Call.class);\r\n                            int year = Calendar.getInstance().get(Calendar.YEAR);\r\n                            int month = Calendar.getInstance().get(Calendar.MONTH);\r\n                            int day = Calendar.getInstance().get(Calendar.DATE);\r\n                            if ( video_call.getYear() == year && video_call.getMonth() == month && video_call.getDay() == day ) {\r\n                                // Today's Call\r\n                                String call_time = video_call.getCall_time();\r\n                                if ( video_call.compareDates(call_time) ){\r\n                                    Intent incoming = new Intent(ChatDetailActivity.this,IncomingCall.class);\r\n                                    incoming.putExtra(\"sRoom\",video_call.getsRoom());\r\n                                    incoming.putExtra(\"rRoom\",video_call.getrRoom());\r\n                                    incoming.putExtra(\"caller\",video_call.getUserName());\r\n                                    startActivity(incoming);\r\n                                }\r\n                            } else {\r\n                                // earlier calls\r\n                                //Add to miss call list.\r\n                            }\r\n                        }\r\n                    }\r\n\r\n                    @Override\r\n                    public void onCancelled(@NonNull DatabaseError error) {\r\n\r\n                    }\r\n                });\r\n\r\n\r\n        final ArrayList <MessagesModel> messagesModels = new ArrayList<>();\r\n\r\n        final ChatAdapter chatAdapter = new ChatAdapter(messagesModels, this , receivedId);\r\n\r\n        binding.chatRecyclerView.setAdapter(chatAdapter);\r\n        LinearLayoutManager layoutManager = new LinearLayoutManager(this);\r\n        binding.chatRecyclerView.setLayoutManager(layoutManager);\r\n\r\n\r\n\r\n        database.getReference().child(\"chats\").child(senderRoom).addValueEventListener(new ValueEventListener() {\r\n            @Override\r\n            public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                messagesModels.clear();\r\n                for(DataSnapshot snapshot1 : snapshot.getChildren()){\r\n                    MessagesModel model = snapshot1.getValue(MessagesModel.class);\r\n                    model.setMessageId(snapshot1.getKey());\r\n\r\n                    messagesModels.add(model);\r\n                }\r\n                chatAdapter.notifyDataSetChanged();\r\n                binding.chatRecyclerView.smoothScrollToPosition(binding.chatRecyclerView.getAdapter().getItemCount());\r\n            }\r\n\r\n            @Override\r\n            public void onCancelled(@NonNull DatabaseError error) {\r\n\r\n            }\r\n        });\r\n     // attachments\r\n        imgView = (ImageView)findViewById(R.id.attachments4);\r\n        imgView.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);\r\n                intent.setType(\"image/*\");\r\n                if (intent.resolveActivity(getPackageManager()) != null) {\r\n                    startActivityForResult(intent, REQUEST_IMAGE_GET);\r\n                }\r\n            }\r\n        });\r\n\r\n\r\n       /*\r\n        //Gallery Icon\r\n        imgView = findViewById(R.id.gallery);\r\n        imgView.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);\r\n                intent.setType(\"image/*\");\r\n                startActivityForResult(intent,1);\r\n            }\r\n        });\r\n\r\n        //Map Icon\r\n        imgView = findViewById(R.id.location);\r\n        imgView.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent intent = new Intent(Intent.ACTION_VIEW);\r\n                if(intent.resolveActivity(getPackageManager())!=null){\r\n                    startActivityForResult(intent,2);\r\n                }\r\n            }\r\n        });\r\n\r\n        //Camera\r\n         imgView = findViewById(R.id.camera);\r\n         imgView.setOnClickListener(new View.OnClickListener() {\r\n             @Override\r\n             public void onClick(View v) {\r\n                     String targetFilename = \"/root\";\r\n                     Uri locationForPhotos = null;\r\n                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);\r\n                     intent.putExtra(MediaStore.EXTRA_OUTPUT,\r\n                             Uri.withAppendedPath(locationForPhotos, targetFilename));\r\n                     if (intent.resolveActivity(getPackageManager()) != null) {\r\n                         startActivityForResult(intent, 3);\r\n                     }\r\n             }\r\n         });\r\n\r\n         //documents\r\n         imgView = findViewById(R.id.documents);\r\n         imgView.setOnClickListener(new View.OnClickListener() {\r\n             @Override\r\n             public void onClick(View v) {\r\n                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);\r\n                 sharingIntent.setType(\"text/html\");\r\n                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, Html.fromHtml(\"<p>This is the text shared.</p>\"));\r\n                 startActivityForResult(sharingIntent,4);\r\n             }\r\n         });\r\n          */\r\n\r\n       binding.send.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                String message =  binding.etmessage.getText().toString();\r\n                final MessagesModel model = new MessagesModel(senderId,message);\r\n                model.setTimestamp(new Date().getTime());\r\n                binding.etmessage.setText(\"\");\r\n                database.getReference().child(\"chats\").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {\r\n                    @Override\r\n                    public void onSuccess(Void aVoid) {\r\n                        database.getReference().child(\"chats\").child(receiverRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {\r\n                            @Override\r\n                            public void onSuccess(Void aVoid) {\r\n\r\n                            }\r\n                        });\r\n                    }\r\n                });\r\n            }\r\n        });\r\n    }\r\n\r\n    @Override\r\n    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {\r\n        super.onActivityResult(requestCode, resultCode, data);\r\n        if(requestCode==REQUEST_IMAGE_GET && resultCode==RESULT_OK && data!=null){\r\n            datafile = data.getData();\r\n            uploadImage();\r\n        }\r\n    }\r\n\r\n    private void uploadImage() {\r\n        final ProgressDialog pd = new ProgressDialog(this);\r\n        pd.setTitle(\"Uploading Image...\");\r\n        pd.show();\r\n        final String randomKey = UUID.randomUUID().toString();\r\n        StorageReference riversRef = storageReference.child(\"images/rivers.jpg\");\r\n        UploadTask uploadTask;\r\n        uploadTask = riversRef.putFile(datafile);\r\n\r\n                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {\r\n                    @Override\r\n                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {\r\n                      pd.dismiss();\r\n                        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {\r\n                            @Override\r\n                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {\r\n                                if (!task.isSuccessful()) {\r\n                                    throw task.getException();\r\n                                }\r\n\r\n                                // Continue with the task to get the download URL\r\n                                return riversRef.getDownloadUrl();\r\n                            }\r\n                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {\r\n                            @Override\r\n                            public void onComplete(@NonNull Task<Uri> task) {\r\n                                if (task.isSuccessful()) {\r\n                                    Uri downloadUri = task.getResult();\r\n                                    imageUrl = downloadUri.toString();\r\n\r\n                                }\r\n                                else {\r\n                                    Toast.makeText(getApplicationContext(),\"Couldn't load Image \",Toast.LENGTH_SHORT).show();\r\n                                }\r\n                            }\r\n                        });\r\n                    }\r\n                })\r\n                .addOnFailureListener(new OnFailureListener() {\r\n                    @Override\r\n                    public void onFailure(@NonNull Exception exception) {\r\n                        pd.dismiss();\r\n                        Toast.makeText(getApplicationContext(),\"Sorry Message was not sent successfully\",Toast.LENGTH_SHORT).show();\r\n                    }\r\n                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {\r\n            @Override\r\n            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {\r\n                double progressPercentage = (100* snapshot.getBytesTransferred()/ snapshot.getTotalByteCount());\r\n                int percent = (int)progressPercentage;\r\n                pd.setMessage(\"Sending: \" + percent + \"%\");\r\n            }\r\n        });\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/chatapplication/ChatDetailActivity.java	(revision 0fca7433549f4889005bc177c2a67f60c3e425ee)
++++ app/src/main/java/com/example/chatapplication/ChatDetailActivity.java	(date 1618750044990)
+@@ -14,6 +14,7 @@
+ import android.os.Message;
+ import android.provider.MediaStore;
+ import android.text.Html;
++import android.util.Log;
+ import android.view.View;
+ import android.widget.Adapter;
+ import android.widget.ImageView;
+@@ -65,6 +66,7 @@
+     Calendar calendar = Calendar.getInstance();
+     public Uri datafile;
+     private String imageUrl;
++    private String receiver;
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+@@ -97,6 +99,7 @@
+ 
+         final  String senderId = auth.getUid();
+         String receivedId = getIntent().getStringExtra("userId");
++        receiver=receivedId;
+         String userName = getIntent().getStringExtra("userName");
+         String profilePic = getIntent().getStringExtra("profilePic");
+ 
+@@ -206,8 +209,6 @@
+                 messagesModels.clear();
+                 for(DataSnapshot snapshot1 : snapshot.getChildren()){
+                     MessagesModel model = snapshot1.getValue(MessagesModel.class);
+-                    model.setMessageId(snapshot1.getKey());
+-
+                     messagesModels.add(model);
+                 }
+                 chatAdapter.notifyDataSetChanged();
+@@ -344,9 +345,25 @@
+                             @Override
+                             public void onComplete(@NonNull Task<Uri> task) {
+                                 if (task.isSuccessful()) {
++                                    final  String senderId = auth.getUid();
++                                    final String senderRoom = senderId + receiver;
++                                    final String receiverRoom = receiver + senderId;
+                                     Uri downloadUri = task.getResult();
+                                     imageUrl = downloadUri.toString();
++                                    final MessagesModel model = new MessagesModel(senderId,imageUrl);
++                                    model.setTimestamp(new Date().getTime());
++                                    model.setType("image");
++                                    database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
++                                        @Override
++                                        public void onSuccess(Void aVoid) {
++                                            database.getReference().child("chats").child(receiverRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
++                                                @Override
++                                                public void onSuccess(Void aVoid) {
+ 
++                                                }
++                                            });
++                                        }
++                                    });
+                                 }
+                                 else {
+                                     Toast.makeText(getApplicationContext(),"Couldn't load Image ",Toast.LENGTH_SHORT).show();
+Index: app/src/main/res/layout/sample_sender_image.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<LinearLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"wrap_content\">\r\n\r\n    <androidx.constraintlayout.widget.ConstraintLayout\r\n        android:id=\"@+id/chatsenderimage\"\r\n        android:layout_width=\"270dp\"\r\n        android:layout_height=\"match_parent\"\r\n        android:layout_marginLeft=\"120dp\"\r\n        android:layout_marginTop=\"8dp\"\r\n        android:background=\"@drawable/bg_sender\">\r\n\r\n        <ImageView\r\n            android:id=\"@+id/SenderImage\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginTop=\"44dp\"\r\n            app:layout_constraintBottom_toTopOf=\"@+id/sender_Image_Time\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintHorizontal_bias=\"0.888\"\r\n            app:layout_constraintStart_toStartOf=\"@+id/guideline6\"\r\n            app:layout_constraintTop_toTopOf=\"parent\" />\r\n\r\n        <androidx.constraintlayout.widget.Guideline\r\n            android:id=\"@+id/guideline6\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:orientation=\"vertical\"\r\n            app:layout_constraintGuide_begin=\"20dp\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/sender_Image_Time\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"TextView\"\r\n            app:layout_constraintBottom_toBottomOf=\"parent\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintHorizontal_bias=\"0.924\"\r\n            app:layout_constraintStart_toStartOf=\"parent\"\r\n            app:layout_constraintTop_toTopOf=\"parent\"\r\n            app:layout_constraintVertical_bias=\"0.765\" />\r\n\r\n    </androidx.constraintlayout.widget.ConstraintLayout>\r\n</LinearLayout>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/sample_sender_image.xml	(revision 0fca7433549f4889005bc177c2a67f60c3e425ee)
++++ app/src/main/res/layout/sample_sender_image.xml	(date 1618753463415)
+@@ -1,47 +1,66 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
+-    android:layout_width="match_parent"
+-    android:layout_height="wrap_content">
++    android:id="@+id/Rel1234"
++    android:layout_width="wrap_content"
++    android:layout_height="wrap_content"
++    android:layout_margin="8dp">
+ 
+     <androidx.constraintlayout.widget.ConstraintLayout
+-        android:id="@+id/chatsenderimage"
+-        android:layout_width="270dp"
+-        android:layout_height="match_parent"
+-        android:layout_marginLeft="120dp"
+-        android:layout_marginTop="8dp"
+-        android:background="@drawable/bg_sender">
++
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_alignParentRight="true"
++        android:layout_marginStart="5dp"
++        android:layout_marginTop="7dp"
++        android:layout_marginEnd="5dp"
++        android:layout_marginRight="7dp"
++        android:background="@drawable/bg_sender"
++        android:maxWidth="310dp"
++        android:maxHeight="400dp"
++        android:minHeight="30dp">
++
++
++        <ImageView
++            android:id="@+id/senderImageView"
++            android:layout_width="270dp"
++            android:layout_height="350dp"
++            android:layout_margin="8dp"
++            android:layout_marginTop="2dp"
++            android:layout_marginBottom="3dp"
++            android:inputType="textLongMessage|textMultiLine|text"
++            android:maxWidth="270dp"
++            android:minWidth="50dp"
++            android:text="Message"
++            app:layout_constraintBottom_toTopOf="@+id/senderImageTime"
++            app:layout_constraintEnd_toStartOf="@+id/guideline4"
++            app:layout_constraintStart_toStartOf="@+id/guideline2"
++            app:layout_constraintTop_toTopOf="parent" />
+ 
+-        <ImageView
+-            android:id="@+id/SenderImage"
+-            android:layout_width="match_parent"
++        <androidx.constraintlayout.widget.Guideline
++            android:id="@+id/guideline2"
++            android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+-            android:layout_marginTop="44dp"
+-            app:layout_constraintBottom_toTopOf="@+id/sender_Image_Time"
+-            app:layout_constraintEnd_toEndOf="parent"
+-            app:layout_constraintHorizontal_bias="0.888"
+-            app:layout_constraintStart_toStartOf="@+id/guideline6"
+-            app:layout_constraintTop_toTopOf="parent" />
++            android:orientation="vertical"
++            app:layout_constraintGuide_percent="0.0" />
+ 
+         <androidx.constraintlayout.widget.Guideline
+-            android:id="@+id/guideline6"
++            android:id="@+id/guideline4"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:orientation="vertical"
+-            app:layout_constraintGuide_begin="20dp" />
++            app:layout_constraintGuide_end="25dp" />
+ 
+         <TextView
+-            android:id="@+id/sender_Image_Time"
++            android:id="@+id/senderImageTime"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+-            android:text="TextView"
++            android:text="12:00PM"
+             app:layout_constraintBottom_toBottomOf="parent"
+-            app:layout_constraintEnd_toEndOf="parent"
+-            app:layout_constraintHorizontal_bias="0.924"
+-            app:layout_constraintStart_toStartOf="parent"
+-            app:layout_constraintTop_toTopOf="parent"
+-            app:layout_constraintVertical_bias="0.765" />
++            app:layout_constraintEnd_toStartOf="@+id/guideline4" />
+ 
+     </androidx.constraintlayout.widget.ConstraintLayout>
+-</LinearLayout>
++
++
++</RelativeLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/sample_receiver_image.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<LinearLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\">\r\n\r\n    <androidx.constraintlayout.widget.ConstraintLayout\r\n        android:id=\"@+id/chatreceiverimage\"\r\n        android:layout_width=\"300dp\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginLeft=\"30dp\"\r\n        android:layout_marginTop=\"8dp\"\r\n        android:layout_marginRight=\"100dp\"\r\n        android:background=\"@drawable/bg_receiver\">\r\n\r\n        <androidx.constraintlayout.widget.Guideline\r\n            android:id=\"@+id/guideline6\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:orientation=\"vertical\"\r\n            app:layout_constraintGuide_begin=\"20dp\" />\r\n\r\n        <ImageView\r\n            android:id=\"@+id/receivedImage\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginTop=\"44dp\"\r\n            app:layout_constraintBottom_toTopOf=\"@+id/receiverImageTime\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintHorizontal_bias=\"0.0\"\r\n            app:layout_constraintStart_toStartOf=\"@+id/guideline6\"\r\n            app:layout_constraintTop_toTopOf=\"parent\"\r\n            app:layout_constraintVertical_bias=\"0.931\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/receiverImageTime\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"TextView\"\r\n            app:layout_constraintBottom_toBottomOf=\"parent\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintHorizontal_bias=\"0.916\"\r\n            app:layout_constraintStart_toStartOf=\"@+id/guideline6\" />\r\n    </androidx.constraintlayout.widget.ConstraintLayout>\r\n</LinearLayout>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/sample_receiver_image.xml	(revision 0fca7433549f4889005bc177c2a67f60c3e425ee)
++++ app/src/main/res/layout/sample_receiver_image.xml	(date 1618753463399)
+@@ -1,46 +1,44 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
+-    android:layout_width="match_parent"
+-    android:layout_height="match_parent">
+-
+-    <androidx.constraintlayout.widget.ConstraintLayout
+-        android:id="@+id/chatreceiverimage"
+-        android:layout_width="300dp"
+-        android:layout_height="wrap_content"
+-        android:layout_marginLeft="30dp"
+-        android:layout_marginTop="8dp"
+-        android:layout_marginRight="100dp"
+-        android:background="@drawable/bg_receiver">
+-
+-        <androidx.constraintlayout.widget.Guideline
+-            android:id="@+id/guideline6"
+-            android:layout_width="wrap_content"
+-            android:layout_height="wrap_content"
+-            android:orientation="vertical"
+-            app:layout_constraintGuide_begin="20dp" />
++    android:layout_width="wrap_content"
++    android:layout_height="wrap_content"
++    android:layout_marginLeft="5dp"
++    android:layout_marginTop="7dp"
++    android:background="@drawable/bg_receiver"
++    android:minHeight="30dp"
++    app:layout_goneMarginLeft="10dp">
+ 
+-        <ImageView
+-            android:id="@+id/receivedImage"
+-            android:layout_width="match_parent"
+-            android:layout_height="wrap_content"
+-            android:layout_marginTop="44dp"
+-            app:layout_constraintBottom_toTopOf="@+id/receiverImageTime"
+-            app:layout_constraintEnd_toEndOf="parent"
+-            app:layout_constraintHorizontal_bias="0.0"
+-            app:layout_constraintStart_toStartOf="@+id/guideline6"
+-            app:layout_constraintTop_toTopOf="parent"
+-            app:layout_constraintVertical_bias="0.931" />
++    <ImageView
++        android:id="@+id/receiverImageView"
++        android:layout_width="270dp"
++        android:layout_height="350dp"
++        android:layout_marginTop="4dp"
++        android:layout_marginRight="8dp"
++        app:layout_constraintBottom_toTopOf="@+id/receiverImageTime"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.0"
++        app:layout_constraintStart_toStartOf="@+id/guideline3"
++        app:layout_constraintTop_toTopOf="parent"
++        app:layout_constraintVertical_bias="0.555" />
+ 
+-        <TextView
+-            android:id="@+id/receiverImageTime"
+-            android:layout_width="wrap_content"
+-            android:layout_height="wrap_content"
+-            android:text="TextView"
+-            app:layout_constraintBottom_toBottomOf="parent"
+-            app:layout_constraintEnd_toEndOf="parent"
+-            app:layout_constraintHorizontal_bias="0.916"
+-            app:layout_constraintStart_toStartOf="@+id/guideline6" />
+-    </androidx.constraintlayout.widget.ConstraintLayout>
+-</LinearLayout>
++    <TextView
++        android:id="@+id/receiverImageTime"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:text="11:00AM"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.963"
++        app:layout_constraintStart_toStartOf="@+id/guideline3" />
++
++    <androidx.constraintlayout.widget.Guideline
++        android:id="@+id/guideline3"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:orientation="vertical"
++        app:layout_constraintGuide_begin="16dp"
++        app:layout_editor_absoluteX="16dp" />
++
++</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+diff --git .idea/shelf/Uncommitted_changes_before_Update_at_16-Apr-21_09_44__Default_Changelist_.xml .idea/shelf/Uncommitted_changes_before_Update_at_16-Apr-21_09_44__Default_Changelist_.xml
