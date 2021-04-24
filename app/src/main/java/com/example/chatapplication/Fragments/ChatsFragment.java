@@ -21,7 +21,6 @@ import com.example.chatapplication.Models.Friend;
 import com.example.chatapplication.Models.Users;
 import com.example.chatapplication.R;
 import com.example.chatapplication.databinding.FragmentChatsBinding;
-import com.example.chatapplication.notification.Token;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -66,16 +65,8 @@ public class ChatsFragment extends Fragment {
         frdRef = FirebaseDatabase.getInstance().getReference().child("UsersFriend").child(currentUserId);
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        updateToken(FirebaseInstanceId.getInstance().getToken());
 
         return FriendView;
-    }
-
-    private void updateToken(String token){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
-        Token token1 = new Token(token);
-        reference.child(currentUserId).setValue(token1);
-
     }
 
     @Override
@@ -104,7 +95,7 @@ public class ChatsFragment extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if(snapshot.hasChildren()){
                                     for (DataSnapshot snapshot1: snapshot.getChildren()){
-                                        if(snapshot1.child("type").getValue().toString()=="text")
+                                        if((snapshot1.child("type").getValue().toString()).equals("text"))
                                             holder.lastMessage.setText(snapshot1.child("message").getValue(String.class));
                                         else
                                             holder.lastMessage.setText("image");

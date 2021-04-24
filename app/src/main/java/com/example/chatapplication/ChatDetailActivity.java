@@ -7,32 +7,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Message;
-import android.provider.MediaStore;
-import android.text.BoringLayout;
-import android.text.Html;
-import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.chatapplication.Adapters.ChatAdapter;
-import com.example.chatapplication.Fragments.APIService;
 import com.example.chatapplication.Models.MessagesModel;
 import com.example.chatapplication.Models.Users;
 import com.example.chatapplication.Models.Video_Call;
 import com.example.chatapplication.databinding.ActivityChatDetailBinding;
-import com.example.chatapplication.notification.Client;
-import com.example.chatapplication.notification.Data;
-import com.example.chatapplication.notification.MyResponse;
-import com.example.chatapplication.notification.Sender;
-import com.example.chatapplication.notification.Token;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,7 +29,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -52,18 +36,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static java.lang.String.*;
 
@@ -83,7 +61,6 @@ public class  ChatDetailActivity extends AppCompatActivity {
     public Uri datafile;
     private String imageUrl;
     private String  receiver;
-    APIService apiService;
     private String message;
     private DatabaseReference reference;
     private Boolean notify = false;
@@ -100,8 +77,6 @@ public class  ChatDetailActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         String currentUser = user.getUid();
-
-       apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
         final String[] currentUsername = new String[1];
         //Get User name of currently logged in user.
@@ -341,10 +316,6 @@ public class  ChatDetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Users user = snapshot.getValue(Users.class);
-                if (notify) {
-                    sendNotification(receiver, user.getUserName(), msg);
-                }
-                notify=false;
             }
 
             @Override
@@ -355,44 +326,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
 
     }
 
-
-    private void sendNotification(String receiver, String userName, String msg) {
-        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query query = tokens.orderByKey().equalTo(receiver);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snapshot1: snapshot.getChildren()){
-                    Token token = snapshot1.getValue(Token.class);
-                    Data data = new Data(user.getUid(),"new Message",userName+ ": " + message," ", R.mipmap.ic_launcher);
-                    Sender  sender = new Sender(data,token.getToken());
-
-                    apiService.sendNotification(sender)
-                            .enqueue(new Callback<MyResponse>() {
-                                @Override
-                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                                    if(response.code()==200){
-                                        if(response.body().success==1){
-                                            Toast.makeText(ChatDetailActivity.this,"failed",Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<MyResponse> call, Throwable t) {
-
-                                }
-                            });
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
+   // Sending notification
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
