@@ -202,9 +202,12 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (exit) {
-            super.onBackPressed();
-            finish();
-        } else {
+            Intent a = new Intent(Intent.ACTION_MAIN);
+            a.addCategory(Intent.CATEGORY_HOME);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(a);
+        }
+        else {
             Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
             exit = true;
             new Handler().postDelayed(new Runnable() {
