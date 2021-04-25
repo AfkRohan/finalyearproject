@@ -116,8 +116,8 @@ public class GroupChatAdapter extends  RecyclerView.Adapter {
         public ReceiverViewHolder(@NonNull View itemView) {
             super(itemView);
             receiverName = itemView.findViewById(R.id.receiverName);
-            receiverMsg = itemView.findViewById(R.id.receiverText);
-            receiverTime = itemView.findViewById(R.id.receiverTime);
+            receiverMsg = itemView.findViewById(R.id.receiverTextG);
+            receiverTime = itemView.findViewById(R.id.receiverTimeG);
 
         }
     }
