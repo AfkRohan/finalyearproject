@@ -3,6 +3,15 @@ package com.example.chatapplication.Models;
 public class MessagesModel {
     String Id, userName, message, messageId,type;
     Long timestamp;
+    boolean notificationReceived;
+
+    public boolean isNotificationReceived() {
+        return notificationReceived;
+    }
+
+    public void setNotificationReceived(boolean notificationReceived) {
+        this.notificationReceived = notificationReceived;
+    }
 
     public MessagesModel(String id, String message, Long timestamp) {
         Id = id;
@@ -17,6 +26,14 @@ public class MessagesModel {
         this.message = message;
         this.type = "text";
     }
+
+    //New Constructor for Receiving Notification.
+    public MessagesModel(String id, String message, boolean notificationReceived){
+        Id = id;
+        this.message = message;
+        this.notificationReceived = notificationReceived;
+    }
+
     public MessagesModel(String id, String message) {
         Id = id;
         this.message = message;
