@@ -19,7 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
 
 public class GroupChatAdapter extends  RecyclerView.Adapter {
 
@@ -128,7 +127,7 @@ public class GroupChatAdapter extends  RecyclerView.Adapter {
 
         public SenderViewHolder(@NonNull View itemView) {
             super(itemView);
-           // senderName = itemView.findViewById(R.id.senderName);
+            //senderName = itemView.findViewById(R.id.senderName);
             senderMsg = itemView.findViewById(R.id.senderText);
             senderTime = itemView.findViewById(R.id.senderTime);
         }

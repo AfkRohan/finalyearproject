@@ -1,10 +1,5 @@
 package com.example.chatapplication;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,10 +8,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.example.chatapplication.Adapters.ChatAdapter;
+import com.example.chatapplication.Fragments.APIServices;
 import com.example.chatapplication.Models.MessagesModel;
 import com.example.chatapplication.Models.Users;
 import com.example.chatapplication.Models.Video_Call;
+import com.example.chatapplication.Notfications.Client;
+import com.example.chatapplication.Notfications.Data;
+import com.example.chatapplication.Notfications.MyResponse;
+import com.example.chatapplication.Notfications.Sender;
+import com.example.chatapplication.Notfications.Token;
 import com.example.chatapplication.databinding.ActivityChatDetailBinding;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +35,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -43,7 +50,12 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
-import static java.lang.String.*;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static java.lang.String.format;
+import static java.lang.String.valueOf;
 
 public class  ChatDetailActivity extends AppCompatActivity {
 
@@ -64,6 +76,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
     private String message;
     private DatabaseReference reference;
     private Boolean notify = false;
+    APIServices apiServices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +90,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         String currentUser = user.getUid();
-
+        apiServices = Client.getClient("https://fcm.google.com/").create(APIServices.class);
         final String[] currentUsername = new String[1];
         //Get User name of currently logged in user.
         database.getReference("Users")
@@ -201,6 +214,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         binding.chatRecyclerView.setLayoutManager(layoutManager);
 
+        //reading chat or setting it to recycle view
         database.getReference().child("chats").child(senderRoom).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -288,6 +302,8 @@ public class  ChatDetailActivity extends AppCompatActivity {
          });
           */
 
+
+        //pushing chat to database
        binding.send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -317,6 +333,9 @@ public class  ChatDetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Users user = snapshot.getValue(Users.class);
+                if(notify)
+                sendNotification(receiver,user.getUserName(),msg);
+                notify=false;
             }
 
             @Override
@@ -327,7 +346,42 @@ public class  ChatDetailActivity extends AppCompatActivity {
 
     }
 
-   // Sending notification
+    private void sendNotification(String receiver, String userName, String msg) {
+        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = tokens.orderByKey().equalTo(receiver);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Token token = snapshot.getValue(Token.class);
+                    Data data = new Data(user.getUid(), userName + ": " + msg, "New Message",FirebaseAuth.getInstance().getCurrentUser().getUid(), R.mipmap.ic_launcher);
+                    Sender sender = new Sender(data, token.getToken());
+
+                    apiServices.sendNotification(sender)
+                            .enqueue(new Callback<MyResponse>() {
+                                @Override
+                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                    if (response.code() == 200) {
+                                        if (response.body().success != 1) {
+                                            Toast.makeText(ChatDetailActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<MyResponse> call, Throwable t) {
+
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

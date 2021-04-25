@@ -2,36 +2,31 @@ package com.example.chatapplication.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.chatapplication.Adapters.FriendAdapter;
-import com.example.chatapplication.Adapters.UsersAdapter;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.chatapplication.ChatDetailActivity;
 import com.example.chatapplication.Models.Friend;
 import com.example.chatapplication.Models.Users;
+import com.example.chatapplication.Notfications.Token;
 import com.example.chatapplication.R;
 import com.example.chatapplication.databinding.FragmentChatsBinding;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -64,9 +59,14 @@ public class ChatsFragment extends Fragment {
         currentUserId = auth.getCurrentUser().getUid();
         frdRef = FirebaseDatabase.getInstance().getReference().child("UsersFriend").child(currentUserId);
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-
-
+        //updateToken(FirebaseInstanceId.getInstance().getToken());
         return FriendView;
+    }
+
+    private void updateToken(String token){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token1 = new Token(token);
+        reference.child(String.valueOf(FirebaseAuth.getInstance().getCurrentUser())).setValue(token1);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ChatsFragment extends Fragment {
                                 if(snapshot.hasChildren()){
                                     for (DataSnapshot snapshot1: snapshot.getChildren()){
                                         if((snapshot1.child("type").getValue().toString()).equals("text"))
-                                            holder.lastMessage.setText(snapshot1.child("message").getValue(String.class));
+                                             holder.lastMessage.setText(snapshot1.child("message").getValue(String.class));
                                         else
                                             holder.lastMessage.setText("image");
                                     }
@@ -130,6 +130,7 @@ public class ChatsFragment extends Fragment {
             public FriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sample_show_user,parent,false);
                 FriendViewHolder viewHolder = new FriendViewHolder(view);
+               // updateToken(FirebaseInstanceId.getInstance().getToken());
                 return viewHolder;
             }
         };
