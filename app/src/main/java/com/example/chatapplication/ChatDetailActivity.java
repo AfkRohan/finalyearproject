@@ -237,7 +237,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
 
         });
 
-     // attachments
+        // attachments
         imgView = (ImageView)findViewById(R.id.attachments4);
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -306,26 +306,28 @@ public class  ChatDetailActivity extends AppCompatActivity {
 
 
         //pushing chat to database
-       binding.send.setOnClickListener(new View.OnClickListener() {
+        binding.send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 notify=true;
                 message =  binding.etmessage.getText().toString();
-                final MessagesModel model = new MessagesModel(senderId,message);
-                //final MessageModel model = new MessageModel(SenderId,message,false); For notifications
-                model.setTimestamp(new Date().getTime());
-                binding.etmessage.setText("");
-                database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        database.getReference().child("chats").child(receiverRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
+                if(!message.isEmpty()){
+                    final MessagesModel model = new MessagesModel(senderId,message);
+                    //final MessageModel model = new MessageModel(SenderId,message,false); For notifications
+                    model.setTimestamp(new Date().getTime());
+                    binding.etmessage.setText("");
+                    database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            database.getReference().child("chats").child(receiverRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
 
-                            }
-                        });
-                    }
-                });
+                                }
+                            });
+                        }
+                    });
+                }
             }
         });
 
@@ -337,7 +339,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Users user = snapshot.getValue(Users.class);
                 if(notify)
-                sendNotification(receiver,user.getUserName(),msg);
+                    sendNotification(receiver,user.getUserName(),msg);
                 notify=false;
             }
 
@@ -384,7 +386,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
 
             }
         });
-        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -404,51 +406,51 @@ public class  ChatDetailActivity extends AppCompatActivity {
         UploadTask uploadTask;
         uploadTask = riversRef.putFile(datafile);
 
-                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                pd.dismiss();
+                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                      pd.dismiss();
-                        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                            @Override
-                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                if (!task.isSuccessful()) {
-                                    throw task.getException();
-                                }
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
 
-                                // Continue with the task to get the download URL
-                                return riversRef.getDownloadUrl();
-                            }
-                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if (task.isSuccessful()) {
-                                    final  String senderId = auth.getUid();
-                                    final String senderRoom = format("%s%s", senderId, receiver);
-                                    final String receiverRoom = format("%s%s", receiver, senderId);
-                                    Uri downloadUri = task.getResult();
-                                    imageUrl = downloadUri.toString();
-                                    final MessagesModel model = new MessagesModel(senderId,imageUrl);
-                                    model.setTimestamp(new Date().getTime());
-                                    model.setType("image");
-                                    database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        // Continue with the task to get the download URL
+                        return riversRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            final  String senderId = auth.getUid();
+                            final String senderRoom = format("%s%s", senderId, receiver);
+                            final String receiverRoom = format("%s%s", receiver, senderId);
+                            Uri downloadUri = task.getResult();
+                            imageUrl = downloadUri.toString();
+                            final MessagesModel model = new MessagesModel(senderId,imageUrl);
+                            model.setTimestamp(new Date().getTime());
+                            model.setType("image");
+                            database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    database.getReference().child("chats").child(receiverRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            database.getReference().child("chats").child(receiverRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
 
-                                                }
-                                            });
                                         }
                                     });
                                 }
-                                else {
-                                    Toast.makeText(getApplicationContext(),"Couldn't load Image ",Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+                            });
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(),"Couldn't load Image ",Toast.LENGTH_SHORT).show();
+                        }
                     }
-                })
+                });
+            }
+        })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {

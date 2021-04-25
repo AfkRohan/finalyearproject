@@ -168,6 +168,7 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
     private void firebaseAuthWithGoogle(String idToken) {
+        progressDialog.show();
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -182,7 +183,7 @@ public class SignInActivity extends AppCompatActivity {
                             users.setUserName(user.getDisplayName());
                             users.setProfilepic(user.getPhotoUrl().toString());
                             database.getReference().child("Users").child(user.getUid()).setValue(users);
-
+                            progressDialog.dismiss();
                             Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                             startActivity(intent);
                             Toast.makeText(SignInActivity.this, "Welcome " + users.getUserName() + ", You have sign in using Google", Toast.LENGTH_SHORT).show();
@@ -190,6 +191,7 @@ public class SignInActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("TAG", "signInWithCredential:failure", task.getException());
+                            progressDialog.dismiss();
                             Toast.makeText(SignInActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             Snackbar.make(binding.getRoot(), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                             //updateUI(null);

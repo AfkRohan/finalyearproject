@@ -10,26 +10,71 @@
     android:paddingTop="15dp"
     tools:context=".CreateGroupActivity">
 
-    <Button
-        android:id="@+id/button"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/groupicon"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginHorizontal="10dp"
+        android:src="@drawable/ic_user"
+        app:civ_border_color="#FF000000"
+        app:civ_border_width="1dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"/>
+
+    <ImageView
+        android:id="@+id/plus"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignEnd="@id/groupicon"
+        app:srcCompat="@drawable/ic_plus"/>
+
+    <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_marginHorizontal="12dp"
+        android:layout_below="@id/groupicon"
+        android:text="Group Icon"
+        android:layout_alignParentStart="true"/>
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/txgroupname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:ems="10"
+        android:hint="Group Name"
         android:inputType="textPersonName"
         android:padding="12dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <EditText
+        android:id="@+id/txgroupdesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/txgroupname"
+        android:ems="10"
+        android:hint="Group Description"
+        android:inputType="textMultiLine"
+        android:paddingLeft="12dp"
+        />
+    <Button
+        android:id="@+id/creategroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="100dp"
+        android:layout_below="@+id/txgroupdesc"/>
 </RelativeLayout>
