@@ -168,7 +168,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
             }
         });
 
-
+        //Incoming Video Call.
         //Incoming Video Call
 //        database.getReference()
 //                .child("video_call")
@@ -223,6 +223,8 @@ public class  ChatDetailActivity extends AppCompatActivity {
                     MessagesModel model = snapshot1.getValue(MessagesModel.class);
                     model.setMessageId(snapshot1.getKey());
                     messagesModels.add(model);
+                    //model.isNotificationReceived();
+                    // if false then notification on and then remove old value from database and assign new value.
                 }
                 chatAdapter.notifyDataSetChanged();
                 binding.chatRecyclerView.smoothScrollToPosition(binding.chatRecyclerView.getAdapter().getItemCount());
@@ -310,6 +312,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
                 notify=true;
                 message =  binding.etmessage.getText().toString();
                 final MessagesModel model = new MessagesModel(senderId,message);
+                //final MessageModel model = new MessageModel(SenderId,message,false); For notifications
                 model.setTimestamp(new Date().getTime());
                 binding.etmessage.setText("");
                 database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
