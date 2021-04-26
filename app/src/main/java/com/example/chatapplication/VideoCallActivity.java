@@ -52,13 +52,13 @@ public class VideoCallActivity extends AppCompatActivity {
 
     public void setup_video_call(String senderRoom){
 
-        if( senderRoom.length() > 0 ) {
+       // if( senderRoom.length() > 0 ) {
             JitsiMeetConferenceOptions options =
                     new JitsiMeetConferenceOptions.Builder()
                             .setRoom(senderRoom)
                             .build();
             JitsiMeetActivity.launch(this, options);
-        }
+        //}
     }
 
 

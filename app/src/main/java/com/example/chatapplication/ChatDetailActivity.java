@@ -75,7 +75,8 @@ public class  ChatDetailActivity extends AppCompatActivity {
     private String  receiver;
     private String message;
     private DatabaseReference reference;
-    private Boolean notify = false;
+
+    boolean notify = false;
     APIServices apiServices;
 
     @Override
@@ -89,8 +90,12 @@ public class  ChatDetailActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
+
+
+        //apiServices = Client.getClient("https://fcm.google.com/").create(APIServices.class);
+        apiServices = Client.getClient("https://fcm.googleapis.com/").create(APIServices.class);
+
         String currentUser = user.getUid();
-        apiServices = Client.getClient("https://fcm.google.com/").create(APIServices.class);
         final String[] currentUsername = new String[1];
         //Get User name of currently logged in user.
         database.getReference("Users")
@@ -338,8 +343,10 @@ public class  ChatDetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Users user = snapshot.getValue(Users.class);
-                if(notify)
-                    sendNotification(receiver,user.getUserName(),msg);
+                //No if statement.
+                if(notify) {
+                    sendNotification(receiver, user.getUserName(), msg);
+                }
                 notify=false;
             }
 

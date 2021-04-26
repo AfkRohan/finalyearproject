@@ -70,6 +70,7 @@ public class ChatsFragment extends Fragment {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
         Token token1 = new Token(token);
         reference.child(String.valueOf(FirebaseAuth.getInstance().getCurrentUser().getUid())).setValue(token1);
+        //reference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(token1);
     }
 
     @Override

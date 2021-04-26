@@ -13,6 +13,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
+import com.example.chatapplication.ChatDetailActivity;
 import com.example.chatapplication.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -72,7 +73,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int j = Integer.parseInt(user.replaceAll("[\\D]",""));
-        Intent intent = new Intent(this, MainActivity.class);
+        //MainActivity or MessageActivity class(ChatDetail)
+        // I changed MainActivity to ChatDetailActivity.
+        Intent intent = new Intent(this, ChatDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("userId",user);
         intent.putExtras(bundle);
@@ -89,9 +92,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
         int i = 0;
-        if(j>i)
+        if(j > 0)
         {
-            i=j;
+            i = j;
         }
 
         notificationManager.notify(i,builder.build());

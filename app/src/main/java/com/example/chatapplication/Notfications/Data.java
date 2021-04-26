@@ -15,6 +15,10 @@ public class Data {
         this.icon = icon;
     }
 
+    public Data(){
+
+    }
+
     public String getUser() {
         return user;
     }
