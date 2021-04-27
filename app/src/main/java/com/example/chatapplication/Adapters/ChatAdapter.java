@@ -1,24 +1,13 @@
 package com.example.chatapplication.Adapters;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DownloadManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,75 +15,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.loader.content.AsyncTaskLoader;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.chatapplication.ChatDetailActivity;
-import com.example.chatapplication.DownloadImage;
 import com.example.chatapplication.Models.MessagesModel;
 import com.example.chatapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;
-
-import static androidx.core.app.ActivityCompat.requestPermissions;
-import static androidx.core.content.ContextCompat.checkSelfPermission;
-import static org.webrtc.ContextUtils.getApplicationContext;
-/*
- class SaveImageHelper implements Target{
-
-     private WeakReference<ContentResolver> contentResolverWeakReference;
-     private String name;
-     private String desc;
-
-     public SaveImageHelper( ContentResolver contentResolverWeakReference,String name,String desc) {
-         this.contentResolverWeakReference = new WeakReference<ContentResolver>(contentResolverWeakReference);
-         this.name = name;
-         this.desc = desc;
-     }
-
-     @Override
-     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-         ContentResolver r = contentResolverWeakReference.get();
-         //if(r!=null)
-         String bit = "nullBitmap";
-         if(bitmap==null)
-             System.out.println(bit);
-
-         MediaStore.Images.Media.insertImage(r,bitmap,name,desc);
-
-         //Open gallery after download
-        /* Intent i = new Intent();
-         i.setAction(Intent.ACTION_GET_CONTENT);
-         i.setType("image/*");
-         context.startActivities(Intent.createChooser(i,"select picture"));
-         }*/
-
-     /*
-     @Override
-     public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-     }
-
-     @Override
-     public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-     }
- }
- */
 
 public class ChatAdapter extends  RecyclerView.Adapter {
 
@@ -107,6 +42,7 @@ public class ChatAdapter extends  RecyclerView.Adapter {
     int RECEIVER_VIEW_TYPE = 2;
     int SENDER_VIEW_TYPE_IMAGE=3;
     int RECEIVER_VIEW_TYPE_IMAGE=4;
+    private static final int CREATE_FILE = 5;
 
     public ChatAdapter(ArrayList<MessagesModel> messagesModels, Context context) {
         this.messagesModels = messagesModels;
@@ -188,6 +124,8 @@ public class ChatAdapter extends  RecyclerView.Adapter {
            //Retrieving Url
            String url = messagesModel.getMessage().toString();
           // downloadFile(url,context);
+           // Request code for creating a image document
+           new SaveImageToPhone(context).execute(url);
            Picasso.get().load(url).into(((ReceiverViewHolderImage)holder).receiverImg);
            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
            String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
@@ -201,6 +139,15 @@ public class ChatAdapter extends  RecyclerView.Adapter {
            ((ReceiverViewHolder) holder).receiverTime.setText(timeString);
        }
     }
+    /*
+    private void saveToGallery(Bitmap myImage,Context context) {
+        ContentResolver cr = context.getContentResolver();
+        String title = "myBitmap";
+        String description = "My bitmap created by Android-er";
+        String savedURL = MediaStore.Images.Media
+                .insertImage(cr, myImage, title, description);
+        //Toast.makeText(context.this,savedURL,Toast.LENGTH_LONG).show();
+    }*/
 
     @Override
     public int getItemViewType(int position) {
@@ -272,15 +219,41 @@ public class ChatAdapter extends  RecyclerView.Adapter {
         }
     }
 
+}
 
-    /*
-    public void downloadFile(String url,Context ctx){
-           String filename = UUID.randomUUID().toString() + "jpg";
-           Picasso.get()
-                   .load(url)
-                   .into(new SaveImageHelper(ctx.getApplicationContext().getContentResolver(),filename,"image downloaded"));
+class SaveImageToPhone extends AsyncTask<String,Void,Bitmap> {
 
-         }
-         */
+    private Context context;
+    public SaveImageToPhone(Context context){
+        this.context=context;
+    }
+    @Override
+    protected Bitmap doInBackground(String []strings) {
+        HttpURLConnection connection = null;
+        try {
+            URL url = new URL(strings[0]);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        finally {
+            connection.disconnect();
+        }
+    }
 
+    @Override
+    protected void onPostExecute(Bitmap myImage) {
+        super.onPostExecute(myImage);
+        ContentResolver cr = context.getContentResolver();
+        String title = "myBitmap";
+        String description = "My bitmap created by Android-er";
+        String savedURL = MediaStore.Images.Media
+                .insertImage(cr, myImage, title, description);
+    }
 }

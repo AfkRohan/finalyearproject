@@ -41,6 +41,7 @@ public class ChatsFragment extends Fragment {
     //ArrayList<String> list = new ArrayList<>();
     ArrayList<Users> list = new ArrayList<>();
     FirebaseDatabase database;
+    //DatabaseReference rootRef;
     DatabaseReference frdRef, usersRef;
     FirebaseAuth auth;
     String currentUserId;
@@ -55,14 +56,20 @@ public class ChatsFragment extends Fragment {
         FriendView = inflater.inflate(R.layout.fragment_chats, container, false);
         friendList = (RecyclerView) FriendView.findViewById(R.id.chatRecyclerView);
         friendList.setLayoutManager(new LinearLayoutManager(getContext()));
-
+      //  rootRef = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
         currentUserId = auth.getCurrentUser().getUid();
         frdRef = FirebaseDatabase.getInstance().getReference().child("UsersFriend").child(currentUserId);
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         // Toast.makeText(getContext(), FirebaseInstanceId.getInstance().getToken(),Toast.LENGTH_LONG).show();
-         updateToken(FirebaseInstanceId.getInstance().getToken());
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+      /*  String deviceToken = FirebaseInstanceId.getInstance().getToken();
+        usersRef.child(currentUserId).setValue(deviceToken).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
 
+            }
+        });     */
         return FriendView;
     }
 

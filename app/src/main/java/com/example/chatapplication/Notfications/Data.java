@@ -4,14 +4,14 @@ public class Data {
     private String user;
     private String body;
     private String title;
-    private String sented;
+    private String sent;
     private int icon;
 
     public Data(String user, String body, String title, String sented, int icon) {
         this.user = user;
         this.body = body;
         this.title = title;
-        this.sented = sented;
+        this.sent = sented;
         this.icon = icon;
     }
 
@@ -44,11 +44,11 @@ public class Data {
     }
 
     public String getSented() {
-        return sented;
+        return sent;
     }
 
     public void setSented(String sented) {
-        this.sented = sented;
+        this.sent = sented;
     }
 
     public int getIcon() {

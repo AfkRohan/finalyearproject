@@ -78,6 +78,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
 
     boolean notify = false;
     APIServices apiServices;
+    private DatabaseReference NotificationRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +91,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
-
+        // NotificationRef = FirebaseDatabase.getInstance().getReference().child("Notifications");
 
         //apiServices = Client.getClient("https://fcm.google.com/").create(APIServices.class);
         apiServices = Client.getClient("https://fcm.googleapis.com/").create(APIServices.class);
@@ -111,7 +112,6 @@ public class  ChatDetailActivity extends AppCompatActivity {
 
                     }
                 });
-
 
         final  String senderId = auth.getUid();
         String receivedId = getIntent().getStringExtra("userId");
@@ -330,6 +330,20 @@ public class  ChatDetailActivity extends AppCompatActivity {
 
                                 }
                             });
+                            /*
+                            HashMap<String,String> chatNotificationMap = new HashMap<>();
+                            chatNotificationMap.put("sender",senderId);
+                            chatNotificationMap.put("Message",message);
+
+                            NotificationRef.child(receivedId).push().setValue(chatNotificationMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                   if(task.isSuccessful()){
+
+                                  }
+                                }
+                            });
+                            */
                         }
                     });
                 }
@@ -343,10 +357,9 @@ public class  ChatDetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Users user = snapshot.getValue(Users.class);
-                //No if statement.
-                if(notify) {
+                /* if(notify) {
                     sendNotification(receiver, user.getUserName(), msg);
-                }
+                }  */
                 notify=false;
             }
 
