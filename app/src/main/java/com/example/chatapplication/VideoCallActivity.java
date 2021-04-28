@@ -55,7 +55,7 @@ public class VideoCallActivity extends AppCompatActivity {
        // if( senderRoom.length() > 0 ) {
             JitsiMeetConferenceOptions options =
                     new JitsiMeetConferenceOptions.Builder()
-                            .setRoom(senderRoom)
+                            .setRoom("Video Call Rome")
                             .build();
             JitsiMeetActivity.launch(this, options);
         //}
