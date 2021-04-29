@@ -35,6 +35,10 @@ public class GroupChatActivity extends AppCompatActivity {
     ActivityGroupChatBinding binding;
     ImageView imgView;
 
+    String groupName;
+    String groupId;
+    String groupIcon;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +58,9 @@ public class GroupChatActivity extends AppCompatActivity {
         final String senderId = FirebaseAuth.getInstance().getUid();
         final String[] senderName = new String[1];
         final Users[] user = {null};
+        groupId = getIntent().getStringExtra("groupId");
+        groupName = getIntent().getStringExtra("groupName");;
+        groupIcon = getIntent().getStringExtra("groupIcon");;
         database.getReference().child("Users").child(FirebaseAuth.getInstance().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -66,7 +73,8 @@ public class GroupChatActivity extends AppCompatActivity {
 
                     }
                 });
-        binding.userName.setText("Friends Group");
+        binding.userName.setText(groupName);
+        Picasso.get().load(groupIcon).placeholder(R.drawable.avatar).into(binding.profilePic);
 
         final GroupChatAdapter adapter = new GroupChatAdapter(messagesModels,this);
         binding.chatRecyclerView.setAdapter(adapter);
@@ -74,7 +82,7 @@ public class GroupChatActivity extends AppCompatActivity {
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         binding.chatRecyclerView.setLayoutManager(linearLayout);
 
-        database.getReference().child("GroupChats").addValueEventListener(new ValueEventListener() {
+        database.getReference().child("GroupChats").child(groupId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 messagesModels.clear();
@@ -112,7 +120,7 @@ public class GroupChatActivity extends AppCompatActivity {
                 model.setTimestamp(new Date().getTime());
                 binding.etmessage.setText("");
                 binding.chatRecyclerView.smoothScrollToPosition(binding.chatRecyclerView.getAdapter().getItemCount());
-                database.getReference().child("GroupChats").push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+                database.getReference().child("GroupChats").child(groupId).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
 

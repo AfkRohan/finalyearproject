@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.chatapplication.Adapters.UsersAdapter;
 import com.example.chatapplication.ChatDetailActivity;
+import com.example.chatapplication.GroupChatActivity;
 import com.example.chatapplication.Models.Group;
 import com.example.chatapplication.Models.Group;
 import com.example.chatapplication.Models.Users;
@@ -34,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class GroupFragment extends Fragment {
@@ -128,10 +130,11 @@ public class GroupFragment extends Fragment {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), ChatDetailActivity.class);
+                        Intent intent = new Intent(getContext(), GroupChatActivity.class);
                         intent.putExtra("groupId", group[0].getGroupId());
                         intent.putExtra("groupIcon", group[0].getGroupIcon());
                         intent.putExtra("groupName", group[0].getGroupName());
+                        //intent.putExtra("groupObject", (Serializable) group[0]);
                         getContext().startActivity(intent);
                     }
                 });
