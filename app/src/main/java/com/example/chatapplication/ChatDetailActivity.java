@@ -213,7 +213,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
 
         final ArrayList <MessagesModel> messagesModels = new ArrayList<>();
 
-        final ChatAdapter chatAdapter = new ChatAdapter(messagesModels, this , receivedId);
+        final ChatAdapter chatAdapter = new ChatAdapter(messagesModels, this , receivedId,senderId);
 
         binding.chatRecyclerView.setAdapter(chatAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -267,7 +267,6 @@ public class  ChatDetailActivity extends AppCompatActivity {
                 startActivityForResult(intent,1);
             }
         });
-
         //Map Icon
         imgView = findViewById(R.id.location);
         imgView.setOnClickListener(new View.OnClickListener() {
@@ -279,7 +278,6 @@ public class  ChatDetailActivity extends AppCompatActivity {
                 }
             }
         });
-
         //Camera
          imgView = findViewById(R.id.camera);
          imgView.setOnClickListener(new View.OnClickListener() {
@@ -295,7 +293,6 @@ public class  ChatDetailActivity extends AppCompatActivity {
                      }
              }
          });
-
          //documents
          imgView = findViewById(R.id.documents);
          imgView.setOnClickListener(new View.OnClickListener() {
@@ -334,12 +331,10 @@ public class  ChatDetailActivity extends AppCompatActivity {
                             HashMap<String,String> chatNotificationMap = new HashMap<>();
                             chatNotificationMap.put("sender",senderId);
                             chatNotificationMap.put("Message",message);
-
                             NotificationRef.child(receivedId).push().setValue(chatNotificationMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                    if(task.isSuccessful()){
-
                                   }
                                 }
                             });
@@ -452,6 +447,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
                             final MessagesModel model = new MessagesModel(senderId,imageUrl);
                             model.setTimestamp(new Date().getTime());
                             model.setType("image");
+                            model.setFirst("true");
                             database.getReference().child("chats").child(senderRoom).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {

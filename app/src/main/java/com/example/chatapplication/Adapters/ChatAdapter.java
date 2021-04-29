@@ -1,4 +1,4 @@
-package com.example.chatapplication.Adapters;
+ package com.example.chatapplication.Adapters;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -12,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,7 +39,7 @@ public class ChatAdapter extends  RecyclerView.Adapter {
     //private static final int PERMISSION_STORAGE_CODE = 1000;
     ArrayList <MessagesModel> messagesModels;
     Context context;
-    String recId;
+    String recId,senId;
 
     int SENDER_VIEW_TYPE = 1;
     int RECEIVER_VIEW_TYPE = 2;
@@ -47,6 +50,13 @@ public class ChatAdapter extends  RecyclerView.Adapter {
     public ChatAdapter(ArrayList<MessagesModel> messagesModels, Context context) {
         this.messagesModels = messagesModels;
         this.context = context;
+    }
+
+    public ChatAdapter(ArrayList<MessagesModel> messagesModels, Context context, String recId,String senId) {
+        this.messagesModels = messagesModels;
+        this.context = context;
+        this.recId = recId;
+        this.senId = senId;
     }
 
     public ChatAdapter(ArrayList<MessagesModel> messagesModels, Context context, String recId) {
@@ -113,20 +123,34 @@ public class ChatAdapter extends  RecyclerView.Adapter {
        }
 
        else if(holder.getClass()==SenderViewHolderImage.class){
-           String url = messagesModel.getMessage().toString();
+           String url = messagesModel.getMessage();
            Picasso.get().load(url).into(((SenderViewHolderImage)holder).senderImg);
            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
            String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
            ((SenderViewHolderImage) holder).senderTime.setText(timeString);
        }
 
-       else if(holder.getClass()==ReceiverViewHolderImage.class){
+       else if(holder.getClass()==ReceiverViewHolderImage.class) {
            //Retrieving Url
-           String url = messagesModel.getMessage().toString();
-          // downloadFile(url,context);
-           // Request code for creating a image document
-           new SaveImageToPhone(context).execute(url);
-           Picasso.get().load(url).into(((ReceiverViewHolderImage)holder).receiverImg);
+           String chatroom=senId+recId;
+           String url = messagesModel.getMessage();
+
+                if(("true").equals(messagesModel.isFirst())){
+                    ((ReceiverViewHolderImage)holder).receiverImg.setImageResource(R.drawable.ic_baseline_image_24);
+                    ((ReceiverViewHolderImage)holder).receiverBtn.setVisibility(View.VISIBLE);
+               ((ReceiverViewHolderImage) holder).receiverBtn.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View v) {
+                       new SaveImageToPhone(context, ((ReceiverViewHolderImage) holder).progressBar, messagesModel,chatroom).execute(url);
+                       ((ReceiverViewHolderImage)holder).receiverBtn.setVisibility(View.INVISIBLE);
+                       Picasso.get().load(url).into(((ReceiverViewHolderImage) holder).receiverImg);
+                   }
+               });
+              }
+                else {
+                    Picasso.get().load(url).into(((ReceiverViewHolderImage) holder).receiverImg);
+                }
+
            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
            String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
            ((ReceiverViewHolderImage) holder).receiverTime.setText(timeString);
@@ -185,14 +209,16 @@ public class ChatAdapter extends  RecyclerView.Adapter {
 
 
     public class ReceiverViewHolderImage extends RecyclerView.ViewHolder {
-
+        ProgressBar progressBar;
         ImageView receiverImg;
         TextView receiverTime;
-
+        ImageView receiverBtn;
         public ReceiverViewHolderImage(@NonNull View itemView) {
             super(itemView);
             receiverImg = itemView.findViewById(R.id.receiverImageView);
             receiverTime = itemView.findViewById(R.id.receiverImageTime);
+            receiverBtn = itemView.findViewById(R.id.downloadImage);
+            progressBar = itemView.findViewById(R.id.progressBar);
         }
     }
 
@@ -222,11 +248,23 @@ public class ChatAdapter extends  RecyclerView.Adapter {
 }
 
 class SaveImageToPhone extends AsyncTask<String,Void,Bitmap> {
-
+    private final MessagesModel messagesModel;
+    private String chatroom;
     private Context context;
-    public SaveImageToPhone(Context context){
+    private ProgressBar progressBar;
+    public SaveImageToPhone(Context context, ProgressBar progressBar, MessagesModel messagesModel, String chatroom){
         this.context=context;
+        this.progressBar = progressBar;
+        this.messagesModel=messagesModel;
+        this.chatroom=chatroom;
     }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
     @Override
     protected Bitmap doInBackground(String []strings) {
         HttpURLConnection connection = null;
@@ -251,9 +289,15 @@ class SaveImageToPhone extends AsyncTask<String,Void,Bitmap> {
     protected void onPostExecute(Bitmap myImage) {
         super.onPostExecute(myImage);
         ContentResolver cr = context.getContentResolver();
-        String title = "myBitmap";
-        String description = "My bitmap created by Android-er";
+        Timestamp temp = new Timestamp(new Date().getTime());
+        String imageName = temp.toString();
+        String title = "IMG-"+ imageName;
+        String description = "Image received";
         String savedURL = MediaStore.Images.Media
                 .insertImage(cr, myImage, title, description);
+        FirebaseDatabase.getInstance().getReference().child("chats").child(chatroom).child(messagesModel.getMessageId()).child("message").setValue(savedURL);
+        FirebaseDatabase.getInstance().getReference().child("chats").child(chatroom).child(messagesModel.getMessageId()).child("first").setValue("false");
+        progressBar.setVisibility(View.INVISIBLE);
+        Toast.makeText(context,"Image saved in gallery",Toast.LENGTH_SHORT).show();
     }
 }

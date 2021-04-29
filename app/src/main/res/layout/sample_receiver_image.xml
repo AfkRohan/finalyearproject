@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="350dp"
     android:layout_marginLeft="5dp"
     android:layout_marginTop="7dp"
+    android:alpha="1"
     android:background="@drawable/bg_receiver"
     android:minHeight="30dp"
     app:layout_goneMarginLeft="10dp">
@@ -13,15 +14,16 @@
     <ImageView
         android:id="@+id/receiverImageView"
         android:layout_width="270dp"
-        android:layout_height="350dp"
+        android:layout_height="300dp"
         android:layout_marginTop="4dp"
         android:layout_marginRight="8dp"
+        android:alpha="1"
         app:layout_constraintBottom_toTopOf="@+id/receiverImageTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.555" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/receiverImageTime"
@@ -40,5 +42,29 @@
         android:orientation="vertical"
         app:layout_constraintGuide_begin="16dp"
         app:layout_editor_absoluteX="16dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/receiverImageView"
+        app:layout_constraintEnd_toEndOf="@+id/receiverImageView"
+        app:layout_constraintHorizontal_bias="0.481"
+        app:layout_constraintStart_toStartOf="@+id/receiverImageView"
+        app:layout_constraintTop_toTopOf="@+id/receiverImageView"
+        app:layout_constraintVertical_bias="0.468" />
+
+    <ImageView
+        android:id="@+id/downloadImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/progressBar"
+        app:layout_constraintEnd_toEndOf="@+id/progressBar"
+        app:layout_constraintStart_toStartOf="@+id/progressBar"
+        app:layout_constraintTop_toTopOf="@+id/progressBar"
+        app:srcCompat="@drawable/ic_download_circular_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

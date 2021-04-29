@@ -1,9 +1,17 @@
 package com.example.chatapplication.Models;
 
 public class MessagesModel {
-    String Id, userName, message, messageId,type;
+    String Id, userName, message, messageId,type,first;
     Long timestamp;
     boolean notificationReceived;
+
+    public String isFirst() {
+        return first;
+    }
+
+    public void setFirst(String first) {
+        this.first = first;
+    }
 
     public boolean isNotificationReceived() {
         return notificationReceived;
@@ -45,6 +53,17 @@ public class MessagesModel {
         this.message=message;
         this.type=type;
         this.timestamp=timestamp;
+    }
+
+    public MessagesModel(String id, String userName, String message, String messageId, String type, String first, Long timestamp, boolean notificationReceived) {
+        Id = id;
+        this.userName = userName;
+        this.message = message;
+        this.messageId = messageId;
+        this.type = type;
+        this.first = first;
+        this.timestamp = timestamp;
+        this.notificationReceived = notificationReceived;
     }
 
     public MessagesModel(){
