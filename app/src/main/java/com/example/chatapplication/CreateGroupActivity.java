@@ -29,7 +29,9 @@ import com.example.chatapplication.databinding.ActivityCreateGroupBinding;
 import com.example.chatapplication.databinding.FragmentChatsBinding;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -73,9 +75,9 @@ public class CreateGroupActivity extends AppCompatActivity {
         frdRef = FirebaseDatabase.getInstance().getReference().child("UsersFriend").child(currentUserId);
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         progressDialog = new ProgressDialog(CreateGroupActivity.this);
-        progressDialog.setTitle("Setting up Group");
-        progressDialog.setMessage("Uploading Group Icon...");
-
+        progressDialog.setTitle("Wait a sec...");
+        progressDialog.setMessage("Creating new group");
+        selectedUsers.clear();
 
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Friend>()
                 .setQuery(frdRef, Friend.class).build();
@@ -171,6 +173,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                 else {
                     progressDialog.show();
                     String gname = binding.txgroupname.getText().toString();
+                    selectedUsers.add(currentUserId);
                     Group newGroup = new Group();
                     newGroup.setGroupAdminId(currentUserId);
                     newGroup.setGroupName(gname);
@@ -200,12 +203,38 @@ public class CreateGroupActivity extends AppCompatActivity {
                     groupMetaRef.setValue(newGroup).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Toast.makeText(CreateGroupActivity.this, "Group Created", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(CreateGroupActivity.this, MainActivity.class);
-                            progressDialog.dismiss();
-                            startActivity(intent);
+
                         }
                     });
+                    selectedUsers.remove(currentUserId);
+                    FirebaseDatabase.getInstance().getReference().child("UsersGroups")
+                            .child(currentUserId).child(gId)
+                            .child("isAdmin").setValue("Yes")
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()) {
+                                        for(int i = 0; i < selectedUsers.size(); i++) {
+                                            FirebaseDatabase.getInstance().getReference().child("UsersGroups")
+                                                    .child(selectedUsers.get(i)).child(gId)
+                                                    .child("isAdmin").setValue("No")
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if(task.isSuccessful()) {
+                                                                Toast.makeText(CreateGroupActivity.this, "Group Created", Toast.LENGTH_SHORT).show();
+                                                                Intent intent = new Intent(CreateGroupActivity.this, MainActivity.class);
+                                                                progressDialog.dismiss();
+                                                                startActivity(intent);
+                                                            }
+                                                        }
+                                                    });
+                                        }
+                                    }
+                                }
+                            });
+
+
                 }
             }
         });
