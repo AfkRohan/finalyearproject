@@ -206,6 +206,16 @@ public class CreateGroupActivity extends AppCompatActivity {
 
                         }
                     });
+                    for(int i = 0; i < selectedUsers.size(); i++) {
+                        FirebaseDatabase.getInstance().getReference().child("GroupMembers").child(gId)
+                                .child(selectedUsers.get(i)).child("isMember").setValue("Yes")
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                    }
+                                });
+                    }
                     selectedUsers.remove(currentUserId);
                     FirebaseDatabase.getInstance().getReference().child("UsersGroups")
                             .child(currentUserId).child(gId)
@@ -233,8 +243,6 @@ public class CreateGroupActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-
-
                 }
             }
         });
@@ -250,83 +258,14 @@ public class CreateGroupActivity extends AppCompatActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(data.getData() != null) {
+        if(data != null) {
+            super.onActivityResult(requestCode, resultCode, data);
             sFile = data.getData();
             binding.groupicon.setImageURI(sFile);
         }
     }
 
 
-/*
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Friend>()
-                .setQuery(frdRef, Friend.class).build();
-
-        FirebaseRecyclerAdapter<Friend, CreateGroupActivity.FriendViewHolder> adapter = new FirebaseRecyclerAdapter<Friend, CreateGroupActivity.FriendViewHolder>(options) {
-            @Override
-            protected void onBindViewHolder(@NonNull FriendViewHolder holder, int position, @NonNull Friend model) {
-                String usersIds = getRef(position).getKey();
-                final Users[] users = {new Users()};
-                usersRef.child(usersIds).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        users[0] = snapshot.getValue(Users.class);
-                        /*String profilePic = snapshot.child("profilepic").getValue().toString();
-                        String username = snapshot.child("userName").getValue().toString();
-
-                        holder.userName.setText(users[0].getUserName());
-                        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
-                        FirebaseDatabase.getInstance().getReference().child("chats").child(currentUserId+users[0].getUserId()).orderByChild("timestamp")
-                                .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if(snapshot.hasChildren()){
-                                    for (DataSnapshot snapshot1: snapshot.getChildren()){
-                                        if((snapshot1.child("type").getValue().toString()).equals("text"))
-                                            holder.lastMessage.setText(snapshot1.child("message").getValue(String.class));
-                                        else
-                                            holder.lastMessage.setText("image");
-                                    }
-                                }
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(this, ChatDetailActivity.class);
-                        intent.putExtra("userId", users[0].getUserId());
-                        intent.putExtra("profilePic", users[0].getProfilepic());
-                        intent.putExtra("userName", users[0].getUserName());
-                        getContext().startActivity(intent);
-                    }
-                });
-            }
-
-            @NonNull
-            @Override
-            public CreateGroupActivity.FriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sample_show_user,parent,false);
-                CreateGroupActivity.FriendViewHolder viewHolder = new CreateGroupActivity.FriendViewHolder(view);
-                return viewHolder;
-            }
-        };
-        friendList.setAdapter(adapter);
-        adapter.startListening();
-    }
-*/
     public static class FriendViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
         TextView userName, lastMessage;

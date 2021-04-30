@@ -72,8 +72,10 @@ public class GroupChatActivity extends AppCompatActivity {
         final String[] senderName = new String[1];
         user = new Users[]{null};
         groupId = getIntent().getStringExtra("groupId");
-        groupName = getIntent().getStringExtra("groupName");;
-        groupIcon = getIntent().getStringExtra("groupIcon");;
+        groupName = getIntent().getStringExtra("groupName");
+        groupIcon = getIntent().getStringExtra("groupIcon");
+        groupDesc = getIntent().getStringExtra("groupDesc");
+        groupAdminId = getIntent().getStringExtra("groupAdminId");
         database.getReference().child("Users").child(FirebaseAuth.getInstance().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -112,6 +114,18 @@ public class GroupChatActivity extends AppCompatActivity {
 
             }
         });
+        binding.profilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGroupProfile();
+            }
+        });
+        binding.userName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGroupProfile();
+            }
+        });
         
         imgView = (ImageView)findViewById(R.id.attachments);
         imgView.setOnClickListener(new View.OnClickListener() {
@@ -147,7 +161,8 @@ public class GroupChatActivity extends AppCompatActivity {
             }
         });
     }
-
+    String groupDesc;
+    String groupAdminId;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -219,5 +234,16 @@ public class GroupChatActivity extends AppCompatActivity {
                 pd.setMessage("Sending: " + percent + "%");
             }
         });
+    }
+
+    private void openGroupProfile() {
+        Intent intent = new Intent(this, GroupProfile.class);
+        intent.putExtra("groupId", groupId);
+        intent.putExtra("groupIcon", groupIcon);
+        intent.putExtra("groupName", groupName);
+        intent.putExtra("groupDesc", groupDesc);
+        intent.putExtra("groupAdminId", groupAdminId);
+        //intent.putExtra("groupObject", (Serializable) group[0]);
+        this.startActivity(intent);
     }
 }

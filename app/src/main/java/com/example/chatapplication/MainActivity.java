@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("message");
-        myRef.setValue("");
         auth = FirebaseAuth.getInstance();
 
         binding.viewPager.setAdapter(new FragmentsAdapter(getSupportFragmentManager()));

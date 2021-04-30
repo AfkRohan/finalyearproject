@@ -1,0 +1,449 @@
+Index: app/src/main/java/com/example/chatapplication/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.chatapplication;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.core.app.ActivityCompat;\r\n\r\nimport android.Manifest;\r\nimport android.content.Context;\r\nimport android.content.Intent;\r\nimport android.content.IntentFilter;\r\nimport android.content.pm.PackageManager;\r\nimport android.net.ConnectivityManager;\r\nimport android.os.Bundle;\r\nimport android.os.Handler;\r\nimport android.view.Menu;\r\nimport android.view.MenuInflater;\r\nimport android.view.MenuItem;\r\nimport android.widget.Toast;\r\n\r\nimport com.example.chatapplication.SignInActivity;\r\nimport com.example.chatapplication.Adapters.FragmentsAdapter;\r\nimport com.example.chatapplication.AddFriendActivity;\r\nimport com.example.chatapplication.databinding.ActivityMainBinding;\r\nimport com.google.android.gms.common.internal.Objects;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.DatabaseReference;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\n\r\npublic class MainActivity extends AppCompatActivity {\r\n\r\n    ActivityMainBinding binding;\r\n    FirebaseAuth auth;\r\n    MyReceiver netReceiver = new MyReceiver();\r\n\r\n    String []PERMISSIONS = {Manifest.permission.CAMERA,Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE};\r\n    int PERMISSION_ALL = 1;\r\n    \r\n    @Override\r\n    protected void onDestroy() {\r\n        super.onDestroy();\r\n        unregisterReceiver(netReceiver);\r\n    }\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        binding = ActivityMainBinding.inflate(getLayoutInflater());\r\n        setContentView(binding.getRoot());\r\n        //setContentView(R.layout.activity_main);\r\n\r\n        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);\r\n        registerReceiver(netReceiver,filter);\r\n\r\n        if (!hasPermissions(this, PERMISSIONS)) {\r\n            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);\r\n        }\r\n\r\n        FirebaseDatabase database = FirebaseDatabase.getInstance();\r\n        DatabaseReference myRef = database.getReference(\"message\");\r\n        myRef.setValue(\"\");\r\n        auth = FirebaseAuth.getInstance();\r\n\r\n        binding.viewPager.setAdapter(new FragmentsAdapter(getSupportFragmentManager()));\r\n        binding.tabLayout.setupWithViewPager(binding.viewPager);\r\n\r\n        myRef.addValueEventListener(new ValueEventListener() {\r\n            @Override\r\n            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {\r\n                String value = dataSnapshot.getValue(String.class);\r\n                Toast.makeText(MainActivity.this, \"Home Page\" + value, Toast.LENGTH_SHORT).show();\r\n            }\r\n\r\n            @Override\r\n            public void onCancelled(@NonNull DatabaseError error) {\r\n\r\n            }\r\n        });\r\n    }\r\n\r\n    @Override\r\n    public boolean onCreateOptionsMenu(Menu menu) {\r\n        MenuInflater inflater = getMenuInflater();\r\n        inflater.inflate(R.menu.menu, menu);\r\n        return super.onCreateOptionsMenu(menu);\r\n    }\r\n\r\n    @Override\r\n    public boolean onOptionsItemSelected(@NonNull MenuItem item) {\r\n        switch (item.getItemId()) {\r\n            case R.id.settings:\r\n                Intent intent2 = new Intent(MainActivity.this, SettingsActivity.class);\r\n                startActivity(intent2);\r\n                break;\r\n            case R.id.addfriend:\r\n                Intent intent4 = new Intent(MainActivity.this, AddFriendActivity.class);\r\n                startActivity(intent4);\r\n                break;\r\n            case R.id.creategroup:\r\n                Intent intent3 = new Intent(MainActivity.this, CreateGroupActivity.class);\r\n                startActivity(intent3);\r\n                break;\r\n            case R.id.group:\r\n                Intent intent1 = new Intent(MainActivity.this, GroupChatActivity.class);\r\n                startActivity(intent1);\r\n                break;\r\n            case R.id.logout:\r\n                SignInActivity.signOut(this);\r\n                auth.signOut();\r\n                Intent intent = new Intent(MainActivity.this, SignInActivity.class);\r\n                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);\r\n                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);\r\n                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);\r\n                startActivity(intent);\r\n                break;\r\n        }\r\n        return true;\r\n    }\r\n\r\n    private boolean exit = false;\r\n    @Override\r\n    public void onBackPressed() {\r\n        if(exit){\r\n            Intent a = new Intent(Intent.ACTION_MAIN);\r\n            a.addCategory(Intent.CATEGORY_HOME);\r\n            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);\r\n            startActivity(a);\r\n        }\r\n        else{\r\n            Toast.makeText(this,\"Press back again to exit\",Toast.LENGTH_SHORT).show();\r\n            exit = true;\r\n            new Handler().postDelayed(new Runnable() {\r\n                @Override\r\n                public void run() {\r\n                    exit = false;\r\n                }\r\n            },3000);\r\n        }\r\n    }\r\n\r\n    public static boolean hasPermissions(Context context, String... permissions) {\r\n        if (context != null && permissions != null) {\r\n            for (String permission : permissions) {\r\n                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {\r\n                    return false;\r\n                }\r\n            }\r\n        }\r\n        return true;\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/chatapplication/MainActivity.java	(revision 19063dd3c3b1f5610ba6402601ff851fa977389a)
++++ app/src/main/java/com/example/chatapplication/MainActivity.java	(date 1619786009674)
+@@ -60,7 +60,6 @@
+ 
+         FirebaseDatabase database = FirebaseDatabase.getInstance();
+         DatabaseReference myRef = database.getReference("message");
+-        myRef.setValue("");
+         auth = FirebaseAuth.getInstance();
+ 
+         binding.viewPager.setAdapter(new FragmentsAdapter(getSupportFragmentManager()));
+Index: app/src/main/java/com/example/chatapplication/Fragments/GroupFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.chatapplication.Fragments;\r\n\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.fragment.app.Fragment;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.ImageView;\r\nimport android.widget.TextView;\r\n\r\nimport com.example.chatapplication.Adapters.UsersAdapter;\r\nimport com.example.chatapplication.ChatDetailActivity;\r\nimport com.example.chatapplication.GroupChatActivity;\r\nimport com.example.chatapplication.Models.Group;\r\nimport com.example.chatapplication.Models.Group;\r\nimport com.example.chatapplication.Models.Users;\r\nimport com.example.chatapplication.Notfications.Token;\r\nimport com.example.chatapplication.R;\r\nimport com.example.chatapplication.databinding.FragmentChatsBinding;\r\nimport com.example.chatapplication.databinding.FragmentGroupBinding;\r\nimport com.firebase.ui.database.FirebaseRecyclerAdapter;\r\nimport com.firebase.ui.database.FirebaseRecyclerOptions;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.DatabaseReference;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\nimport com.google.firebase.iid.FirebaseInstanceId;\r\nimport com.squareup.picasso.Picasso;\r\n\r\nimport java.io.Serializable;\r\nimport java.util.ArrayList;\r\n\r\npublic class GroupFragment extends Fragment {\r\n\r\n    FragmentGroupBinding binding;\r\n    FirebaseDatabase database;\r\n    View GroupView;\r\n    RecyclerView groupList;\r\n    DatabaseReference grpRef, groupsMetsRef;\r\n    FirebaseAuth auth;\r\n    String currentUserId;\r\n    ArrayList<Group> list = new ArrayList<>();\r\n    \r\n    public GroupFragment(){\r\n\r\n    }\r\n\r\n    @Override\r\n    public View onCreateView(LayoutInflater inflater, ViewGroup container,\r\n                             Bundle savedInstanceState) {\r\n        GroupView = inflater.inflate(R.layout.fragment_group, container, false);\r\n        groupList = (RecyclerView) GroupView.findViewById(R.id.groupRecyclerView);\r\n        groupList.setLayoutManager(new LinearLayoutManager(getContext()));\r\n        //  rootRef = FirebaseDatabase.getInstance().getReference();\r\n        auth = FirebaseAuth.getInstance();\r\n        currentUserId = auth.getCurrentUser().getUid();\r\n        grpRef = FirebaseDatabase.getInstance().getReference().child(\"UsersGroups\").child(currentUserId);\r\n        groupsMetsRef = FirebaseDatabase.getInstance().getReference().child(\"GroupsMeta\");\r\n        // Toast.makeText(getContext(), FirebaseInstanceId.getInstance().getToken(),Toast.LENGTH_LONG).show();\r\n        updateToken(FirebaseInstanceId.getInstance().getToken());\r\n      /*  String deviceToken = FirebaseInstanceId.getInstance().getToken();\r\n        groupsMetsRef.child(currentUserId).setValue(deviceToken).addOnCompleteListener(new OnCompleteListener<Void>() {\r\n            @Override\r\n            public void onComplete(@NonNull Task<Void> task) {\r\n\r\n            }\r\n        });     */\r\n        return GroupView;\r\n    }\r\n\r\n    private void updateToken(String token){\r\n        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(\"Tokens\");\r\n        Token token1 = new Token(token);\r\n        reference.child(String.valueOf(FirebaseAuth.getInstance().getCurrentUser().getUid())).setValue(token1);\r\n        //reference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(token1);\r\n    }\r\n\r\n    @Override\r\n    public void onStart() {\r\n        super.onStart();\r\n        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Group>()\r\n                .setQuery(grpRef, Group.class).build();\r\n\r\n        FirebaseRecyclerAdapter<Group, GroupFragment.GroupViewHolder> adapter = new FirebaseRecyclerAdapter<Group, GroupFragment.GroupViewHolder>(options) {\r\n            @Override\r\n            protected void onBindViewHolder(@NonNull GroupFragment.GroupViewHolder holder, int position, @NonNull Group model) {\r\n                String groupId = getRef(position).getKey();\r\n                final Group[] group = {new Group()};\r\n                groupsMetsRef.child(groupId).addValueEventListener(new ValueEventListener() {\r\n                    @Override\r\n                    public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                        group[0] = snapshot.getValue(Group.class);\r\n                        /*String profilePic = snapshot.child(\"profilepic\").getValue().toString();\r\n                        String username = snapshot.child(\"userName\").getValue().toString();\r\n*/\r\n                        holder.groupName.setText(group[0].getGroupName());\r\n                        Picasso.get().load(group[0].getGroupIcon()).placeholder(R.drawable.avatar).into(holder.image);\r\n                        /*FirebaseDatabase.getInstance().getReference().child(\"chats\").child(currentUserId+group[0].getUserId()).orderByChild(\"timestamp\")\r\n                                .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {\r\n                            @Override\r\n                            public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                                if(snapshot.hasChildren()){\r\n                                    for (DataSnapshot snapshot1: snapshot.getChildren()){\r\n                                        if((snapshot1.child(\"type\").getValue().toString()).equals(\"text\"))\r\n                                            holder.lastMessage.setText(snapshot1.child(\"message\").getValue(String.class));\r\n                                        else\r\n                                            holder.lastMessage.setText(\"image\");\r\n                                    }\r\n                                }\r\n                            }\r\n                            @Override\r\n                            public void onCancelled(@NonNull DatabaseError error) {\r\n                            }\r\n                        });*/\r\n                    }\r\n\r\n                    @Override\r\n                    public void onCancelled(@NonNull DatabaseError error) {\r\n\r\n                    }\r\n                });\r\n                holder.itemView.setOnClickListener(new View.OnClickListener() {\r\n                    @Override\r\n                    public void onClick(View v) {\r\n                        Intent intent = new Intent(getContext(), GroupChatActivity.class);\r\n                        intent.putExtra(\"groupId\", group[0].getGroupId());\r\n                        intent.putExtra(\"groupIcon\", group[0].getGroupIcon());\r\n                        intent.putExtra(\"groupName\", group[0].getGroupName());\r\n                        //intent.putExtra(\"groupObject\", (Serializable) group[0]);\r\n                        getContext().startActivity(intent);\r\n                    }\r\n                });\r\n            }\r\n\r\n            @NonNull\r\n            @Override\r\n            public GroupFragment.GroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\r\n                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sample_show_user,parent,false);\r\n                GroupFragment.GroupViewHolder viewHolder = new GroupFragment.GroupViewHolder(view);\r\n                // updateToken(FirebaseInstanceId.getInstance().getToken());\r\n                return viewHolder;\r\n            }\r\n        };\r\n        groupList.setAdapter(adapter);\r\n        adapter.startListening();\r\n    }\r\n\r\n    public static class GroupViewHolder extends RecyclerView.ViewHolder {\r\n        ImageView image;\r\n        TextView groupName, lastMessage;\r\n        public GroupViewHolder(@NonNull View itemView) {\r\n            super(itemView);\r\n            image = itemView.findViewById(R.id.profile_image);\r\n            groupName = itemView.findViewById(R.id.userNameList);\r\n            lastMessage = itemView.findViewById(R.id.lastMessage);\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/chatapplication/Fragments/GroupFragment.java	(revision 19063dd3c3b1f5610ba6402601ff851fa977389a)
++++ app/src/main/java/com/example/chatapplication/Fragments/GroupFragment.java	(date 1619786009959)
+@@ -134,6 +134,8 @@
+                         intent.putExtra("groupId", group[0].getGroupId());
+                         intent.putExtra("groupIcon", group[0].getGroupIcon());
+                         intent.putExtra("groupName", group[0].getGroupName());
++                        intent.putExtra("groupDesc", group[0].getGroupDesc());
++                        intent.putExtra("groupAdminId", group[0].getGroupAdminId());
+                         //intent.putExtra("groupObject", (Serializable) group[0]);
+                         getContext().startActivity(intent);
+                     }
+Index: app/src/main/java/com/example/chatapplication/CreateGroupActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.chatapplication;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport android.app.ProgressDialog;\r\nimport android.content.Intent;\r\nimport android.graphics.Color;\r\nimport android.net.Uri;\r\nimport android.os.Bundle;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.Button;\r\nimport android.widget.ImageView;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport com.example.chatapplication.Fragments.ChatsFragment;\r\nimport com.example.chatapplication.Models.Friend;\r\nimport com.example.chatapplication.Models.Group;\r\nimport com.example.chatapplication.Models.MessagesModel;\r\nimport com.example.chatapplication.Models.Users;\r\nimport com.example.chatapplication.databinding.ActivityAddFriendBinding;\r\nimport com.example.chatapplication.databinding.ActivityCreateGroupBinding;\r\nimport com.example.chatapplication.databinding.FragmentChatsBinding;\r\nimport com.firebase.ui.database.FirebaseRecyclerAdapter;\r\nimport com.firebase.ui.database.FirebaseRecyclerOptions;\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.OnSuccessListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.DatabaseReference;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\nimport com.google.firebase.storage.FirebaseStorage;\r\nimport com.google.firebase.storage.StorageReference;\r\nimport com.google.firebase.storage.UploadTask;\r\nimport com.squareup.picasso.Picasso;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.Date;\r\n\r\npublic class CreateGroupActivity extends AppCompatActivity {\r\n    View FriendView;\r\n    RecyclerView friendList;\r\n    ActivityCreateGroupBinding binding;\r\n    static ArrayList<Users> list = new ArrayList<>();\r\n    static ArrayList<String> selectedUsers = new ArrayList<>();\r\n    FirebaseDatabase database;\r\n    DatabaseReference frdRef, usersRef;\r\n    FirebaseAuth auth;\r\n    FirebaseStorage storage;\r\n    String currentUserId;\r\n    ProgressDialog progressDialog;\r\n    Uri sFile;\r\n    boolean isSelectMode = false;\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        binding = ActivityCreateGroupBinding.inflate(getLayoutInflater());\r\n        //setContentView(R.layout.activity_create_group);\r\n        setContentView(binding.getRoot());\r\n        friendList = (RecyclerView) findViewById(R.id.chatRecyclerView);\r\n        friendList.setLayoutManager(new LinearLayoutManager(this));\r\n\r\n        auth = FirebaseAuth.getInstance();\r\n        storage = FirebaseStorage.getInstance();\r\n        currentUserId = auth.getCurrentUser().getUid();\r\n        frdRef = FirebaseDatabase.getInstance().getReference().child(\"UsersFriend\").child(currentUserId);\r\n        usersRef = FirebaseDatabase.getInstance().getReference().child(\"Users\");\r\n        progressDialog = new ProgressDialog(CreateGroupActivity.this);\r\n        progressDialog.setTitle(\"Wait a sec...\");\r\n        progressDialog.setMessage(\"Creating new group\");\r\n        selectedUsers.clear();\r\n\r\n        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Friend>()\r\n                .setQuery(frdRef, Friend.class).build();\r\n\r\n        FirebaseRecyclerAdapter<Friend, CreateGroupActivity.FriendViewHolder> adapter = new FirebaseRecyclerAdapter<Friend, CreateGroupActivity.FriendViewHolder>(options) {\r\n            @Override\r\n            protected void onBindViewHolder(@NonNull FriendViewHolder holder, int position, @NonNull Friend model) {\r\n                String usersIds = getRef(position).getKey();\r\n                final Users[] users = {new Users()};\r\n\r\n                usersRef.child(usersIds).addValueEventListener(new ValueEventListener() {\r\n                    @Override\r\n                    public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                        users[0] = snapshot.getValue(Users.class);\r\n                        /*String profilePic = snapshot.child(\"profilepic\").getValue().toString();\r\n                        String username = snapshot.child(\"userName\").getValue().toString();\r\n*/\r\n                        holder.userName.setText(users[0].getUserName());\r\n                        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);\r\n                        FirebaseDatabase.getInstance().getReference().child(\"chats\").child(currentUserId+users[0].getUserId()).orderByChild(\"timestamp\")\r\n                                .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {\r\n                            @Override\r\n                            public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                                if(snapshot.hasChildren()){\r\n                                    for (DataSnapshot snapshot1: snapshot.getChildren()){\r\n                                        if((snapshot1.child(\"type\").getValue().toString()).equals(\"text\"))\r\n                                            holder.lastMessage.setText(snapshot1.child(\"message\").getValue(String.class));\r\n                                        else\r\n                                            holder.lastMessage.setText(\"image\");\r\n                                    }\r\n                                }\r\n                            }\r\n                            @Override\r\n                            public void onCancelled(@NonNull DatabaseError error) {\r\n                            }\r\n                        });\r\n                    }\r\n\r\n                    @Override\r\n                    public void onCancelled(@NonNull DatabaseError error) {\r\n\r\n                    }\r\n                });\r\n               /* holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {\r\n                    @Override\r\n                    public boolean onLongClick(View v) {\r\n                        isSelectMode = true;\r\n                        if(selectedUsers.contains(users[0])) {\r\n                            holder.itemView.setBackgroundColor(Color.TRANSPARENT);\r\n                            selectedUsers.remove(users[0]);\r\n                        }\r\n                        else {\r\n                            holder.itemView.setBackgroundColor(Color.CYAN);\r\n                            selectedUsers.add(users[0]);\r\n                        }\r\n                        if(selectedUsers.size() == 0)\r\n                            isSelectMode = false;\r\n                        return true;\r\n                    }\r\n                });*/\r\n                holder.itemView.setOnClickListener((view) -> {\r\n                    if(true) {\r\n                        if(selectedUsers.contains(users[0].getUserId())) {\r\n                            holder.itemView.setBackgroundColor(Color.TRANSPARENT);\r\n                            selectedUsers.remove(users[0].getUserId());\r\n                        }\r\n                        else {\r\n                            holder.itemView.setBackgroundColor(Color.CYAN);\r\n                            selectedUsers.add(users[0].getUserId());\r\n                        }\r\n                        if(selectedUsers.size() == 0)\r\n                            isSelectMode = false;\r\n                    }\r\n                });\r\n            }\r\n\r\n            @NonNull\r\n            @Override\r\n            public CreateGroupActivity.FriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\r\n                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sample_show_user,parent,false);\r\n                CreateGroupActivity.FriendViewHolder viewHolder = new CreateGroupActivity.FriendViewHolder(view);\r\n                return viewHolder;\r\n            }\r\n        };\r\n        friendList.setAdapter(adapter);\r\n        adapter.startListening();\r\n\r\n        binding.creategroup.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                if(binding.txgroupname.getText().toString().isEmpty())\r\n                    Toast.makeText(CreateGroupActivity.this, \"Group Name cant be empty\", Toast.LENGTH_SHORT).show();\r\n                else {\r\n                    progressDialog.show();\r\n                    String gname = binding.txgroupname.getText().toString();\r\n                    selectedUsers.add(currentUserId);\r\n                    Group newGroup = new Group();\r\n                    newGroup.setGroupAdminId(currentUserId);\r\n                    newGroup.setGroupName(gname);\r\n                    newGroup.setGroupDesc(binding.txgroupdesc.getText().toString());\r\n                    newGroup.setCreatedAt(new Date().getTime());\r\n                    newGroup.setGroupMembers(selectedUsers);\r\n                    DatabaseReference groupMetaRef = FirebaseDatabase.getInstance().getReference().child(\"GroupsMeta\").push();\r\n                    String gId = groupMetaRef.getKey();\r\n                    newGroup.setGroupId(gId);\r\n                    if(sFile != null) {\r\n                        final StorageReference reference = storage.getReference().child(\"group_pictures\")\r\n                                .child(gId);\r\n                        reference.putFile(sFile).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {\r\n                            @Override\r\n                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {\r\n                                reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {\r\n                                    @Override\r\n                                    public void onSuccess(Uri uri) {\r\n                                        FirebaseDatabase.getInstance().getReference().child(\"GroupsMeta\").child(gId)\r\n                                                .child(\"groupIcon\").setValue(uri.toString());\r\n\r\n                                    }\r\n                                });\r\n                            }\r\n                        });\r\n                    }\r\n                    groupMetaRef.setValue(newGroup).addOnSuccessListener(new OnSuccessListener<Void>() {\r\n                        @Override\r\n                        public void onSuccess(Void aVoid) {\r\n\r\n                        }\r\n                    });\r\n                    selectedUsers.remove(currentUserId);\r\n                    FirebaseDatabase.getInstance().getReference().child(\"UsersGroups\")\r\n                            .child(currentUserId).child(gId)\r\n                            .child(\"isAdmin\").setValue(\"Yes\")\r\n                            .addOnCompleteListener(new OnCompleteListener<Void>() {\r\n                                @Override\r\n                                public void onComplete(@NonNull Task<Void> task) {\r\n                                    if(task.isSuccessful()) {\r\n                                        for(int i = 0; i < selectedUsers.size(); i++) {\r\n                                            FirebaseDatabase.getInstance().getReference().child(\"UsersGroups\")\r\n                                                    .child(selectedUsers.get(i)).child(gId)\r\n                                                    .child(\"isAdmin\").setValue(\"No\")\r\n                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {\r\n                                                        @Override\r\n                                                        public void onComplete(@NonNull Task<Void> task) {\r\n                                                            if(task.isSuccessful()) {\r\n                                                                Toast.makeText(CreateGroupActivity.this, \"Group Created\", Toast.LENGTH_SHORT).show();\r\n                                                                Intent intent = new Intent(CreateGroupActivity.this, MainActivity.class);\r\n                                                                progressDialog.dismiss();\r\n                                                                startActivity(intent);\r\n                                                            }\r\n                                                        }\r\n                                                    });\r\n                                        }\r\n                                    }\r\n                                }\r\n                            });\r\n\r\n\r\n                }\r\n            }\r\n        });\r\n        binding.plus.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent intent = new Intent();\r\n                intent.setAction(Intent.ACTION_GET_CONTENT);\r\n                intent.setType(\"image/*\");\r\n                startActivityForResult(intent, 33);\r\n            }\r\n        });\r\n    }\r\n    @Override\r\n    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {\r\n        super.onActivityResult(requestCode, resultCode, data);\r\n        if(data.getData() != null) {\r\n            sFile = data.getData();\r\n            binding.groupicon.setImageURI(sFile);\r\n        }\r\n    }\r\n\r\n\r\n/*\r\n    @Override\r\n    public void onStart() {\r\n        super.onStart();\r\n        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Friend>()\r\n                .setQuery(frdRef, Friend.class).build();\r\n\r\n        FirebaseRecyclerAdapter<Friend, CreateGroupActivity.FriendViewHolder> adapter = new FirebaseRecyclerAdapter<Friend, CreateGroupActivity.FriendViewHolder>(options) {\r\n            @Override\r\n            protected void onBindViewHolder(@NonNull FriendViewHolder holder, int position, @NonNull Friend model) {\r\n                String usersIds = getRef(position).getKey();\r\n                final Users[] users = {new Users()};\r\n                usersRef.child(usersIds).addValueEventListener(new ValueEventListener() {\r\n                    @Override\r\n                    public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                        users[0] = snapshot.getValue(Users.class);\r\n                        /*String profilePic = snapshot.child(\"profilepic\").getValue().toString();\r\n                        String username = snapshot.child(\"userName\").getValue().toString();\r\n\r\n                        holder.userName.setText(users[0].getUserName());\r\n                        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);\r\n                        FirebaseDatabase.getInstance().getReference().child(\"chats\").child(currentUserId+users[0].getUserId()).orderByChild(\"timestamp\")\r\n                                .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {\r\n                            @Override\r\n                            public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                                if(snapshot.hasChildren()){\r\n                                    for (DataSnapshot snapshot1: snapshot.getChildren()){\r\n                                        if((snapshot1.child(\"type\").getValue().toString()).equals(\"text\"))\r\n                                            holder.lastMessage.setText(snapshot1.child(\"message\").getValue(String.class));\r\n                                        else\r\n                                            holder.lastMessage.setText(\"image\");\r\n                                    }\r\n                                }\r\n                            }\r\n                            @Override\r\n                            public void onCancelled(@NonNull DatabaseError error) {\r\n                            }\r\n                        });\r\n                    }\r\n\r\n                    @Override\r\n                    public void onCancelled(@NonNull DatabaseError error) {\r\n\r\n                    }\r\n                });\r\n                holder.itemView.setOnClickListener(new View.OnClickListener() {\r\n                    @Override\r\n                    public void onClick(View v) {\r\n                        Intent intent = new Intent(this, ChatDetailActivity.class);\r\n                        intent.putExtra(\"userId\", users[0].getUserId());\r\n                        intent.putExtra(\"profilePic\", users[0].getProfilepic());\r\n                        intent.putExtra(\"userName\", users[0].getUserName());\r\n                        getContext().startActivity(intent);\r\n                    }\r\n                });\r\n            }\r\n\r\n            @NonNull\r\n            @Override\r\n            public CreateGroupActivity.FriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {\r\n                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sample_show_user,parent,false);\r\n                CreateGroupActivity.FriendViewHolder viewHolder = new CreateGroupActivity.FriendViewHolder(view);\r\n                return viewHolder;\r\n            }\r\n        };\r\n        friendList.setAdapter(adapter);\r\n        adapter.startListening();\r\n    }\r\n*/\r\n    public static class FriendViewHolder extends RecyclerView.ViewHolder {\r\n        ImageView image;\r\n        TextView userName, lastMessage;\r\n\r\n    public FriendViewHolder(@NonNull View itemView) {\r\n            super(itemView);\r\n            image = itemView.findViewById(R.id.profile_image);\r\n            userName = itemView.findViewById(R.id.userNameList);\r\n            lastMessage = itemView.findViewById(R.id.lastMessage);\r\n        }\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/chatapplication/CreateGroupActivity.java	(revision 19063dd3c3b1f5610ba6402601ff851fa977389a)
++++ app/src/main/java/com/example/chatapplication/CreateGroupActivity.java	(date 1619781355360)
+@@ -206,6 +206,16 @@
+ 
+                         }
+                     });
++                    for(int i = 0; i < selectedUsers.size(); i++) {
++                        FirebaseDatabase.getInstance().getReference().child("GroupMembers").child(gId)
++                                .child(selectedUsers.get(i)).child("isMember").setValue("Yes")
++                                .addOnCompleteListener(new OnCompleteListener<Void>() {
++                                    @Override
++                                    public void onComplete(@NonNull Task<Void> task) {
++
++                                    }
++                                });
++                    }
+                     selectedUsers.remove(currentUserId);
+                     FirebaseDatabase.getInstance().getReference().child("UsersGroups")
+                             .child(currentUserId).child(gId)
+@@ -233,8 +243,6 @@
+                                     }
+                                 }
+                             });
+-
+-
+                 }
+             }
+         });
+@@ -250,83 +258,14 @@
+     }
+     @Override
+     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+-        super.onActivityResult(requestCode, resultCode, data);
+-        if(data.getData() != null) {
++        if(data != null) {
++            super.onActivityResult(requestCode, resultCode, data);
+             sFile = data.getData();
+             binding.groupicon.setImageURI(sFile);
+         }
+     }
+ 
+ 
+-/*
+-    @Override
+-    public void onStart() {
+-        super.onStart();
+-        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Friend>()
+-                .setQuery(frdRef, Friend.class).build();
+-
+-        FirebaseRecyclerAdapter<Friend, CreateGroupActivity.FriendViewHolder> adapter = new FirebaseRecyclerAdapter<Friend, CreateGroupActivity.FriendViewHolder>(options) {
+-            @Override
+-            protected void onBindViewHolder(@NonNull FriendViewHolder holder, int position, @NonNull Friend model) {
+-                String usersIds = getRef(position).getKey();
+-                final Users[] users = {new Users()};
+-                usersRef.child(usersIds).addValueEventListener(new ValueEventListener() {
+-                    @Override
+-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+-                        users[0] = snapshot.getValue(Users.class);
+-                        /*String profilePic = snapshot.child("profilepic").getValue().toString();
+-                        String username = snapshot.child("userName").getValue().toString();
+-
+-                        holder.userName.setText(users[0].getUserName());
+-                        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
+-                        FirebaseDatabase.getInstance().getReference().child("chats").child(currentUserId+users[0].getUserId()).orderByChild("timestamp")
+-                                .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+-                            @Override
+-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+-                                if(snapshot.hasChildren()){
+-                                    for (DataSnapshot snapshot1: snapshot.getChildren()){
+-                                        if((snapshot1.child("type").getValue().toString()).equals("text"))
+-                                            holder.lastMessage.setText(snapshot1.child("message").getValue(String.class));
+-                                        else
+-                                            holder.lastMessage.setText("image");
+-                                    }
+-                                }
+-                            }
+-                            @Override
+-                            public void onCancelled(@NonNull DatabaseError error) {
+-                            }
+-                        });
+-                    }
+-
+-                    @Override
+-                    public void onCancelled(@NonNull DatabaseError error) {
+-
+-                    }
+-                });
+-                holder.itemView.setOnClickListener(new View.OnClickListener() {
+-                    @Override
+-                    public void onClick(View v) {
+-                        Intent intent = new Intent(this, ChatDetailActivity.class);
+-                        intent.putExtra("userId", users[0].getUserId());
+-                        intent.putExtra("profilePic", users[0].getProfilepic());
+-                        intent.putExtra("userName", users[0].getUserName());
+-                        getContext().startActivity(intent);
+-                    }
+-                });
+-            }
+-
+-            @NonNull
+-            @Override
+-            public CreateGroupActivity.FriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sample_show_user,parent,false);
+-                CreateGroupActivity.FriendViewHolder viewHolder = new CreateGroupActivity.FriendViewHolder(view);
+-                return viewHolder;
+-            }
+-        };
+-        friendList.setAdapter(adapter);
+-        adapter.startListening();
+-    }
+-*/
+     public static class FriendViewHolder extends RecyclerView.ViewHolder {
+         ImageView image;
+         TextView userName, lastMessage;
+Index: app/src/main/java/com/example/chatapplication/GroupChatActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.chatapplication;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\n\r\nimport android.app.Activity;\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\nimport android.util.Log;\r\nimport android.view.View;\r\nimport android.widget.ImageView;\r\nimport android.widget.Toast;\r\n\r\nimport com.example.chatapplication.Adapters.ChatAdapter;\r\nimport com.example.chatapplication.Adapters.GroupChatAdapter;\r\nimport com.example.chatapplication.Models.MessagesModel;\r\nimport com.example.chatapplication.Models.Users;\r\nimport com.example.chatapplication.databinding.ActivityGroupChatBinding;\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.OnSuccessListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\nimport com.squareup.picasso.Picasso;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.Date;\r\n\r\npublic class GroupChatActivity extends AppCompatActivity {\r\n\r\n    ActivityGroupChatBinding binding;\r\n    ImageView imgView;\r\n\r\n    String groupName;\r\n    String groupId;\r\n    String groupIcon;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        binding = ActivityGroupChatBinding.inflate(getLayoutInflater());\r\n        setContentView(binding.getRoot());\r\n        getSupportActionBar().hide();\r\n        binding.backArrow.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent intent = new Intent(GroupChatActivity.this,MainActivity.class);\r\n                startActivity(intent);\r\n            }\r\n        });\r\n        final FirebaseDatabase database = FirebaseDatabase.getInstance();\r\n        final ArrayList<MessagesModel> messagesModels = new ArrayList<>();\r\n\r\n        final String senderId = FirebaseAuth.getInstance().getUid();\r\n        final String[] senderName = new String[1];\r\n        final Users[] user = {null};\r\n        groupId = getIntent().getStringExtra(\"groupId\");\r\n        groupName = getIntent().getStringExtra(\"groupName\");;\r\n        groupIcon = getIntent().getStringExtra(\"groupIcon\");;\r\n        database.getReference().child(\"Users\").child(FirebaseAuth.getInstance().getUid())\r\n                .addListenerForSingleValueEvent(new ValueEventListener() {\r\n                    @Override\r\n                    public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                        user[0] = snapshot.getValue(Users.class);\r\n                    }\r\n\r\n                    @Override\r\n                    public void onCancelled(@NonNull DatabaseError error) {\r\n\r\n                    }\r\n                });\r\n        binding.userName.setText(groupName);\r\n        Picasso.get().load(groupIcon).placeholder(R.drawable.avatar).into(binding.profilePic);\r\n\r\n        final GroupChatAdapter adapter = new GroupChatAdapter(messagesModels,this);\r\n        binding.chatRecyclerView.setAdapter(adapter);\r\n\r\n        LinearLayoutManager linearLayout = new LinearLayoutManager(this);\r\n        binding.chatRecyclerView.setLayoutManager(linearLayout);\r\n\r\n        database.getReference().child(\"GroupChats\").child(groupId).addValueEventListener(new ValueEventListener() {\r\n            @Override\r\n            public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                messagesModels.clear();\r\n                for(DataSnapshot dataSnapshot: snapshot.getChildren()){\r\n                   MessagesModel model = dataSnapshot.getValue(MessagesModel.class);\r\n                   messagesModels.add(model);\r\n                }\r\n                adapter.notifyDataSetChanged();\r\n                binding.chatRecyclerView.smoothScrollToPosition(binding.chatRecyclerView.getAdapter().getItemCount());\r\n            }\r\n\r\n            @Override\r\n            public void onCancelled(@NonNull DatabaseError error) {\r\n\r\n            }\r\n        });\r\n        imgView = findViewById(R.id.attachments);\r\n        imgView.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                attachments atch = new attachments();\r\n                atch.show(getSupportFragmentManager(),atch.getTag());\r\n\r\n            }\r\n        });\r\n        binding.send.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                if (binding.etmessage.getText().toString().isEmpty()) {\r\n                    Toast.makeText(GroupChatActivity.this, \"Enter Message\", Toast.LENGTH_SHORT).show();\r\n                }\r\n                else {\r\n                final String message = binding.etmessage.getText().toString();\r\n                final MessagesModel model = new MessagesModel(senderId, user[0].getUserName(), message);\r\n                model.setTimestamp(new Date().getTime());\r\n                binding.etmessage.setText(\"\");\r\n                binding.chatRecyclerView.smoothScrollToPosition(binding.chatRecyclerView.getAdapter().getItemCount());\r\n                database.getReference().child(\"GroupChats\").child(groupId).push().setValue(model).addOnSuccessListener(new OnSuccessListener<Void>() {\r\n                    @Override\r\n                    public void onSuccess(Void aVoid) {\r\n\r\n                    }\r\n                });\r\n            }\r\n            }\r\n        });\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/chatapplication/GroupChatActivity.java	(revision 19063dd3c3b1f5610ba6402601ff851fa977389a)
++++ app/src/main/java/com/example/chatapplication/GroupChatActivity.java	(date 1619786008302)
+@@ -38,7 +38,8 @@
+     String groupName;
+     String groupId;
+     String groupIcon;
+-
++    String groupDesc;
++    String groupAdminId;
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+@@ -59,8 +60,10 @@
+         final String[] senderName = new String[1];
+         final Users[] user = {null};
+         groupId = getIntent().getStringExtra("groupId");
+-        groupName = getIntent().getStringExtra("groupName");;
+-        groupIcon = getIntent().getStringExtra("groupIcon");;
++        groupName = getIntent().getStringExtra("groupName");
++        groupIcon = getIntent().getStringExtra("groupIcon");
++        groupDesc = getIntent().getStringExtra("groupDesc");
++        groupAdminId = getIntent().getStringExtra("groupAdminId");
+         database.getReference().child("Users").child(FirebaseAuth.getInstance().getUid())
+                 .addListenerForSingleValueEvent(new ValueEventListener() {
+                     @Override
+@@ -97,6 +100,18 @@
+             @Override
+             public void onCancelled(@NonNull DatabaseError error) {
+ 
++            }
++        });
++        binding.profilePic.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                openGroupProfile();
++            }
++        });
++        binding.userName.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                openGroupProfile();
+             }
+         });
+         imgView = findViewById(R.id.attachments);
+@@ -130,4 +145,15 @@
+             }
+         });
+     }
++
++    private void openGroupProfile() {
++        Intent intent = new Intent(this, GroupProfile.class);
++        intent.putExtra("groupId", groupId);
++        intent.putExtra("groupIcon", groupIcon);
++        intent.putExtra("groupName", groupName);
++        intent.putExtra("groupDesc", groupDesc);
++        intent.putExtra("groupAdminId", groupAdminId);
++        //intent.putExtra("groupObject", (Serializable) group[0]);
++        this.startActivity(intent);
++    }
+ }
+\ No newline at end of file
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    package=\"com.example.chatapplication\">\r\n\r\n    <uses-feature android:name=\"android.hardware.camera2\" />\r\n    <uses-feature android:name=\"android.hardware.camera2.autofocus\" />\r\n    <uses-feature\r\n        android:glEsVersion=\"0x00020000\"\r\n        android:required=\"true\" />\r\n\r\n    <uses-permission android:name=\"android.permission.CAMERA\" /> <!-- PubNub Dependencies -->\r\n    <!-- <uses-permission android:name=\"android.permission.INTERNET\" /> -->\r\n    <uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />\r\n    <uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />\r\n    <uses-permission android:name=\"android.permission.RECORD_AUDIO\" />\r\n    <uses-permission android:name=\"android.permission.INTERNET\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>\r\n    <uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\" />\r\n    <uses-permission android:name=\"android.permission.WAKE_LOCK\" />\r\n    <uses-permission android:name=\"com.google.android.c2dm.permission.RECEIVE\" />\r\n    <uses-permission\r\n        android:name=\"com.example.chatapplication.permission.C2D_MESSAGE\"\r\n        android:protectionLevel=\"signature\" />\r\n    <uses-permission android:name=\"com.example.chatapplicationpermission.C2D_MESSAGE\" />\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/AppTheme\"\r\n        android:usesCleartextTraffic=\"true\">\r\n        <activity android:name=\".ForgetPasswordActivity\" />\r\n        <activity android:name=\".VideoCallActivity\" />\r\n        <activity android:name=\".AddFriendActivity\" />\r\n        <activity android:name=\".CreateGroupActivity\" />\r\n        <activity android:name=\".SettingsActivity\" />\r\n        <activity android:name=\".GroupChatActivity\" />\r\n        <activity android:name=\".ChatDetailActivity\" />\r\n        <activity android:name=\".SignInActivity\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n        <activity android:name=\".SignUpActivity\" />\r\n        <activity android:name=\".MainActivity\" />\r\n\r\n        <service android:name=\".Notfications.MyFirebaseIdService\"\r\n            android:enabled=\"true\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"com.google.firebase.INSTANCE_ID_EVENT\" />\r\n            </intent-filter>\r\n        </service>\r\n\r\n        <service android:name=\".Notfications.MyFirebaseMessagingService\"\r\n            android:enabled=\"true\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"com.google.firebase.MESSAGING_EVENT\" />\r\n            </intent-filter>\r\n        </service>\r\n\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/AndroidManifest.xml	(revision 19063dd3c3b1f5610ba6402601ff851fa977389a)
++++ app/src/main/AndroidManifest.xml	(date 1619778041253)
+@@ -3,28 +3,6 @@
+     xmlns:tools="http://schemas.android.com/tools"
+     package="com.example.chatapplication">
+ 
+-    <uses-feature android:name="android.hardware.camera2" />
+-    <uses-feature android:name="android.hardware.camera2.autofocus" />
+-    <uses-feature
+-        android:glEsVersion="0x00020000"
+-        android:required="true" />
+-
+-    <uses-permission android:name="android.permission.CAMERA" /> <!-- PubNub Dependencies -->
+-    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
+-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+-    <uses-permission android:name="android.permission.INTERNET" />
+-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+-    <uses-permission
+-        android:name="com.example.chatapplication.permission.C2D_MESSAGE"
+-        android:protectionLevel="signature" />
+-    <uses-permission android:name="com.example.chatapplicationpermission.C2D_MESSAGE" />
+-
+     <application
+         android:allowBackup="true"
+         android:icon="@mipmap/ic_launcher"
+@@ -33,12 +11,14 @@
+         android:supportsRtl="true"
+         android:theme="@style/AppTheme"
+         android:usesCleartextTraffic="true">
++
+         <activity android:name=".ForgetPasswordActivity" />
+         <activity android:name=".VideoCallActivity" />
+         <activity android:name=".AddFriendActivity" />
+         <activity android:name=".CreateGroupActivity" />
+         <activity android:name=".SettingsActivity" />
+         <activity android:name=".GroupChatActivity" />
++        <activity android:name=".GroupProfile" />
+         <activity android:name=".ChatDetailActivity" />
+         <activity android:name=".SignInActivity">
+             <intent-filter>
+@@ -50,7 +30,9 @@
+         <activity android:name=".SignUpActivity" />
+         <activity android:name=".MainActivity" />
+ 
+-        <service android:name=".Notfications.MyFirebaseIdService"
++
++        <service
++            android:name=".Notfications.MyFirebaseIdService"
+             android:enabled="true"
+             android:exported="true">
+             <intent-filter>
+@@ -58,7 +40,8 @@
+             </intent-filter>
+         </service>
+ 
+-        <service android:name=".Notfications.MyFirebaseMessagingService"
++        <service
++            android:name=".Notfications.MyFirebaseMessagingService"
+             android:enabled="true"
+             android:exported="true">
+             <intent-filter>
+@@ -68,4 +51,27 @@
+ 
+     </application>
+ 
++    <uses-feature android:name="android.hardware.camera2" />
++    <uses-feature android:name="android.hardware.camera2.autofocus" />
++    <uses-feature
++        android:glEsVersion="0x00020000"
++        android:required="true" />
++
++    <!--<uses-permission android:name="android.permission.WAKE_LOCK" /> --><!-- PubNub Dependencies -->
++    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
++    <uses-permission android:name="android.permission.CAMERA" />
++    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
++    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
++    <uses-permission android:name="android.permission.RECORD_AUDIO" />
++    <uses-permission android:name="android.permission.INTERNET" />
++    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
++    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
++    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
++    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
++    <uses-permission
++        android:name="com.example.chatapplication.permission.C2D_MESSAGE"
++        android:protectionLevel="signature" />
++
++    <uses-permission android:name="com.example.chatapplicationpermission.C2D_MESSAGE" />
++
+ </manifest>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_create_group.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:paddingBottom=\"15dp\"\r\n    android:paddingLeft=\"15dp\"\r\n    android:paddingRight=\"15dp\"\r\n    android:paddingTop=\"15dp\"\r\n    tools:context=\".CreateGroupActivity\">\r\n\r\n    <de.hdodenhof.circleimageview.CircleImageView\r\n        android:id=\"@+id/groupicon\"\r\n        android:layout_width=\"75dp\"\r\n        android:layout_height=\"75dp\"\r\n        android:layout_marginHorizontal=\"10dp\"\r\n        android:src=\"@drawable/ic_user\"\r\n        app:civ_border_color=\"#FF000000\"\r\n        app:civ_border_width=\"1dp\"\r\n        android:layout_alignParentTop=\"true\"\r\n        android:layout_alignParentStart=\"true\"/>\r\n\r\n    <ImageView\r\n        android:id=\"@+id/plus\"\r\n        android:layout_width=\"20dp\"\r\n        android:layout_height=\"20dp\"\r\n        android:layout_alignEnd=\"@id/groupicon\"\r\n        app:srcCompat=\"@drawable/ic_plus\"/>\r\n\r\n    <TextView\r\n        android:id=\"@+id/textView2\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginHorizontal=\"12dp\"\r\n        android:layout_below=\"@id/groupicon\"\r\n        android:text=\"Group Icon\"\r\n        android:layout_alignParentStart=\"true\"/>\r\n\r\n    <EditText\r\n        android:id=\"@+id/txgroupname\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_alignParentEnd=\"true\"\r\n        android:layout_alignParentTop=\"true\"\r\n        android:ems=\"10\"\r\n        android:hint=\"Group Name\"\r\n        android:inputType=\"textPersonName\"\r\n        android:padding=\"12dp\" />\r\n\r\n    <EditText\r\n        android:id=\"@+id/txgroupdesc\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginTop=\"10dp\"\r\n        android:layout_alignParentEnd=\"true\"\r\n        android:layout_below=\"@+id/txgroupname\"\r\n        android:ems=\"10\"\r\n        android:hint=\"Group Description\"\r\n        android:inputType=\"textMultiLine\"\r\n        android:paddingLeft=\"12dp\"\r\n        />\r\n    <Button\r\n        android:id=\"@+id/creategroup\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"Create\"\r\n        android:layout_alignParentBottom=\"true\"\r\n        android:layout_alignParentEnd=\"true\" />\r\n\r\n\r\n\r\n    <androidx.recyclerview.widget.RecyclerView\r\n        android:id=\"@+id/chatRecyclerView\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"match_parent\"\r\n        android:layout_marginTop=\"15dp\"\r\n        android:layout_marginBottom=\"100dp\"\r\n        android:layout_below=\"@+id/txgroupdesc\"/>\r\n</RelativeLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_create_group.xml	(revision 19063dd3c3b1f5610ba6402601ff851fa977389a)
++++ app/src/main/res/layout/activity_create_group.xml	(date 1619786009099)
+@@ -75,6 +75,6 @@
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_marginTop="15dp"
+-        android:layout_marginBottom="100dp"
++        android:layout_marginBottom="50dp"
+         android:layout_below="@+id/txgroupdesc"/>
+ </RelativeLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/chatapplication/SettingsActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.chatapplication;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.content.Intent;\r\nimport android.net.Uri;\r\nimport android.os.Bundle;\r\nimport android.view.View;\r\nimport android.widget.Toast;\r\n\r\nimport com.example.chatapplication.Models.Users;\r\nimport com.example.chatapplication.databinding.ActivitySettingsBinding;\r\nimport com.google.android.gms.tasks.OnSuccessListener;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\nimport com.google.firebase.storage.FirebaseStorage;\r\nimport com.google.firebase.storage.StorageReference;\r\nimport com.google.firebase.storage.UploadTask;\r\nimport com.squareup.picasso.Picasso;\r\n\r\nimport java.util.HashMap;\r\n\r\npublic class SettingsActivity extends AppCompatActivity {\r\n\r\n    ActivitySettingsBinding binding;\r\n    FirebaseStorage storage;\r\n    FirebaseAuth auth;\r\n    FirebaseDatabase database;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n\r\n        binding = ActivitySettingsBinding.inflate(getLayoutInflater());\r\n        setContentView(binding.getRoot());\r\n\r\n        getSupportActionBar().hide();\r\n\r\n        storage = FirebaseStorage.getInstance();\r\n        auth = FirebaseAuth.getInstance();\r\n        database = FirebaseDatabase.getInstance();\r\n\r\n        binding.backArrow.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);\r\n                startActivity(intent);\r\n\r\n            }\r\n        });\r\n\r\n        binding.saveButton.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                String status = binding.etStatus.getText().toString();\r\n                String username = binding.etUserName.getText().toString();\r\n\r\n                HashMap<String , Object> obj = new HashMap<>();\r\n                obj.put(\"userName\" , username);\r\n                obj.put(\"status\" , status);\r\n\r\n                database.getReference().child(\"Users\").child(FirebaseAuth.getInstance().getUid()).updateChildren(obj);\r\n                Toast.makeText(SettingsActivity.this, \"Profile Updated\", Toast.LENGTH_SHORT).show();\r\n            }\r\n        });\r\n\r\n        database.getReference().child(\"Users\").child(FirebaseAuth.getInstance().getUid())\r\n                .addListenerForSingleValueEvent(new ValueEventListener() {\r\n                    @Override\r\n                    public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                        Users users = snapshot.getValue(Users.class);\r\n                        Picasso.get().load(users.getProfilepic()).placeholder(R.drawable.ic_user).into(binding.profileImage);\r\n\r\n                        binding.etStatus.setText(users.getStatus());\r\n                        binding.etUserName.setText(users.getUserName());\r\n\r\n                    }\r\n\r\n                    @Override\r\n                    public void onCancelled(@NonNull DatabaseError error) {\r\n\r\n                    }\r\n                });\r\n        binding.plus.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent intent = new Intent();\r\n                intent.setAction(Intent.ACTION_GET_CONTENT);\r\n                intent.setType(\"image/*\");\r\n                startActivityForResult(intent, 33);\r\n\r\n            }\r\n        });\r\n    }\r\n\r\n    @Override\r\n    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {\r\n        super.onActivityResult(requestCode, resultCode, data);\r\n        if(data.getData() != null) {\r\n            Uri sFile = data.getData();\r\n            binding.profileImage.setImageURI(sFile);\r\n\r\n            final StorageReference reference = storage.getReference().child(\"profile_pictures\")\r\n                    .child(FirebaseAuth.getInstance().getUid());\r\n            reference.putFile(sFile).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {\r\n                @Override\r\n                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {\r\n                    reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {\r\n                        @Override\r\n                        public void onSuccess(Uri uri) {\r\n                            database.getReference().child(\"Users\").child(FirebaseAuth.getInstance().getUid())\r\n                                    .child(\"profilepic\").setValue(uri.toString());\r\n                            Toast.makeText(SettingsActivity.this, \"Profile Pic Updated\", Toast.LENGTH_SHORT).show();\r\n                        }\r\n                    });\r\n                }\r\n            });\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/chatapplication/SettingsActivity.java	(revision 19063dd3c3b1f5610ba6402601ff851fa977389a)
++++ app/src/main/java/com/example/chatapplication/SettingsActivity.java	(date 1619769314632)
+@@ -100,26 +100,28 @@
+ 
+     @Override
+     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+-        super.onActivityResult(requestCode, resultCode, data);
+-        if(data.getData() != null) {
+-            Uri sFile = data.getData();
+-            binding.profileImage.setImageURI(sFile);
++        if(data != null) {
++            super.onActivityResult(requestCode, resultCode, data);
++            if(data.getData() != null) {
++                Uri sFile = data.getData();
++                binding.profileImage.setImageURI(sFile);
+ 
+-            final StorageReference reference = storage.getReference().child("profile_pictures")
+-                    .child(FirebaseAuth.getInstance().getUid());
+-            reference.putFile(sFile).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+-                @Override
+-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+-                    reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+-                        @Override
+-                        public void onSuccess(Uri uri) {
+-                            database.getReference().child("Users").child(FirebaseAuth.getInstance().getUid())
+-                                    .child("profilepic").setValue(uri.toString());
+-                            Toast.makeText(SettingsActivity.this, "Profile Pic Updated", Toast.LENGTH_SHORT).show();
+-                        }
+-                    });
+-                }
+-            });
++                final StorageReference reference = storage.getReference().child("profile_pictures")
++                        .child(FirebaseAuth.getInstance().getUid());
++                reference.putFile(sFile).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
++                    @Override
++                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
++                        reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
++                            @Override
++                            public void onSuccess(Uri uri) {
++                                database.getReference().child("Users").child(FirebaseAuth.getInstance().getUid())
++                                        .child("profilepic").setValue(uri.toString());
++                                Toast.makeText(SettingsActivity.this, "Profile Pic Updated", Toast.LENGTH_SHORT).show();
++                            }
++                        });
++                    }
++                });
++            }
+         }
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources>\r\n    <string name=\"app_name\">ChatApplication</string>\r\n    <!-- TODO: Remove or change this placeholder text -->\r\n    <string name=\"hello_blank_fragment\">Hello blank fragment</string>\r\n    <string name=\"STDBY_SUFFIX\">-stdby</string>\r\n    <string name=\"USER_NAME\">user_name</string>\r\n    <string name=\"JSON_CALL_USER\">call_user</string>\r\n    <string name=\"title_activity_settings2\">SettingsActivity2</string>\r\n\r\n    <!-- Preference Titles -->\r\n    <string name=\"messages_header\">Messages</string>\r\n    <string name=\"sync_header\">Sync</string>\r\n\r\n    <!-- Messages Preferences -->\r\n    <string name=\"signature_title\">Your signature</string>\r\n    <string name=\"reply_title\">Default reply action</string>\r\n\r\n    <!-- Sync Preferences -->\r\n    <string name=\"sync_title\">Sync email periodically</string>\r\n    <string name=\"attachment_title\">Download incoming attachments</string>\r\n    <string name=\"attachment_summary_on\">Automatically download attachments for incoming emails\r\n    </string>\r\n    <string name=\"attachment_summary_off\">Only download attachments when manually requested</string>\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/strings.xml	(revision 19063dd3c3b1f5610ba6402601ff851fa977389a)
++++ app/src/main/res/values/strings.xml	(date 1619772592110)
+@@ -21,4 +21,10 @@
+     <string name="attachment_summary_on">Automatically download attachments for incoming emails
+     </string>
+     <string name="attachment_summary_off">Only download attachments when manually requested</string>
++    <string name="title_activity_group_profile">GroupProfile</string>
++    <!--
++    This string is used for square devices and overridden by hello_world in
++    values-round/strings.xml for round devices.
++    -->
++    <string name="hello_world">Hello Square World!</string>
+ </resources>
+\ No newline at end of file
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>apply plugin: 'com.android.application'\r\napply plugin: 'com.google.gms.google-services'\r\n\r\nandroid {\r\n    compileSdkVersion 30\r\n    buildToolsVersion \"30.0.3\"\r\n\r\n    defaultConfig {\r\n        applicationId \"com.example.chatapplication\"\r\n        minSdkVersion 23\r\n        targetSdkVersion 27\r\n        versionCode 1\r\n        versionName \"1.0\"\r\n        testInstrumentationRunner \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            minifyEnabled false\r\n            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'\r\n        }\r\n    }\r\n\r\n    buildFeatures {\r\n        viewBinding true\r\n    }\r\n\r\n    compileOptions {\r\n        sourceCompatibility JavaVersion.VERSION_1_8\r\n        targetCompatibility JavaVersion.VERSION_1_8\r\n    }\r\n}\r\n\r\n\r\ndependencies {\r\n    implementation fileTree(dir: \"libs\", include: [\"*.jar\"])\r\n    implementation 'androidx.appcompat:appcompat:1.2.0'\r\n    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'\r\n    implementation 'androidx.recyclerview:recyclerview:1.1.0'\r\n    implementation platform('com.google.firebase:firebase-bom:26.6.0')\r\n    implementation 'com.google.firebase:firebase-auth'\r\n    implementation 'com.google.firebase:firebase-database'\r\n    implementation 'com.google.android.gms:play-services-auth:19.0.0'\r\n    implementation 'com.google.android.material:material:1.3.0'\r\n    implementation 'androidx.legacy:legacy-support-v4:1.0.0'\r\n    implementation 'com.github.d-max:spots-dialog:1.1@aar'\r\n    implementation 'com.firebaseui:firebase-ui-database:7.1.1'\r\n    implementation 'com.github.bumptech.glide:glide:4.12.0'\r\n    implementation 'androidx.preference:preference:1.1.1'\r\n    implementation 'com.google.firebase:firebase-messaging'\r\n    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'\r\n\r\n    implementation 'de.hdodenhof:circleimageview:3.1.0'\r\n\r\n    implementation 'com.squareup.picasso:picasso:2.71828'\r\n    implementation 'com.google.firebase:firebase-storage:19.2.2'\r\n\r\n    implementation 'com.squareup.retrofit2:retrofit:2.3.0'\r\n    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'\r\n\r\n    testImplementation 'junit:junit:4.12'\r\n    androidTestImplementation 'androidx.test.ext:junit:1.1.2'\r\n    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'\r\n\r\n    implementation ('org.jitsi.react:jitsi-meet-sdk:2.+') { transitive = true }\r\n\r\n    //Notification\r\n    //noinspection GradleCompatible,GradleCompatible\r\n    implementation \"com.android.support:support-compat:28.0.0\"\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build.gradle	(revision 19063dd3c3b1f5610ba6402601ff851fa977389a)
++++ app/build.gradle	(date 1619772595906)
+@@ -48,6 +48,7 @@
+     implementation 'com.github.bumptech.glide:glide:4.12.0'
+     implementation 'androidx.preference:preference:1.1.1'
+     implementation 'com.google.firebase:firebase-messaging'
++    implementation 'androidx.wear:wear:1.0.0'
+     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+ 
+     implementation 'de.hdodenhof:circleimageview:3.1.0'
+@@ -67,5 +68,6 @@
+     //Notification
+     //noinspection GradleCompatible,GradleCompatible
+     implementation "com.android.support:support-compat:28.0.0"
++    compileOnly 'com.google.android.wearable:wearable:2.6.0'
+ 
+ }
+\ No newline at end of file

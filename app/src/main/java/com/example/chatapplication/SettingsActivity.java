@@ -100,26 +100,28 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(data.getData() != null) {
-            Uri sFile = data.getData();
-            binding.profileImage.setImageURI(sFile);
+        if(data != null) {
+            super.onActivityResult(requestCode, resultCode, data);
+            if(data.getData() != null) {
+                Uri sFile = data.getData();
+                binding.profileImage.setImageURI(sFile);
 
-            final StorageReference reference = storage.getReference().child("profile_pictures")
-                    .child(FirebaseAuth.getInstance().getUid());
-            reference.putFile(sFile).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            database.getReference().child("Users").child(FirebaseAuth.getInstance().getUid())
-                                    .child("profilepic").setValue(uri.toString());
-                            Toast.makeText(SettingsActivity.this, "Profile Pic Updated", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            });
+                final StorageReference reference = storage.getReference().child("profile_pictures")
+                        .child(FirebaseAuth.getInstance().getUid());
+                reference.putFile(sFile).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                database.getReference().child("Users").child(FirebaseAuth.getInstance().getUid())
+                                        .child("profilepic").setValue(uri.toString());
+                                Toast.makeText(SettingsActivity.this, "Profile Pic Updated", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+            }
         }
     }
 }

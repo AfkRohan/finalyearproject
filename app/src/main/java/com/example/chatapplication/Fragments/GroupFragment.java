@@ -134,6 +134,8 @@ public class GroupFragment extends Fragment {
                         intent.putExtra("groupId", group[0].getGroupId());
                         intent.putExtra("groupIcon", group[0].getGroupIcon());
                         intent.putExtra("groupName", group[0].getGroupName());
+                        intent.putExtra("groupDesc", group[0].getGroupDesc());
+                        intent.putExtra("groupAdminId", group[0].getGroupAdminId());
                         //intent.putExtra("groupObject", (Serializable) group[0]);
                         getContext().startActivity(intent);
                     }
