@@ -99,7 +99,7 @@ public class AddGroupMembersActivity extends AppCompatActivity {
                         String username = snapshot.child("userName").getValue().toString();
 */
                         holder.userName.setText(users[0].getUserName());
-                        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
+                        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.ic_user).into(holder.image);
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
