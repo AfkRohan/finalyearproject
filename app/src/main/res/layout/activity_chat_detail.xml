@@ -61,13 +61,13 @@
                 app:layout_constraintVertical_bias="0.523" />
 
 
-
             <ImageView
                 android:id="@+id/videoCallIcon"
                 android:layout_width="35dp"
                 android:layout_height="30dp"
                 android:contentDescription="Video call icon"
                 android:src="@drawable/ic_baseline_videocam_24"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imageView2"
                 app:layout_constraintTop_toTopOf="parent"
@@ -80,6 +80,7 @@
                 android:layout_marginEnd="5dp"
                 android:contentDescription="Three Dots icon"
                 android:src="@drawable/ic_more"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

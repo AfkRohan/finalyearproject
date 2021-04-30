@@ -8,11 +8,28 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:layout_height="280dp">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:padding="10dp"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/ic_hi_face_speech_bubble"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@color/grayBackground"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
+        android:background="#00ccff"
         android:padding="20dp">
 
         <EditText
@@ -20,9 +37,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@color/white"
+            android:background="@drawable/search_layout"
             android:ems="10"
+            android:fontFamily="monospace"
             android:gravity="center"
+            android:backgroundTint="@color/white"
             android:hint="SECRET CODE"
             android:inputType="textPersonName"
             android:padding="10dp"
@@ -36,7 +55,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
-            android:background="@color/white"
+            android:background="@drawable/search_layout"
+            android:backgroundTint="@color/white"
+            android:fontFamily="@font/nunito_bold"
             android:padding="10dp"
             android:text="Create"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -50,7 +71,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
-            android:background="@color/white"
+            android:background="@drawable/search_layout"
+            android:backgroundTint="@color/white"
+            android:fontFamily="@font/nunito_bold"
             android:padding="10dp"
             android:text="Join"
             app:layout_constraintBottom_toBottomOf="parent"

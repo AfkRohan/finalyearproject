@@ -17,7 +17,6 @@ import com.example.chatapplication.Adapters.ChatAdapter;
 import com.example.chatapplication.Fragments.APIServices;
 import com.example.chatapplication.Models.MessagesModel;
 import com.example.chatapplication.Models.Users;
-import com.example.chatapplication.Models.Video_Call;
 import com.example.chatapplication.Notfications.Client;
 import com.example.chatapplication.Notfications.Data;
 import com.example.chatapplication.Notfications.MyResponse;
@@ -55,7 +54,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static java.lang.String.format;
-import static java.lang.String.valueOf;
 
 public class  ChatDetailActivity extends AppCompatActivity {
 
@@ -120,7 +118,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
         String profilePic = getIntent().getStringExtra("profilePic");
 
         binding.userName.setText(userName);
-        Picasso.get().load(profilePic).placeholder(R.drawable.avatar).into(binding.profilePic);
+        Picasso.get().load(profilePic).placeholder(R.drawable.ic_user).into(binding.profilePic);
 
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override

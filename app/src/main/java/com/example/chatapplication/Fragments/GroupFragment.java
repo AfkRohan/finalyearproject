@@ -2,27 +2,21 @@ package com.example.chatapplication.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.chatapplication.Adapters.UsersAdapter;
-import com.example.chatapplication.ChatDetailActivity;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.chatapplication.GroupChatActivity;
 import com.example.chatapplication.Models.Group;
-import com.example.chatapplication.Models.Group;
-import com.example.chatapplication.Models.Users;
 import com.example.chatapplication.Notfications.Token;
 import com.example.chatapplication.R;
-import com.example.chatapplication.databinding.FragmentChatsBinding;
 import com.example.chatapplication.databinding.FragmentGroupBinding;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -35,7 +29,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class GroupFragment extends Fragment {
@@ -102,7 +95,7 @@ public class GroupFragment extends Fragment {
                         String username = snapshot.child("userName").getValue().toString();
 */
                         holder.groupName.setText(group[0].getGroupName());
-                        Picasso.get().load(group[0].getGroupIcon()).placeholder(R.drawable.avatar).into(holder.image);
+                        Picasso.get().load(group[0].getGroupIcon()).placeholder(R.drawable.ic_user).into(holder.image);
                         /*FirebaseDatabase.getInstance().getReference().child("chats").child(currentUserId+group[0].getUserId()).orderByChild("timestamp")
                                 .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override

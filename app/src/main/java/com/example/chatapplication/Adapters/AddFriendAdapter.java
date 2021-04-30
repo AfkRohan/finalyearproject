@@ -43,7 +43,7 @@ public class AddFriendAdapter extends RecyclerView.Adapter<AddFriendAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Users users = list.get(position);
-        Picasso.get().load(users.getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
+        Picasso.get().load(users.getProfilepic()).placeholder(R.drawable.ic_user).into(holder.image);
         holder.userName.setText(users.getUserName());
         holder.status.setText(users.getStatus());
 

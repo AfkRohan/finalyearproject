@@ -26,7 +26,6 @@ import com.example.chatapplication.Models.Users;
 import com.example.chatapplication.databinding.ActivityGroupProfileBinding;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -71,7 +70,7 @@ public class GroupProfile extends AppCompatActivity {
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         binding.groupname.setText(groupName);
-        Picasso.get().load(groupIcon).placeholder(R.drawable.avatar).into(binding.groupicon);
+        Picasso.get().load(groupIcon).placeholder(R.drawable.ic_user).into(binding.groupicon);
         binding.desc.setText(groupDesc);
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Friend>()
                 .setQuery(memRef, Friend.class).build();
@@ -89,7 +88,7 @@ public class GroupProfile extends AppCompatActivity {
                         String username = snapshot.child("userName").getValue().toString();
 */
                         holder.userName.setText(users[0].getUserName());
-                        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
+                        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.ic_user).into(holder.image);
                     }
 
                     @Override

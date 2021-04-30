@@ -1,11 +1,5 @@
 package com.example.chatapplication;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,19 +8,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.chatapplication.Fragments.ChatsFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.chatapplication.Models.Friend;
 import com.example.chatapplication.Models.Group;
-import com.example.chatapplication.Models.MessagesModel;
 import com.example.chatapplication.Models.Users;
-import com.example.chatapplication.databinding.ActivityAddFriendBinding;
 import com.example.chatapplication.databinding.ActivityCreateGroupBinding;
-import com.example.chatapplication.databinding.FragmentChatsBinding;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -96,7 +91,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                         String username = snapshot.child("userName").getValue().toString();
 */
                         holder.userName.setText(users[0].getUserName());
-                        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
+                        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.ic_user).into(holder.image);
                         FirebaseDatabase.getInstance().getReference().child("chats").child(currentUserId+users[0].getUserId()).orderByChild("timestamp")
                                 .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
