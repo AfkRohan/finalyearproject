@@ -1,13 +1,23 @@
 package com.example.chatapplication.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.chatapplication.R;
+import com.example.chatapplication.VideoCallActivity;
+
+import org.jitsi.meet.sdk.JitsiMeetActivity;
+import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +35,9 @@ public class CallsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private EditText code;
+    private Button create,join;
 
     public CallsFragment() {
         // Required empty public constructor
@@ -61,6 +74,36 @@ public class CallsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_calls, container, false);
+        View view= inflater.inflate(R.layout.fragment_calls, container, false);
+
+        code = (EditText) view.findViewById(R.id.videoCallCode);
+        join = (Button) view.findViewById(R.id.joinVideoCallRoom);
+        create = (Button) view.findViewById(R.id.createVideoCallRoom);
+        return view;
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        join.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String secretCode = code.getText().toString();
+                Intent intent = new Intent(getContext(), VideoCallActivity.class);
+                intent.putExtra("room",secretCode);
+                startActivity(intent);
+            }
+        });
+        create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String secretCode = code.getText().toString();
+                Intent intent = new Intent(getContext(), VideoCallActivity.class);
+                intent.putExtra("room",secretCode);
+                startActivity(intent);
+            }
+        });
     }
 }

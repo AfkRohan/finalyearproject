@@ -16,7 +16,7 @@
         android:padding="20dp">
 
         <EditText
-            android:id="@+id/secretcode"
+            android:id="@+id/videoCallCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -31,7 +31,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/create"
+            android:id="@+id/createVideoCallRoom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -40,12 +40,12 @@
             android:padding="10dp"
             android:text="Create"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/join"
+            app:layout_constraintEnd_toStartOf="@+id/joinVideoCallRoom"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/secretcode" />
+            app:layout_constraintTop_toBottomOf="@+id/videoCallCode" />
 
         <Button
-            android:id="@+id/join"
+            android:id="@+id/joinVideoCallRoom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -55,8 +55,8 @@
             android:text="Join"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/create"
-            app:layout_constraintTop_toBottomOf="@+id/secretcode"
+            app:layout_constraintStart_toEndOf="@+id/createVideoCallRoom"
+            app:layout_constraintTop_toBottomOf="@+id/videoCallCode"
             app:layout_constraintVertical_bias="1.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
