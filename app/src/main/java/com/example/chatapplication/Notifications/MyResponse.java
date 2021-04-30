@@ -1,4 +1,4 @@
-package com.example.chatapplication.Notfications;
+package com.example.chatapplication.Notifications;
 
 public class MyResponse {
     public int success;

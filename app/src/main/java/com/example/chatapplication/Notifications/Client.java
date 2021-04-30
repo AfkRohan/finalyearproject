@@ -1,4 +1,4 @@
-package com.example.chatapplication.Notfications;
+package com.example.chatapplication.Notifications;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

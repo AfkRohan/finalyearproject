@@ -1,4 +1,4 @@
-package com.example.chatapplication.Notfications;
+package com.example.chatapplication.Notifications;
 
 public class Sender {
     private Data data;

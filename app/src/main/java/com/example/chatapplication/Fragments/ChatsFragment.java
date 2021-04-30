@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatapplication.ChatDetailActivity;
 import com.example.chatapplication.Models.Friend;
 import com.example.chatapplication.Models.Users;
-import com.example.chatapplication.Notfications.Token;
+import com.example.chatapplication.Notifications.Token;
 import com.example.chatapplication.R;
 import com.example.chatapplication.databinding.FragmentChatsBinding;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;

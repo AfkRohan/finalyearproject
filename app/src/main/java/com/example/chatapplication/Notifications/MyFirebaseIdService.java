@@ -1,4 +1,4 @@
-package com.example.chatapplication.Notfications;
+package com.example.chatapplication.Notifications;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

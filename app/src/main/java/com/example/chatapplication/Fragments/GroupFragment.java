@@ -14,15 +14,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.chatapplication.Adapters.UsersAdapter;
-import com.example.chatapplication.ChatDetailActivity;
 import com.example.chatapplication.GroupChatActivity;
 import com.example.chatapplication.Models.Group;
-import com.example.chatapplication.Models.Group;
-import com.example.chatapplication.Models.Users;
-import com.example.chatapplication.Notfications.Token;
+import com.example.chatapplication.Notifications.Token;
 import com.example.chatapplication.R;
-import com.example.chatapplication.databinding.FragmentChatsBinding;
 import com.example.chatapplication.databinding.FragmentGroupBinding;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -35,7 +30,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class GroupFragment extends Fragment {

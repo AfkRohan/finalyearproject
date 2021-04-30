@@ -17,12 +17,11 @@ import com.example.chatapplication.Adapters.ChatAdapter;
 import com.example.chatapplication.Fragments.APIServices;
 import com.example.chatapplication.Models.MessagesModel;
 import com.example.chatapplication.Models.Users;
-import com.example.chatapplication.Models.Video_Call;
-import com.example.chatapplication.Notfications.Client;
-import com.example.chatapplication.Notfications.Data;
-import com.example.chatapplication.Notfications.MyResponse;
-import com.example.chatapplication.Notfications.Sender;
-import com.example.chatapplication.Notfications.Token;
+import com.example.chatapplication.Notifications.Client;
+import com.example.chatapplication.Notifications.Data;
+import com.example.chatapplication.Notifications.MyResponse;
+import com.example.chatapplication.Notifications.Sender;
+import com.example.chatapplication.Notifications.Token;
 import com.example.chatapplication.databinding.ActivityChatDetailBinding;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -67,9 +66,6 @@ public class  ChatDetailActivity extends AppCompatActivity {
     FirebaseDatabase database;
     FirebaseAuth auth;
     ImageView imgView;
-    private static String inputFormat = "HH:mm";
-    SimpleDateFormat inputParser = new SimpleDateFormat(inputFormat, Locale.getDefault());
-    Calendar calendar = Calendar.getInstance();
     public Uri datafile;
     private String imageUrl;
     private String  receiver;
@@ -131,12 +127,10 @@ public class  ChatDetailActivity extends AppCompatActivity {
             }
         });
 
-        // Video Call
-        final String senderRoom = senderId + receivedId;
-        final  String receiverRoom = receivedId + senderId;
-        binding.videoCallIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//         Video Call
+//        binding.videoCallIcon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
 //                String call_time = valueOf(Calendar.getInstance().get(Calendar.HOUR))+":"+ valueOf(Calendar.getInstance().get(Calendar.MINUTE));
 //                int year = Calendar.getInstance().get(Calendar.YEAR);
 //                int month = Calendar.getInstance().get(Calendar.MONTH);
@@ -170,12 +164,12 @@ public class  ChatDetailActivity extends AppCompatActivity {
 //                calling.putExtra("sRoom",senderRoom);
 //                calling.putExtra("rRoom",receiverRoom);
 //                startActivity(calling);
-            }
-        });
+//            }
+//        });
 
-
+        final String senderRoom = senderId + receivedId;
+        final  String receiverRoom = receivedId + senderId;
         final ArrayList <MessagesModel> messagesModels = new ArrayList<>();
-
         final ChatAdapter chatAdapter = new ChatAdapter(messagesModels, this , receivedId,senderId);
 
         binding.chatRecyclerView.setAdapter(chatAdapter);

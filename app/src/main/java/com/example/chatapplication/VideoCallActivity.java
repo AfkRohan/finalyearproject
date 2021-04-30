@@ -32,6 +32,7 @@ public class VideoCallActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_videocall);
 
+        getSupportActionBar().hide();
         Intent intent = getIntent();
         String room = intent.getStringExtra("room");
 

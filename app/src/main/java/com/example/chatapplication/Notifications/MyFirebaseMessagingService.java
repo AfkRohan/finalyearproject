@@ -1,4 +1,4 @@
-package com.example.chatapplication.Notfications;
+package com.example.chatapplication.Notifications;
 
 import android.app.Notification;
 import android.app.NotificationManager;

@@ -1,4 +1,4 @@
-package com.example.chatapplication.Notfications;
+package com.example.chatapplication.Notifications;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
