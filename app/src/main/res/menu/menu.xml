@@ -11,10 +11,6 @@
         android:title="Create Group"
         />
     <item
-        android:id="@+id/group"
-        android:title="Groups"
-        />
-    <item
         android:id="@+id/settings"
         android:title="Profile"
         />

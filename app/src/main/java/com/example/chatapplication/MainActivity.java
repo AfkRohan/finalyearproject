@@ -1,9 +1,5 @@
 package com.example.chatapplication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -17,11 +13,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.chatapplication.SignInActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.example.chatapplication.Adapters.FragmentsAdapter;
-import com.example.chatapplication.AddFriendActivity;
 import com.example.chatapplication.databinding.ActivityMainBinding;
-import com.google.android.gms.common.internal.Objects;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -101,10 +98,10 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent3 = new Intent(MainActivity.this, CreateGroupActivity.class);
                 startActivity(intent3);
                 break;
-            case R.id.group:
+            /*case R.id.group:
                 Intent intent1 = new Intent(MainActivity.this, GroupChatActivity.class);
                 startActivity(intent1);
-                break;
+                break;*/
             case R.id.logout:
                 SignInActivity.signOut(this);
                 auth.signOut();
