@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
+        <activity android:name=".AddGroupMembersActivity"></activity>
         <activity android:name=".ForgetPasswordActivity" />
         <activity android:name=".VideoCallActivity" />
         <activity android:name=".AddFriendActivity" />
@@ -30,7 +30,6 @@
         <activity android:name=".SignUpActivity" />
         <activity android:name=".MainActivity" />
 
-
         <service
             android:name=".Notfications.MyFirebaseIdService"
             android:enabled="true"
@@ -39,7 +38,6 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name=".Notfications.MyFirebaseMessagingService"
             android:enabled="true"
@@ -48,17 +46,14 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
     </application>
-
     <uses-feature android:name="android.hardware.camera2" />
-    <uses-feature android:name="android.hardware.camera2.autofocus" />
+    <uses-feature android:name="android.hardware.camera2.autofocus" /> <!-- <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
+    <!-- PubNub Dependencies -->
+    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
-
-    <!--<uses-permission android:name="android.permission.WAKE_LOCK" /> --><!-- PubNub Dependencies -->
-    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

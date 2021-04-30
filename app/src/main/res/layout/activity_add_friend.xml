@@ -14,7 +14,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/nunito_bold"
         android:text="Add Friend"
         android:textColor="#555555"
@@ -28,7 +28,7 @@
         android:layout_alignStart="@+id/heading_label"
         android:layout_below="@+id/heading_label"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_toStartOf="@+id/search_btn"
         android:background="@drawable/search_layout"
         android:ems="10"
@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/search_field"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="25dp">
     </androidx.recyclerview.widget.RecyclerView>
 
 
