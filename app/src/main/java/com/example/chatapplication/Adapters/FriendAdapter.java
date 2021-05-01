@@ -19,7 +19,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.platforminfo.UserAgentPublisher;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -63,7 +62,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
                         System.out.println(" this is test" + error);
                     }
                 });
-        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
+        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.ic_user).into(holder.image);
         holder.userName.setText(users[0].getUserName());
 
         FirebaseDatabase.getInstance().getReference().child("chats").child(FirebaseAuth.getInstance().getUid()+ users[0].getUserId()).orderByChild("timestamp")

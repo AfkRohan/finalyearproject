@@ -89,7 +89,7 @@ public class GroupChatActivity extends AppCompatActivity {
                     }
                 });
         binding.userName.setText(groupName);
-        Picasso.get().load(groupIcon).placeholder(R.drawable.avatar).into(binding.profilePic);
+        Picasso.get().load(groupIcon).placeholder(R.drawable.ic_user).into(binding.profilePic);
 
         final GroupChatAdapter adapter = new GroupChatAdapter(messagesModels,this);
         binding.chatRecyclerView.setAdapter(adapter);

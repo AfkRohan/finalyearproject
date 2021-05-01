@@ -54,7 +54,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static java.lang.String.format;
-import static java.lang.String.valueOf;
 
 public class  ChatDetailActivity extends AppCompatActivity {
 
@@ -116,7 +115,7 @@ public class  ChatDetailActivity extends AppCompatActivity {
         String profilePic = getIntent().getStringExtra("profilePic");
 
         binding.userName.setText(userName);
-        Picasso.get().load(profilePic).placeholder(R.drawable.avatar).into(binding.profilePic);
+        Picasso.get().load(profilePic).placeholder(R.drawable.ic_user).into(binding.profilePic);
 
         binding.backArrow.setOnClickListener(new View.OnClickListener() {
             @Override

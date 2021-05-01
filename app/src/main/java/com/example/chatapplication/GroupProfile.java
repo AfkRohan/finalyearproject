@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,11 +23,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatapplication.Models.Friend;
+import com.example.chatapplication.Models.Group;
 import com.example.chatapplication.Models.Users;
 import com.example.chatapplication.databinding.ActivityGroupProfileBinding;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,6 +35,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 public class GroupProfile extends AppCompatActivity {
     ActivityGroupProfileBinding binding;
@@ -44,11 +47,13 @@ public class GroupProfile extends AppCompatActivity {
     String groupDesc;
     String groupAdminId;
     String currentUserId;
+    ArrayList<String> groupMembers;
     private DatabaseReference memRef;
     private DatabaseReference usersRef;
     RecyclerView memberList;
     Context context;
     Toolbar toolbar;
+    Group group;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +76,21 @@ public class GroupProfile extends AppCompatActivity {
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         binding.groupname.setText(groupName);
-        Picasso.get().load(groupIcon).placeholder(R.drawable.avatar).into(binding.groupicon);
+        Picasso.get().load(groupIcon).placeholder(R.drawable.ic_user).into(binding.groupicon);
         binding.desc.setText(groupDesc);
+        FirebaseDatabase.getInstance().getReference().child("GroupsMeta").child(groupId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        group = snapshot.getValue(Group.class);
+                        groupMembers = group.getGroupMembers();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Friend>()
                 .setQuery(memRef, Friend.class).build();
 
@@ -89,7 +107,7 @@ public class GroupProfile extends AppCompatActivity {
                         String username = snapshot.child("userName").getValue().toString();
 */
                         holder.userName.setText(users[0].getUserName());
-                        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
+                        Picasso.get().load(users[0].getProfilepic()).placeholder(R.drawable.ic_user).into(holder.image);
                     }
 
                     @Override
@@ -106,10 +124,19 @@ public class GroupProfile extends AppCompatActivity {
                                     .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            FirebaseDatabase.getInstance().getReference().child("UsersGroups")
-                                                    .child(users[0].getUserId()).child(groupId).setValue(null);
-                                            FirebaseDatabase.getInstance().getReference().child("GroupMembers")
-                                                    .child(groupId).child(users[0].getUserId()).setValue(null);
+                                            if(currentUserId.equals(users[0].getUserId())) {
+                                                Toast.makeText(GroupProfile.this, "Group Admin can't leave currently", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else {
+                                                FirebaseDatabase.getInstance().getReference().child("UsersGroups")
+                                                        .child(users[0].getUserId()).child(groupId).setValue(null);
+                                                FirebaseDatabase.getInstance().getReference().child("GroupMembers")
+                                                        .child(groupId).child(users[0].getUserId()).setValue(null);
+                                                groupMembers.remove(users[0].getUserId());
+                                                FirebaseDatabase.getInstance().getReference().child("GroupsMeta")
+                                                        .child(groupId).child("groupMembers").setValue(groupMembers);
+                                                group.setGroupMembers(groupMembers);
+                                            }
                                         }
                                     }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
                                 @Override
@@ -172,12 +199,31 @@ public class GroupProfile extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.addMember:
-                //Intent intent2 = new Intent(GroupProfile.this, .class);
-                //startActivity(intent2);
+                Intent intent = new Intent(GroupProfile.this, AddGroupMembersActivity.class);
+                intent.putExtra("groupId", groupId);
+                intent.putExtra("groupIcon", groupIcon);
+                intent.putExtra("groupName", groupName);
+                intent.putExtra("groupDesc", groupDesc);
+                intent.putExtra("groupAdminId", groupAdminId);
+                //intent.putExtra("groupObject", (Serializable) group[0]);
+                GroupProfile.this.startActivity(intent);
                 break;
             case R.id.leaveGroup:
-                Intent intent4 = new Intent(GroupProfile.this, MainActivity.class);
-                startActivity(intent4);
+                if(currentUserId.equals(groupAdminId)) {
+                    Toast.makeText(GroupProfile.this, "Group Admin can't leave currently", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    FirebaseDatabase.getInstance().getReference().child("UsersGroups")
+                            .child(currentUserId).child(groupId).setValue(null);
+                    FirebaseDatabase.getInstance().getReference().child("GroupMembers")
+                            .child(groupId).child(currentUserId).setValue(null);
+                    groupMembers.remove(currentUserId);
+                    FirebaseDatabase.getInstance().getReference().child("GroupsMeta")
+                            .child(groupId).child("groupMembers").setValue(groupMembers);
+                    group.setGroupMembers(groupMembers);
+                    Intent intent4 = new Intent(GroupProfile.this, MainActivity.class);
+                    startActivity(intent4);
+                }
                 break;
         }
         return true;

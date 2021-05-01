@@ -14,12 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatapplication.ChatDetailActivity;
 import com.example.chatapplication.Models.Users;
 import com.example.chatapplication.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.platforminfo.UserAgentPublisher;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -49,7 +43,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder>{
 
         Users users = list.get(position);
 
-        Picasso.get().load(users.getProfilepic()).placeholder(R.drawable.avatar).into(holder.image);
+        Picasso.get().load(users.getProfilepic()).placeholder(R.drawable.ic_user).into(holder.image);
         holder.userName.setText(users.getUserName());
 
 
