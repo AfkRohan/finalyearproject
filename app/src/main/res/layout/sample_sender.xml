@@ -5,7 +5,7 @@
     android:id="@+id/Rel123"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_margin="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
 
@@ -26,14 +26,14 @@
             android:id="@+id/senderText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="3dp"
             android:inputType="textLongMessage|textMultiLine|text"
             android:maxWidth="270dp"
             android:minWidth="50dp"
             android:text="Message"
-            app:layout_constraintBottom_toTopOf="@+id/sendetTime"
+            app:layout_constraintBottom_toTopOf="@+id/senderTime"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="parent" />
@@ -43,19 +43,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.0" />
+            app:layout_constraintGuide_begin="0dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_end="25dp" />
+            app:layout_constraintGuide_end="5dp" />
 
         <TextView
-            android:id="@+id/sendetTime"
+            android:id="@+id/senderTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
             android:text="12:00PM"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline4" />
