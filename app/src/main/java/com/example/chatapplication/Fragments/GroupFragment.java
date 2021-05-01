@@ -96,7 +96,7 @@ public class GroupFragment extends Fragment {
                         String username = snapshot.child("userName").getValue().toString();
 */
                         holder.groupName.setText(group[0].getGroupName());
-                        Picasso.get().load(group[0].getGroupIcon()).placeholder(R.drawable.avatar).into(holder.image);
+                        Picasso.get().load(group[0].getGroupIcon()).placeholder(R.drawable.ic_user).into(holder.image);
                         /*FirebaseDatabase.getInstance().getReference().child("chats").child(currentUserId+group[0].getUserId()).orderByChild("timestamp")
                                 .limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
