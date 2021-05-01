@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
-            android:text="last message" />
+            android:text="" />
 
         <View
             android:id="@+id/view"
