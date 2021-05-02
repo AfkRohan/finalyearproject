@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.kwabenaberko.newsapilib.models.Article;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Headlines {
     @SerializedName("status")
@@ -17,7 +17,7 @@ public class Headlines {
 
     @SerializedName("articles")
     @Expose
-    private ArrayList<Article> articles;
+    private List<Article> articles = null;
 
     public String getStatus() {
         return status;
@@ -35,11 +35,11 @@ public class Headlines {
         this.totalResults = totalResults;
     }
 
-    public ArrayList<Article> getArticles() {
+    public List<Article> getArticles() {
         return articles;
     }
 
-    public void setArticles(ArrayList<Article> articles) {
+    public void setArticles(List<Article> articles) {
         this.articles = articles;
     }
 }

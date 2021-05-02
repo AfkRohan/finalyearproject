@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,46 +17,48 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
+    private List<Article> articleArrayList;
+    private Context context;
 
-    Context context;
-    List<Article> articles;
-
-    public NewsAdapter(Context context, List<Article> articles) {
-        this.context = context;
-        this.articles = articles;
+    public NewsAdapter(List<Article> articleArrayList) {
+        this.articleArrayList = articleArrayList;
     }
 
 
-    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.itemviewheadline,parent,false);
-        return  new ViewHolder(view);
+    public NewsAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.itemviewheadline, viewGroup, false);
+        return new NewsAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Article article = articles.get(position);
-        holder.Title.setText(article.getTitle());
-        String imageUrl =  article.getUrlToImage();
-        Picasso.get().load(imageUrl).into(holder.NewsImage);
+    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+        final Article articleModel = articleArrayList.get(position);
+        viewHolder.titleText.setText(articleModel.getTitle());
+        String url = articleModel.getUrlToImage();
+        Picasso.get().load(url).into(viewHolder.imageView);
     }
+
 
     @Override
     public int getItemCount() {
-        return 0;
+        return articleArrayList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView Title;
-        ImageView NewsImage;
-        CardView cardView;
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            Title = itemView.findViewById(R.id.NewsTitle);
-            NewsImage = itemView.findViewById(R.id.headlineImage);
-            cardView = itemView.findViewById(R.id.newsCard);
+    class ViewHolder extends RecyclerView.ViewHolder  {
+        public TextView titleText;
+        public ImageView imageView;
+        public CardView artilceAdapterParentLinear;
+
+        ViewHolder(View view) {
+            super(view);
+            titleText = view.findViewById(R.id.NewsTitle);
+            imageView = view.findViewById(R.id.headlineImage);
+            artilceAdapterParentLinear = view.findViewById(R.id.newsCard);
         }
+
     }
+
+
 }
