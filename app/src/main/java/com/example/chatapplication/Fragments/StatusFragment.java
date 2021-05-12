@@ -1,5 +1,7 @@
 package com.example.chatapplication.Fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import com.example.chatapplication.Adapters.NewsAdapter;
 import com.example.chatapplication.Models.Headlines;
 import com.example.chatapplication.Models.NewsAPIClient;
 import com.example.chatapplication.Models.NewsAPIInterface;
+import com.example.chatapplication.Models.OnRecyclerViewItemClickListener;
 import com.example.chatapplication.R;
 import com.kwabenaberko.newsapilib.models.Article;
 
@@ -25,7 +28,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class StatusFragment extends Fragment{
+public class StatusFragment extends Fragment implements OnRecyclerViewItemClickListener {
 
     RecyclerView recyclerView;
     NewsAdapter newsAdapter;
@@ -59,9 +62,10 @@ public class StatusFragment extends Fragment{
             @Override
             public void onResponse(Call<Headlines>call, Response<Headlines> response) {
                 if(response.body().getStatus().equals("ok")) {
-                    List<Article> articleList = response.body().getArticles();
+                    articleList = response.body().getArticles();
                     if(articleList.size()>0) {
                         final  NewsAdapter mainArticleAdapter = new NewsAdapter(articleList);
+                        mainArticleAdapter.setOnRecyclerViewItemClickListener(StatusFragment.this);
                         mainRecycler.setAdapter(mainArticleAdapter);
                     }
                 }
@@ -73,4 +77,12 @@ public class StatusFragment extends Fragment{
         });
         return view;
     }
-}
+
+    @Override
+    public void onItemClick(int position, View view) {
+        String url = articleList.get(position).getUrl();
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
+     }
+    }

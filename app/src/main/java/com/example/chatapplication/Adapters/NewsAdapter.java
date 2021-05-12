@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chatapplication.Models.OnRecyclerViewItemClickListener;
 import com.example.chatapplication.R;
 import com.kwabenaberko.newsapilib.models.Article;
 import com.squareup.picasso.Picasso;
@@ -19,6 +20,7 @@ import java.util.List;
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     private List<Article> articleArrayList;
     private Context context;
+    private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
 
     public NewsAdapter(List<Article> articleArrayList) {
         this.articleArrayList = articleArrayList;
@@ -37,6 +39,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         viewHolder.titleText.setText(articleModel.getTitle());
         String url = articleModel.getUrlToImage();
         Picasso.get().load(url).into(viewHolder.imageView);
+        viewHolder.artilceAdapterParentLinear.setTag(articleModel);
     }
 
 
@@ -56,9 +59,18 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             titleText = view.findViewById(R.id.NewsTitle);
             imageView = view.findViewById(R.id.headlineImage);
             artilceAdapterParentLinear = view.findViewById(R.id.newsCard);
+            artilceAdapterParentLinear.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onRecyclerViewItemClickListener != null) {
+                        onRecyclerViewItemClickListener.onItemClick(getAdapterPosition(), view);
+                    }
+                }
+            });
         }
 
     }
-
-
+    public void setOnRecyclerViewItemClickListener(OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
+        this.onRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
+    }
 }
