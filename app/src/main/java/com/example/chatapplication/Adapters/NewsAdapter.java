@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
-    private List<Article> articleArrayList;
+    private  final  List<Article> articleArrayList;
     private Context context;
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
 
@@ -38,7 +38,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         final Article articleModel = articleArrayList.get(position);
         viewHolder.titleText.setText(articleModel.getTitle());
         String url = articleModel.getUrlToImage();
-        Picasso.get().load(url).into(viewHolder.imageView);
+        Picasso.get().load(url).fit().placeholder(R.drawable.newsplaceholder).into(viewHolder.imageView);
         viewHolder.artilceAdapterParentLinear.setTag(articleModel);
     }
 
@@ -57,7 +57,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         ViewHolder(View view) {
             super(view);
             titleText = view.findViewById(R.id.NewsTitle);
-            imageView = view.findViewById(R.id.headlineImage);
+            imageView = view.findViewById(R.id.ImageView);
             artilceAdapterParentLinear = view.findViewById(R.id.newsCard);
             artilceAdapterParentLinear.setOnClickListener(new View.OnClickListener() {
                 @Override

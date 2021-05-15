@@ -25,25 +25,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
+                android:background="@drawable/gradientbackground"
                 app:srcCompat="@drawable/ic_baseline_image_24" />
 
             <ImageView
                 android:id="@+id/ImageView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="200dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginBottom="5dp" />
 
             <TextView
                 android:id="@+id/NewsTitle"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center"
+                android:layout_marginTop="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
                 android:background="@color/white"
-                android:text="TITLE"
                 android:textColor="@color/colorPrimary"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
         </FrameLayout>
 
