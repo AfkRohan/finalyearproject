@@ -29,10 +29,9 @@
         android:id="@+id/receiverImageTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="11:00AM"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.963"
         app:layout_constraintStart_toStartOf="@+id/guideline3" />
 
     <androidx.constraintlayout.widget.Guideline

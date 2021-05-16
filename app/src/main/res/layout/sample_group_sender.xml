@@ -29,6 +29,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="3dp"
+            android:fontFamily="sans-serif-medium"
             android:inputType="textLongMessage|textMultiLine|text"
             android:maxWidth="270dp"
             android:minWidth="50dp"
@@ -43,10 +44,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
+            android:fontFamily="sans-serif-condensed-light"
             android:text="12:00PM"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline4"
-            />
+            app:layout_constraintEnd_toStartOf="@+id/guideline4" />
 
 
         <androidx.constraintlayout.widget.Guideline
@@ -61,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_end="5dp" />
+            app:layout_constraintGuide_end="8dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

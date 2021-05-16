@@ -17,12 +17,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="5dp"
+        android:fontFamily="serif"
         android:text="Receiver Name"
         android:textSize="16sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/guideline1"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/guideline1"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/receiverTextG"
@@ -31,6 +32,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="5dp"
+        android:fontFamily="sans-serif-medium"
         android:inputType="textLongMessage|textMultiLine|text"
         android:maxWidth="270dp"
         android:minWidth="50dp"
@@ -43,12 +45,13 @@
         android:id="@+id/receiverTimeG"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginBottom="3dp"
+        android:fontFamily="sans-serif-condensed-light"
         android:text="11:00AM"
-        app:layout_constraintTop_toBottomOf="@+id/receiverTextG"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/guideline1"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/receiverTextG" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -64,7 +67,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="5dp"
+        app:layout_constraintGuide_end="8dp"
         />
 
 
