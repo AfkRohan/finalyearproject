@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="350dp"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="5dp"
     android:layout_marginTop="7dp"
     android:alpha="1"
@@ -13,33 +13,37 @@
 
     <ImageView
         android:id="@+id/receiverImageView"
-        android:layout_width="270dp"
-        android:layout_height="300dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:alpha="1"
         app:layout_constraintBottom_toTopOf="@+id/receiverImageTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_baseline_image_24" />
 
     <TextView
         android:id="@+id/receiverImageTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="3dp"
         android:fontFamily="sans-serif-condensed-light"
         android:text="11:00AM"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline3" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="16dp"
+        app:layout_constraintGuide_begin="0dp"
         app:layout_editor_absoluteX="16dp" />
 
     <ProgressBar
