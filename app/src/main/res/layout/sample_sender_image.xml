@@ -12,55 +12,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginStart="5dp"
         android:layout_marginTop="7dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="7dp"
-        android:background="@drawable/bg_sender"
-        android:maxWidth="310dp"
-        android:maxHeight="400dp"
-        android:minHeight="30dp">
+        android:paddingLeft="-5dp"
+        android:paddingRight="-5dp"
+        android:layout_marginRight="4dp"
+        android:background="@drawable/bg_sender">
 
 
         <ImageView
             android:id="@+id/senderImageView"
-            android:layout_width="270dp"
-            android:layout_height="350dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="3dp"
-            android:inputType="textLongMessage|textMultiLine|text"
-            android:maxWidth="270dp"
-            android:minWidth="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="8dp"
+            android:minWidth="250dp"
+            android:minHeight="250dp"
             android:text="Message"
-            app:layout_constraintBottom_toTopOf="@+id/senderImageTime"
-            app:layout_constraintEnd_toStartOf="@+id/guideline4"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.0" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_end="8dp" />
 
         <TextView
             android:id="@+id/senderImageTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
             android:fontFamily="sans-serif-condensed-light"
             android:text="12:00PM"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline4" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.976"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/senderImageView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

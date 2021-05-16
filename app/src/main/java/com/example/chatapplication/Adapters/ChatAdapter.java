@@ -124,7 +124,7 @@ public class ChatAdapter extends  RecyclerView.Adapter {
 
        else if(holder.getClass()==SenderViewHolderImage.class){
            String url = messagesModel.getMessage();
-           Picasso.get().load(url).into(((SenderViewHolderImage)holder).senderImg);
+           Picasso.get().load(url).centerCrop().resize(250,250).into(((SenderViewHolderImage)holder).senderImg);
            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
            String timeString = formatter.format(new Date(messagesModel.getTimestamp()));
            ((SenderViewHolderImage) holder).senderTime.setText(timeString);
@@ -143,12 +143,12 @@ public class ChatAdapter extends  RecyclerView.Adapter {
                    public void onClick(View v) {
                        new SaveImageToPhone(context, ((ReceiverViewHolderImage) holder).progressBar, messagesModel,chatroom).execute(url);
                        ((ReceiverViewHolderImage)holder).receiverBtn.setVisibility(View.INVISIBLE);
-                       Picasso.get().load(url).into(((ReceiverViewHolderImage) holder).receiverImg);
+                       Picasso.get().load(url).resize(250,250).centerCrop().into(((ReceiverViewHolderImage) holder).receiverImg);
                    }
                });
               }
                 else {
-                    Picasso.get().load(url).into(((ReceiverViewHolderImage) holder).receiverImg);
+                    Picasso.get().load(url).resize(250,250).centerCrop().into(((ReceiverViewHolderImage) holder).receiverImg);
                 }
 
            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
